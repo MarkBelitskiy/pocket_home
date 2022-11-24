@@ -1,6 +1,6 @@
 part of 'main_app_theme.dart';
 
-class _MainAppTextStyles {
+class MainAppTextStyles {
   TextStyle get title =>
       const TextStyle(fontWeight: FontWeight.w400, fontSize: 20);
   TextStyle get boldTitle =>

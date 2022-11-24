@@ -1,6 +1,6 @@
 part of 'main_app_theme.dart';
 
-class _MainAppIcons {
+class MainAppIcons {
   String get news => 'assets/icons/news.svg';
   String get services => 'assets/icons/services.svg';
   String get chatUnActive => 'assets/icons/chat_unactive.svg';
@@ -15,6 +15,12 @@ class _MainAppIcons {
   String get camera => 'assets/icons/camera.svg';
   String get phone => 'assets/icons/phone.svg';
   String get add => 'assets/icons/add.svg';
+  String get chevronLeft => 'assets/icons/chevron_left.svg';
+  String get eyeOpen => 'assets/icons/eye_open.svg';
+  String get eyeClose => 'assets/icons/eye_close.svg';
+  String get close => 'assets/icons/close.svg';
+  String get chevronDown => 'assets/icons/chevron_down.svg';
+  String get search => 'assets/icons/search.svg';
 
   String get lottieNews => 'assets/lottie/news.json';
 

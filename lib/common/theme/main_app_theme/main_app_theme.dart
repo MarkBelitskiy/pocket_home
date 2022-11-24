@@ -12,10 +12,10 @@ class MainAppTheme {
   Brightness get brightness => isDark ? Brightness.dark : Brightness.light;
   Brightness get statusBarBrightness =>
       isDark ? Brightness.light : Brightness.dark;
-  // ignore: library_private_types_in_public_api
-  _MainAppTextStyles get textStyles => _MainAppTextStyles();
-  // ignore: library_private_types_in_public_api
-  _MainAppIcons get icons => _MainAppIcons();
-  // ignore: library_private_types_in_public_api
-  _MainAppColors get colors => _MainAppColors(isDark);
+
+  MainAppTextStyles get textStyles => MainAppTextStyles();
+
+  MainAppIcons get icons => MainAppIcons();
+
+  MainAppColors get colors => MainAppColors(isDark);
 }

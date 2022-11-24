@@ -9,10 +9,12 @@ class MainAppButton extends StatelessWidget {
       required this.onPressed,
       required this.title,
       this.suffixWidget,
+      this.titleColor,
       required this.assetIcon});
   final Function onPressed;
   final String title;
   final String assetIcon;
+  final Color? titleColor;
   final Widget? suffixWidget;
   @override
   Widget build(BuildContext context) {
@@ -22,12 +24,13 @@ class MainAppButton extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Row(children: [
-        SvgPicture.asset(
-          assetIcon,
-          width: 24,
-          height: 24,
-          color: getMainAppTheme(context).colors.mainTextColor,
-        ),
+        if (assetIcon.isNotEmpty)
+          SvgPicture.asset(
+            assetIcon,
+            width: 24,
+            height: 24,
+            color: getMainAppTheme(context).colors.mainTextColor,
+          ),
         const SizedBox(
           width: 12,
         ),
@@ -35,10 +38,9 @@ class MainAppButton extends StatelessWidget {
           child: Text(
             title,
             textAlign: TextAlign.center,
-            style: getMainAppTheme(context)
-                .textStyles
-                .title
-                .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+            style: getMainAppTheme(context).textStyles.title.copyWith(
+                color: titleColor ??
+                    getMainAppTheme(context).colors.mainTextColor),
           ),
         ),
         const SizedBox(

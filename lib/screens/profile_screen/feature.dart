@@ -6,6 +6,7 @@ import 'package:pocket_home/common/utils/locale_view_model.dart';
 
 import 'package:flutter/material.dart';
 import 'package:pocket_home/common/widgets/button_widget.dart';
+import 'package:pocket_home/common/widgets/main_body_widget.dart';
 import 'package:provider/provider.dart';
 
 part 'src/profile_screen.dart';

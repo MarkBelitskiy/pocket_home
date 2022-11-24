@@ -8,7 +8,8 @@ class _NewsScreen extends StatelessWidget {
     return Scaffold(
         backgroundColor: getMainAppTheme(context).colors.bgColor,
         floatingActionButton: MainAppFloatingButton(onTap: () {
-          Navigator.of(context).push(addNewsScreenFeature());
+          Navigator.of(context, rootNavigator: true)
+              .push(addNewsScreenFeature());
         }),
         body: const _Body());
   }

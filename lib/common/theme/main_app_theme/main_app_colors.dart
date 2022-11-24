@@ -1,9 +1,9 @@
 part of 'main_app_theme.dart';
 
-class _MainAppColors {
+class MainAppColors {
   final bool isDark;
 
-  _MainAppColors(this.isDark);
+  MainAppColors(this.isDark);
 
   Color get bgColor => ColorPalette.grey900;
   Color get borderColors => ColorPalette.grey400;

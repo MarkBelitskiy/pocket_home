@@ -11,5 +11,10 @@
 "settings":"Настройки",
 "myBuildings":"Мои дома",
 "deleteAccount":"Удалить учетную запись",
-"logout":"Выйти"
+"logout":"Выйти",
+"createNews":"Создание новости",
+"header":"Заголовок",
+"newsText":"Текст Новости",
+"publish":"Опубликовать",
+"publishType":"Тип публикации"
 }
