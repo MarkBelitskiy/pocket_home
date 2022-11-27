@@ -4,22 +4,30 @@ import 'package:pocket_home/common/theme/theme_getter.dart';
 import 'package:pocket_home/common/widgets/main_text_field/main_text_field_widget.dart';
 
 Future showMainAppBottomSheet(BuildContext context,
-    {required String title, required List<String> items}) {
+    {required String title,
+    required List<String> items,
+    bool isNeedSearch = false}) {
   return showModalBottomSheet(
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
       backgroundColor: getMainAppTheme(context).colors.bgColor,
       context: context,
       builder: (context) => _ModalBody(
+            isNeedSearch: isNeedSearch,
             items: items,
             title: title,
           ));
 }
 
 class _ModalBody extends StatelessWidget {
-  const _ModalBody({super.key, required this.title, required this.items});
+  const _ModalBody(
+      {super.key,
+      required this.title,
+      required this.items,
+      required this.isNeedSearch});
   final String title;
   final List<String> items;
+  final bool isNeedSearch;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -49,55 +57,79 @@ class _ModalBody extends StatelessWidget {
                 ))
           ],
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 50),
-          child: MainTextField(
-              prefixIcon: getMainAppTheme(context).icons.search,
-              textController: TextEditingController(),
-              focusNode: FocusNode(),
-              bgColor: getMainAppTheme(context).colors.buttonsColor,
-              isPasswordField: false,
-              maxLines: 1,
-              title: 'Поиск',
-              readOnly: false,
-              onChanged: (value) {},
-              clearAvailable: true,
-              autoFocus: false),
-        ),
+        if (isNeedSearch)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 50),
+            child: MainTextField(
+                prefixIcon: getMainAppTheme(context).icons.search,
+                textController: TextEditingController(),
+                focusNode: FocusNode(),
+                bgColor: getMainAppTheme(context).colors.buttonsColor,
+                isPasswordField: false,
+                maxLines: 1,
+                title: 'Поиск',
+                readOnly: false,
+                onChanged: (value) {},
+                clearAvailable: true,
+                autoFocus: false),
+          ),
         Flexible(
           fit: FlexFit.loose,
-          child: ListView.builder(
+          child: ListView.separated(
+              padding: const EdgeInsets.only(bottom: 12),
+              separatorBuilder: (context, index) {
+                return Divider(
+                    color: getMainAppTheme(context).colors.borderColors);
+              },
               shrinkWrap: true,
               itemCount: items.length,
               itemBuilder: (context, index) {
                 final String item = items[index];
-                return Container(
-                  padding: const EdgeInsets.all(24),
-                  margin: const EdgeInsets.symmetric(vertical: 12),
-                  color: getMainAppTheme(context).colors.buttonsColor,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          item,
-                          style: getMainAppTheme(context)
-                              .textStyles
-                              .body
-                              .copyWith(
-                                  color: getMainAppTheme(context)
-                                      .colors
-                                      .mainTextColor),
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop(index);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            item,
+                            style: getMainAppTheme(context)
+                                .textStyles
+                                .body
+                                .copyWith(
+                                    color: getMainAppTheme(context)
+                                        .colors
+                                        .mainTextColor),
+                          ),
                         ),
-                      ),
-                      SvgPicture.asset(
-                        getMainAppTheme(context).icons.chevronDown,
-                        color: getMainAppTheme(context).colors.mainTextColor,
-                      )
-                    ],
+                        Row(
+                          children: [
+                            Text(
+                              'Выбрать',
+                              style: getMainAppTheme(context)
+                                  .textStyles
+                                  .body
+                                  .copyWith(
+                                      color: getMainAppTheme(context)
+                                          .colors
+                                          .activeText),
+                            ),
+                            SvgPicture.asset(
+                              getMainAppTheme(context).icons.chevronRight,
+                              color:
+                                  getMainAppTheme(context).colors.activeColor,
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 );
               }),
-        )
+        ),
       ],
     );
   }

@@ -6,7 +6,7 @@ class _AddNewsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: false,
+        // resizeToAvoidBottomInset: false,
         backgroundColor: getMainAppTheme(context).colors.bgColor,
         appBar: MainAppBar(
           title: 'createNews'.tr(),
@@ -27,44 +27,22 @@ class _Body extends StatelessWidget {
       child: MainAppBody(
         isDoubleBlob: true,
         children: [
-          _PickTypeWidget(),
+          const _PickTypeWidget(),
           const SizedBox(
             height: 24,
           ),
-          UploadFilesWidget(
-            storageTypes: [STORAGE_TYPE.GALLERY, STORAGE_TYPE.CAMERA],
-          ),
-          const SizedBox(
-            height: 24,
-          ),
-          MainTextField(
-              textController: TextEditingController(),
-              focusNode: FocusNode(),
-              bgColor: getMainAppTheme(context).colors.cardColor,
-              isPasswordField: false,
-              maxLines: 1,
-              title: 'header'.tr(),
-              readOnly: false,
-              onChanged: (value) {},
-              clearAvailable: true,
-              autoFocus: false),
-          const SizedBox(
-            height: 24,
-          ),
-          MainTextField(
-              textController: TextEditingController(),
-              focusNode: FocusNode(),
-              bgColor: getMainAppTheme(context).colors.cardColor,
-              isPasswordField: false,
-              maxLines: 5,
-              title: 'newsText'.tr(),
-              readOnly: false,
-              onChanged: (value) {},
-              clearAvailable: true,
-              autoFocus: false),
-          const SizedBox(
-            height: 48,
-          ),
+          BlocBuilder<AddNewsBloc, AddNewsState>(
+              buildWhen: (previous, current) =>
+                  current is NewsBodyState || current is PollsBodyState,
+              builder: (context, state) {
+                if (state is NewsBodyState) {
+                  return const _NewsBody();
+                }
+                if (state is PollsBodyState) {
+                  return const _PollsBody();
+                }
+                return const SizedBox.shrink();
+              }),
           MainAppButton(
               titleColor: getMainAppTheme(context).colors.activeText,
               onPressed: () {},
@@ -76,14 +54,29 @@ class _Body extends StatelessWidget {
   }
 }
 
-class _PickTypeWidget extends StatelessWidget {
+class _PickTypeWidget extends StatefulWidget {
   const _PickTypeWidget({super.key});
 
   @override
+  State<_PickTypeWidget> createState() => _PickTypeWidgetState();
+}
+
+class _PickTypeWidgetState extends State<_PickTypeWidget> {
+  String title = 'publishType'.tr();
+  final List<String> items = ['Новости', 'Опросы'];
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => showMainAppBottomSheet(context,
-          title: 'Выберите тип', items: ['Новости', 'Опросы']),
+      onTap: () =>
+          showMainAppBottomSheet(context, title: 'Выберите тип', items: items)
+              .then((value) {
+        if (value is int) {
+          context.read<AddNewsBloc>().add(ChangeBodyEvent(value));
+          setState(() {
+            title = items[value];
+          });
+        }
+      }),
       child: Container(
         decoration: BoxDecoration(
             color: getMainAppTheme(context).colors.cardColor,
@@ -92,7 +85,7 @@ class _PickTypeWidget extends StatelessWidget {
         child: Row(children: [
           Expanded(
             child: Text(
-              'publishType'.tr(),
+              title,
               textAlign: TextAlign.left,
               style: getMainAppTheme(context).textStyles.body.copyWith(
                   color: getMainAppTheme(context).colors.inactiveText),
@@ -109,6 +102,121 @@ class _PickTypeWidget extends StatelessWidget {
           ),
         ]),
       ),
+    );
+  }
+}
+
+class _NewsBody extends StatelessWidget {
+  const _NewsBody({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        MainAppFilePicker(
+          maxFiles: 1,
+          onFilesAddedCallBack: (filesPath) {},
+        ),
+        const SizedBox(
+          height: 24,
+        ),
+        MainTextField(
+            textController: TextEditingController(),
+            focusNode: FocusNode(),
+            bgColor: getMainAppTheme(context).colors.cardColor,
+            isPasswordField: false,
+            maxLines: 1,
+            title: 'header'.tr(),
+            readOnly: false,
+            onChanged: (value) {},
+            clearAvailable: true,
+            autoFocus: false),
+        const SizedBox(
+          height: 24,
+        ),
+        MainTextField(
+            textController: TextEditingController(),
+            focusNode: FocusNode(),
+            bgColor: getMainAppTheme(context).colors.cardColor,
+            isPasswordField: false,
+            maxLines: 5,
+            title: 'newsText'.tr(),
+            readOnly: false,
+            onChanged: (value) {},
+            clearAvailable: true,
+            autoFocus: false),
+        const SizedBox(
+          height: 48,
+        ),
+      ],
+    );
+  }
+}
+
+class _PollsBody extends StatelessWidget {
+  const _PollsBody({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        MainTextField(
+            textController: TextEditingController(),
+            focusNode: FocusNode(),
+            bgColor: getMainAppTheme(context).colors.cardColor,
+            isPasswordField: false,
+            maxLines: 1,
+            title: 'header'.tr(),
+            readOnly: false,
+            onChanged: (value) {},
+            clearAvailable: true,
+            autoFocus: false),
+        const SizedBox(
+          height: 24,
+        ),
+        MainTextField(
+            textController: TextEditingController(),
+            focusNode: FocusNode(),
+            bgColor: getMainAppTheme(context).colors.cardColor,
+            isPasswordField: false,
+            maxLines: 1,
+            title: 'Вариант ответа 1',
+            readOnly: false,
+            onChanged: (value) {},
+            clearAvailable: true,
+            autoFocus: false),
+        const SizedBox(
+          height: 24,
+        ),
+        MainTextField(
+            textController: TextEditingController(),
+            focusNode: FocusNode(),
+            bgColor: getMainAppTheme(context).colors.cardColor,
+            isPasswordField: false,
+            maxLines: 1,
+            title: 'Вариант ответа 2',
+            readOnly: false,
+            onChanged: (value) {},
+            clearAvailable: true,
+            autoFocus: false),
+        const SizedBox(
+          height: 24,
+        ),
+        MainTextField(
+            textController: TextEditingController(),
+            focusNode: FocusNode(),
+            bgColor: getMainAppTheme(context).colors.cardColor,
+            isPasswordField: false,
+            maxLines: 1,
+            title: 'Вариант ответа 3',
+            readOnly: false,
+            onChanged: (value) {},
+            clearAvailable: true,
+            autoFocus: false),
+        const SizedBox(
+          height: 24,
+        ),
+      ],
     );
   }
 }

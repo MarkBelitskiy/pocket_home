@@ -18,9 +18,7 @@ class MainAppBody extends StatelessWidget {
               bottom: 0,
               right: 0,
               child: SvgPicture.asset(
-                isDoubleBlob
-                    ? getMainAppTheme(context).icons.emptyDoubleBlob
-                    : getMainAppTheme(context).icons.emptySingleBlob,
+                getMainAppTheme(context).icons.emptySingleBlob,
                 width: MediaQuery.of(context).size.width,
               )),
           Positioned(

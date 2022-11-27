@@ -20,7 +20,7 @@ class MainAppButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialButton(
       onPressed: () => onPressed.call(),
-      color: getMainAppTheme(context).colors.buttonsColor,
+      color: getMainAppTheme(context).colors.cardColor,
       padding: const EdgeInsets.all(12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Row(children: [

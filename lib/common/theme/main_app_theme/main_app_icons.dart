@@ -21,6 +21,7 @@ class MainAppIcons {
   String get close => 'assets/icons/close.svg';
   String get chevronDown => 'assets/icons/chevron_down.svg';
   String get search => 'assets/icons/search.svg';
+  String get chevronRight => 'assets/icons/arrow_right.svg';
 
   String get lottieNews => 'assets/lottie/news.json';
 
