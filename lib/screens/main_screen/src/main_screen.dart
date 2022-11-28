@@ -15,7 +15,7 @@ class _MainScreen extends StatelessWidget {
       child: Consumer<MainAppLocaleViewModel>(builder: (context, value, child) {
         return Scaffold(
           body: const _Body(),
-          backgroundColor: getMainAppTheme(context).colors.bgColor,
+          backgroundColor: getMainAppTheme(context).colors.buttonsColor,
           bottomNavigationBar: CurvedNavigationBar(
             key: bottomNavigationKey,
             items: <Widget>[
@@ -46,8 +46,8 @@ class _MainScreen extends StatelessWidget {
                 index: 4,
               ),
             ],
-            color: const Color(0xff374151),
-            buttonBackgroundColor: const Color(0xff374151),
+            color: getMainAppTheme(context).colors.cardColor,
+            buttonBackgroundColor: getMainAppTheme(context).colors.cardColor,
             backgroundColor:
                 context.watch<MainScreenViewModel>().activeIndex == 4
                     ? getMainAppTheme(context).colors.buttonsColor

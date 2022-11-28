@@ -8,3 +8,11 @@ class ChangeBodyEvent extends AddNewsEvent {
 
   ChangeBodyEvent(this.bodyValue);
 }
+
+class CreateNewsEvent extends AddNewsEvent {
+  final String title;
+  final String newsText;
+  final String filePath;
+  CreateNewsEvent(
+      {required this.title, required this.newsText, required this.filePath});
+}

@@ -142,7 +142,7 @@ class _MainInfoWidget extends StatelessWidget {
               width: 12,
             ),
             Text(
-              '+7 777 777 ** **',
+              '+7 *** *** 77 77',
               textAlign: TextAlign.center,
               style: getMainAppTheme(context).textStyles.title.copyWith(
                   color: getMainAppTheme(context).colors.mainTextColor),

@@ -31,7 +31,20 @@ class _Body extends StatelessWidget {
           const SizedBox(
             height: 24,
           ),
-          BlocBuilder<AddNewsBloc, AddNewsState>(
+          BlocConsumer<AddNewsBloc, AddNewsState>(
+              listener: (context, state) {
+                if (state is NewsAddedSuccessState) {
+                  showModalBottomSheet(
+                      shape: const RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(10))),
+                      backgroundColor: getMainAppTheme(context).colors.bgColor,
+                      context: context,
+                      builder: (context) => _ModalBody()).then((value) {
+                    Navigator.of(context).pop(true);
+                  });
+                }
+              },
               buildWhen: (previous, current) =>
                   current is NewsBodyState || current is PollsBodyState,
               builder: (context, state) {
@@ -43,11 +56,6 @@ class _Body extends StatelessWidget {
                 }
                 return const SizedBox.shrink();
               }),
-          MainAppButton(
-              titleColor: getMainAppTheme(context).colors.activeText,
-              onPressed: () {},
-              title: 'publish'.tr(),
-              assetIcon: ''),
         ],
       ),
     );
@@ -111,11 +119,18 @@ class _NewsBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String title = '';
+
+    String newsText = '';
+
+    String filePath = '';
     return Column(
       children: [
         MainAppFilePicker(
           maxFiles: 1,
-          onFilesAddedCallBack: (filesPath) {},
+          onFilesAddedCallBack: (filesPath) {
+            filePath = filesPath.isNotEmpty ? filesPath[0] : '';
+          },
         ),
         const SizedBox(
           height: 24,
@@ -128,7 +143,9 @@ class _NewsBody extends StatelessWidget {
             maxLines: 1,
             title: 'header'.tr(),
             readOnly: false,
-            onChanged: (value) {},
+            onChanged: (value) {
+              title = value;
+            },
             clearAvailable: true,
             autoFocus: false),
         const SizedBox(
@@ -142,12 +159,22 @@ class _NewsBody extends StatelessWidget {
             maxLines: 5,
             title: 'newsText'.tr(),
             readOnly: false,
-            onChanged: (value) {},
+            onChanged: (value) {
+              newsText = value;
+            },
             clearAvailable: true,
             autoFocus: false),
         const SizedBox(
           height: 48,
         ),
+        MainAppButton(
+            titleColor: getMainAppTheme(context).colors.activeText,
+            onPressed: () {
+              context.read<AddNewsBloc>().add(CreateNewsEvent(
+                  title: title, newsText: newsText, filePath: filePath));
+            },
+            title: 'publish'.tr(),
+            assetIcon: ''),
       ],
     );
   }
@@ -216,6 +243,63 @@ class _PollsBody extends StatelessWidget {
         const SizedBox(
           height: 24,
         ),
+        MainAppButton(
+            titleColor: getMainAppTheme(context).colors.activeText,
+            onPressed: () {},
+            title: 'publish'.tr(),
+            assetIcon: ''),
+      ],
+    );
+  }
+}
+
+class _ModalBody extends StatelessWidget {
+  const _ModalBody({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            const SizedBox(
+              width: 24,
+            ),
+            Expanded(
+              child: Text(
+                'Новость успешно создана',
+                textAlign: TextAlign.center,
+                style: getMainAppTheme(context).textStyles.body.copyWith(
+                    color: getMainAppTheme(context).colors.mainTextColor),
+              ),
+            ),
+            IconButton(
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+                icon: SvgPicture.asset(
+                  getMainAppTheme(context).icons.close,
+                  color: getMainAppTheme(context).colors.mainTextColor,
+                ))
+          ],
+        ),
+        const SizedBox(
+          height: 12,
+        ),
+        SvgPicture.asset(getMainAppTheme(context).icons.actionSuccess),
+        Padding(
+          padding: const EdgeInsets.all(24),
+          child: MainAppButton(
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              },
+              title: 'Закрыть',
+              assetIcon: ''),
+        )
       ],
     );
   }

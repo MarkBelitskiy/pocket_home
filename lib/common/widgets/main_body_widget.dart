@@ -15,7 +15,7 @@ class MainAppBody extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           Positioned(
-              bottom: 0,
+              bottom: -1,
               right: 0,
               child: SvgPicture.asset(
                 getMainAppTheme(context).icons.emptySingleBlob,

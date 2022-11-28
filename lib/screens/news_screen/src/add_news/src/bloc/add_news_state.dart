@@ -8,3 +8,5 @@ class AddNewsInitial extends AddNewsState {}
 class NewsBodyState extends AddNewsState {}
 
 class PollsBodyState extends AddNewsState {}
+
+class NewsAddedSuccessState extends AddNewsState {}
