@@ -2,16 +2,18 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:pocket_home/common/theme/theme_getter.dart';
 import 'package:pocket_home/screens/pdf_view/pdf_widget.dart';
 
 class PdfTitlesScreen extends StatelessWidget {
   final String pdfPath;
   final String title;
   final bool shareEnabled;
-
+  final Uint8List pdfData;
   PdfTitlesScreen(
       {Key? key,
       required this.pdfPath,
+      required this.pdfData,
       this.title = 'Просмотр документа',
       this.shareEnabled = true})
       : super(key: key);
@@ -34,7 +36,8 @@ class PdfTitlesScreen extends StatelessWidget {
               Navigator.of(context).pop();
             },
             icon: SvgPicture.asset(
-              "assets/icons_svg/arrow_left_blue.svg",
+              getMainAppTheme(context).icons.chevronLeft,
+              color: getMainAppTheme(context).colors.activeColor,
             )),
         title: Text(
           title,
@@ -50,7 +53,10 @@ class PdfTitlesScreen extends StatelessWidget {
               : SizedBox.shrink()
         ],
       ),
-      body: PdfWidget(pdfPath: pdfPath),
+      body: PdfWidget(
+        pdfPath: pdfPath,
+        pdfData: pdfData,
+      ),
     );
   }
 }

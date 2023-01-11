@@ -10,8 +10,12 @@ import 'package:rxdart/rxdart.dart';
 class PdfWidget extends StatefulWidget {
   final String pdfPath;
   final bool isVertical;
-
-  PdfWidget({Key? key, required this.pdfPath, this.isVertical = true})
+  final Uint8List pdfData;
+  PdfWidget(
+      {Key? key,
+      required this.pdfPath,
+      required this.pdfData,
+      this.isVertical = true})
       : super(key: key);
 
   @override
@@ -26,10 +30,6 @@ class _PdfViewScreenState extends State<PdfWidget> {
   ValueNotifier<bool> _notifier = ValueNotifier(!Platform.isAndroid);
   @override
   void initState() {
-    // _pdfController = PdfController(
-    //   document: PdfDocument.openFile(widget.pdfPath),
-    // );
-
     if (Platform.isAndroid) {
       Future.delayed(Duration(milliseconds: 500))
           .then((value) => _notifier.value = true);
@@ -60,7 +60,7 @@ class _PdfViewScreenState extends State<PdfWidget> {
                 Factory<HorizontalDragGestureRecognizer>(
                     () => HorizontalDragGestureRecognizer()..onUpdate = (_) {})
               },
-              filePath: widget.pdfPath,
+              pdfData: widget.pdfData,
               preventLinkNavigation: true,
               onRender: (int? value) {
                 Future.delayed(Duration(milliseconds: 100))

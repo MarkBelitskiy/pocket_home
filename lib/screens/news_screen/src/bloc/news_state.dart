@@ -6,7 +6,7 @@ abstract class NewsState {}
 class NewsInitial extends NewsState {}
 
 class NewsLoadedState extends NewsState {
-  final NewsModel? newsModel;
+  final List<NewsModel> newsModel;
 
   NewsLoadedState(this.newsModel);
 }

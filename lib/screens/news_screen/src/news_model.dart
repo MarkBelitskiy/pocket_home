@@ -1,8 +1,10 @@
 import 'dart:convert';
 
-NewsModel newsModelFromJson(String str) => NewsModel.fromJson(json.decode(str));
+List<NewsModel> newsModelFromJson(String str) =>
+    List<NewsModel>.from(json.decode(str).map((x) => NewsModel.fromJson(x)));
 
-String newsModelToJson(NewsModel data) => json.encode(data.toJson());
+String newsModelToJson(List<NewsModel> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class NewsModel {
   NewsModel({
@@ -11,6 +13,7 @@ class NewsModel {
     required this.filePath,
     required this.publishDate,
     required this.pollAnswers,
+    required this.choosenPollValue,
   });
 
   String newsTitle;
@@ -18,11 +21,13 @@ class NewsModel {
   String filePath;
   DateTime publishDate;
   List<String>? pollAnswers;
+  int? choosenPollValue;
 
   factory NewsModel.fromJson(Map<String, dynamic> json) => NewsModel(
         newsTitle: json["newsTitle"],
         newsText: json["newsText"],
         filePath: json["filePath"] ?? '',
+        choosenPollValue: json["choosenPollValue"],
         publishDate: DateTime.parse(json["publishDate"]),
         pollAnswers: json["pollAnswers"] == null
             ? null
@@ -33,6 +38,7 @@ class NewsModel {
         "newsTitle": newsTitle,
         "newsText": newsText,
         "filePath": filePath,
+        "choosenPollValue": choosenPollValue,
         "publishDate": publishDate.toIso8601String(),
         "pollAnswers": pollAnswers == null
             ? null

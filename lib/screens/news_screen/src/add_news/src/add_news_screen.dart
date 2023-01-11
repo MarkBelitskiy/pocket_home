@@ -171,7 +171,14 @@ class _NewsBody extends StatelessWidget {
             titleColor: getMainAppTheme(context).colors.activeText,
             onPressed: () {
               context.read<AddNewsBloc>().add(CreateNewsEvent(
-                  title: title, newsText: newsText, filePath: filePath));
+                    model: NewsModel(
+                        filePath: filePath,
+                        newsText: newsText,
+                        choosenPollValue: null,
+                        newsTitle: title,
+                        pollAnswers: null,
+                        publishDate: DateTime.now()),
+                  ));
             },
             title: 'publish'.tr(),
             assetIcon: ''),
@@ -185,6 +192,10 @@ class _PollsBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String title = '';
+
+    List<String> pollAnswers = [];
+
     return Column(
       children: [
         MainTextField(
@@ -195,7 +206,9 @@ class _PollsBody extends StatelessWidget {
             maxLines: 1,
             title: 'header'.tr(),
             readOnly: false,
-            onChanged: (value) {},
+            onChanged: (value) {
+              title = value;
+            },
             clearAvailable: true,
             autoFocus: false),
         const SizedBox(
@@ -209,7 +222,9 @@ class _PollsBody extends StatelessWidget {
             maxLines: 1,
             title: 'Вариант ответа 1',
             readOnly: false,
-            onChanged: (value) {},
+            onChanged: (value) {
+              pollAnswers.add(value);
+            },
             clearAvailable: true,
             autoFocus: false),
         const SizedBox(
@@ -223,7 +238,9 @@ class _PollsBody extends StatelessWidget {
             maxLines: 1,
             title: 'Вариант ответа 2',
             readOnly: false,
-            onChanged: (value) {},
+            onChanged: (value) {
+              pollAnswers.add(value);
+            },
             clearAvailable: true,
             autoFocus: false),
         const SizedBox(
@@ -237,7 +254,9 @@ class _PollsBody extends StatelessWidget {
             maxLines: 1,
             title: 'Вариант ответа 3',
             readOnly: false,
-            onChanged: (value) {},
+            onChanged: (value) {
+              pollAnswers.add(value);
+            },
             clearAvailable: true,
             autoFocus: false),
         const SizedBox(
@@ -245,7 +264,17 @@ class _PollsBody extends StatelessWidget {
         ),
         MainAppButton(
             titleColor: getMainAppTheme(context).colors.activeText,
-            onPressed: () {},
+            onPressed: () {
+              context.read<AddNewsBloc>().add(CreateNewsEvent(
+                    model: NewsModel(
+                        filePath: '',
+                        newsText: '',
+                        newsTitle: title,
+                        pollAnswers: pollAnswers,
+                        choosenPollValue: null,
+                        publishDate: DateTime.now()),
+                  ));
+            },
             title: 'publish'.tr(),
             assetIcon: ''),
       ],

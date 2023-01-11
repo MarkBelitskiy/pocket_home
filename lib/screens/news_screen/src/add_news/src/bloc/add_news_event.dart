@@ -10,9 +10,6 @@ class ChangeBodyEvent extends AddNewsEvent {
 }
 
 class CreateNewsEvent extends AddNewsEvent {
-  final String title;
-  final String newsText;
-  final String filePath;
-  CreateNewsEvent(
-      {required this.title, required this.newsText, required this.filePath});
+  final NewsModel model;
+  CreateNewsEvent({required this.model});
 }

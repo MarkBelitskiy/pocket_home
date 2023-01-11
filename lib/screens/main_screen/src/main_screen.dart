@@ -13,52 +13,61 @@ class _MainScreen extends StatelessWidget {
       value: SystemUiOverlayStyle.light
           .copyWith(statusBarColor: Colors.transparent),
       child: Consumer<MainAppLocaleViewModel>(builder: (context, value, child) {
-        return Scaffold(
-          body: const _Body(),
-          backgroundColor: getMainAppTheme(context).colors.buttonsColor,
-          bottomNavigationBar: CurvedNavigationBar(
-            key: bottomNavigationKey,
-            items: <Widget>[
-              _NavBarItem(
-                icon: getMainAppTheme(context).icons.news,
-                title: 'news'.tr(),
-                index: 0,
-              ),
-              _NavBarItem(
-                icon: getMainAppTheme(context).icons.services,
-                title: 'services'.tr(),
-                index: 1,
-              ),
-              _NavBarItem(
-                icon: getMainAppTheme(context).icons.chatUnActive,
-                secondIcon: getMainAppTheme(context).icons.chatActive,
-                title: 'chat'.tr(),
-                index: 2,
-              ),
-              _NavBarItem(
-                icon: getMainAppTheme(context).icons.reports,
-                title: 'reports'.tr(),
-                index: 3,
-              ),
-              _NavBarItem(
-                icon: getMainAppTheme(context).icons.profile,
-                title: 'profile'.tr(),
-                index: 4,
-              ),
-            ],
-            color: getMainAppTheme(context).colors.cardColor,
-            buttonBackgroundColor: getMainAppTheme(context).colors.cardColor,
-            backgroundColor:
-                context.watch<MainScreenViewModel>().activeIndex == 4
-                    ? getMainAppTheme(context).colors.buttonsColor
-                    : getMainAppTheme(context).colors.bgColor,
-            animationCurve: Curves.easeInOutCubic,
-            animationDuration: const Duration(milliseconds: 400),
-            onTap: (index) {
-              context.read<MainScreenViewModel>().changeScreen(index);
-            },
-            letIndexChange: (index) => true,
-          ),
+        return BlocConsumer<MainScreenBloc, MainScreenState>(
+          listener: (context, state) {},
+          builder: (context, state) {
+            if (state is UserSuccessLoadedState) {
+              return Scaffold(
+                body: const _Body(),
+                backgroundColor: getMainAppTheme(context).colors.buttonsColor,
+                bottomNavigationBar: CurvedNavigationBar(
+                  key: bottomNavigationKey,
+                  items: <Widget>[
+                    _NavBarItem(
+                      icon: getMainAppTheme(context).icons.news,
+                      title: 'news'.tr(),
+                      index: 0,
+                    ),
+                    _NavBarItem(
+                      icon: getMainAppTheme(context).icons.services,
+                      title: 'services'.tr(),
+                      index: 1,
+                    ),
+                    _NavBarItem(
+                      icon: getMainAppTheme(context).icons.chatUnActive,
+                      secondIcon: getMainAppTheme(context).icons.chatActive,
+                      title: 'chat'.tr(),
+                      index: 2,
+                    ),
+                    _NavBarItem(
+                      icon: getMainAppTheme(context).icons.reports,
+                      title: 'reports'.tr(),
+                      index: 3,
+                    ),
+                    _NavBarItem(
+                      icon: getMainAppTheme(context).icons.profile,
+                      title: 'profile'.tr(),
+                      index: 4,
+                    ),
+                  ],
+                  color: getMainAppTheme(context).colors.cardColor,
+                  buttonBackgroundColor:
+                      getMainAppTheme(context).colors.cardColor,
+                  backgroundColor:
+                      context.watch<MainScreenViewModel>().activeIndex == 4
+                          ? getMainAppTheme(context).colors.buttonsColor
+                          : getMainAppTheme(context).colors.bgColor,
+                  animationCurve: Curves.fastLinearToSlowEaseIn,
+                  animationDuration: const Duration(milliseconds: 300),
+                  onTap: (index) {
+                    context.read<MainScreenViewModel>().changeScreen(index);
+                  },
+                  letIndexChange: (index) => true,
+                ),
+              );
+            }
+            return _SplashScreen();
+          },
         );
       }),
     );
@@ -151,3 +160,149 @@ class _NavBarItem extends StatelessWidget {
     });
   }
 }
+
+class _SplashScreen extends StatefulWidget {
+  const _SplashScreen({super.key});
+
+  @override
+  State<_SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<_SplashScreen> {
+  double opacity = 0.0;
+  double offset = -5;
+  @override
+  void initState() {
+    Future.delayed(const Duration(milliseconds: 1000))
+        .then((value) => setState(() {
+              opacity = 1;
+            }))
+        .then((value) {
+      Future.delayed(const Duration(milliseconds: 500))
+          .then((value) => setState(() {
+                offset = 0;
+              }));
+    });
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: getMainAppTheme(context).colors.bgColor,
+      body: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        child: Stack(
+          children: <Widget>[
+            Positioned.fill(
+              child: SvgPicture.asset(
+                "assets/icons/splash_bg.svg",
+                fit: BoxFit.fill,
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+              ),
+            ),
+            Positioned(
+              left: 0,
+              top: 0,
+              bottom: 0,
+              right: 0,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height / 6,
+                    ),
+                    AnimatedOpacity(
+                      opacity: opacity,
+                      duration: const Duration(milliseconds: 1500),
+                      child: SvgPicture.asset(
+                        'assets/icons/splash_logo.svg',
+                        // fit: BoxFit.fill,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 64,
+                    ),
+                    AnimatedSlide(
+                      offset: Offset(offset, 0),
+                      duration: const Duration(seconds: 1),
+                      child: MaterialButton(
+                        onPressed: () {
+                          Navigator.of(context).push(loginScreenFeature());
+                        },
+                        color: getMainAppTheme(context).colors.buttonsColor,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 64),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Text(
+                          'Войти',
+                          textAlign: TextAlign.center,
+                          style: getMainAppTheme(context)
+                              .textStyles
+                              .title
+                              .copyWith(color: ColorPalette.blue200),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 32,
+                    ),
+                    AnimatedSlide(
+                      offset: Offset(offset, 0),
+                      duration: const Duration(seconds: 1),
+                      child: MaterialButton(
+                        onPressed: () {
+                          Navigator.of(context)
+                              .push(registrationScreenFeature());
+                        },
+                        color: getMainAppTheme(context).colors.bgColor,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 16),
+                        shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                                color: getMainAppTheme(context)
+                                    .colors
+                                    .buttonsColor),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Text(
+                          'Зарегистрироваться',
+                          textAlign: TextAlign.center,
+                          style: getMainAppTheme(context)
+                              .textStyles
+                              .title
+                              .copyWith(color: ColorPalette.blue200),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+  // @override
+  // void initState() {
+  //   top = bottom = 250;
+  //   Future.delayed(Duration(seconds: 1)).then((value) {
+  //     Future.delayed(Duration(milliseconds: 300)).then((value) {
+  //       setState(() {
+  //         top = 0;
+  //       });
+  //     });
+  //     setState(() {
+  //       bottom = 0;
+  //     });
+  //   });
+  //   super.initState();
+  // }
+

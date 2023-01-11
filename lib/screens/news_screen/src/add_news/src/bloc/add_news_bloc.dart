@@ -29,14 +29,17 @@ class AddNewsBloc extends Bloc<AddNewsEvent, AddNewsState> {
 
   Future<void> _createNewsEvent(
       CreateNewsEvent event, Emitter<AddNewsState> emit) async {
-    NewsModel model = NewsModel(
-        newsTitle: event.title.trim(),
-        newsText: event.newsText.trim(),
-        filePath: event.filePath,
-        publishDate: DateTime.now(),
-        pollAnswers: []);
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString("newsModel", jsonEncode(model.toJson()));
+
+    final prefsModel = prefs.getString('newsModel');
+    List<NewsModel> modelFromPrefs = [];
+
+    if (prefsModel != null) {
+      modelFromPrefs = newsModelFromJson(prefsModel);
+    }
+    List<NewsModel> modelToPrefs = [event.model];
+    modelToPrefs.addAll(modelFromPrefs);
+    prefs.setString("newsModel", newsModelToJson(modelToPrefs));
     emit(NewsAddedSuccessState());
   }
 }

@@ -22,6 +22,7 @@ class MainTextField extends StatefulWidget {
       this.suffixIcon,
       required this.autoFocus,
       this.textInputAction,
+      this.keyboardType,
       this.onSubmitted})
       : super(key: key);
   final TextEditingController textController;
@@ -42,6 +43,7 @@ class MainTextField extends StatefulWidget {
   final Function(String value)? onSubmitted;
   final Function(String value)? onChanged;
   final Function? onTap;
+  final TextInputType? keyboardType;
   @override
   State<MainTextField> createState() => _MainTextFieldState();
 }
@@ -111,6 +113,7 @@ class _MainTextFieldState extends State<MainTextField> {
                           valueListenable: _showSuffixIcon,
                           builder: (context, value, child) {
                             return TextFormField(
+                              keyboardType: widget.keyboardType,
                               readOnly: widget.readOnly,
                               textInputAction: widget.textInputAction,
                               onFieldSubmitted: (value) {
@@ -173,6 +176,7 @@ class _MainTextFieldState extends State<MainTextField> {
                                 value
                                     ? getMainAppTheme(context).icons.eyeOpen
                                     : getMainAppTheme(context).icons.eyeClose,
+                                color: ColorPalette.blue500,
                                 width: 24,
                                 height: 24),
                             onPressed: () {
