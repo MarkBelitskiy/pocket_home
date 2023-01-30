@@ -34,7 +34,7 @@ class MainScreenFeature extends StatelessWidget {
     return ChangeNotifierProvider(
         create: (context) => MainScreenViewModel(),
         child: BlocProvider(
-          create: (context) => MainScreenBloc(),
+          create: (context) => MainScreenBloc()..add(OnInitAppEvent()),
           child: const _MainScreen(),
         ));
   }

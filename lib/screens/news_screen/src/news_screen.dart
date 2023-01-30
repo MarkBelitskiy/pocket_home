@@ -8,9 +8,7 @@ class _NewsScreen extends StatelessWidget {
     return Scaffold(
         backgroundColor: getMainAppTheme(context).colors.bgColor,
         floatingActionButton: MainAppFloatingButton(onTap: () {
-          Navigator.of(context, rootNavigator: true)
-              .push(addNewsScreenFeature())
-              .then((value) {
+          Navigator.of(context, rootNavigator: true).push(addNewsScreenFeature()).then((value) {
             if (value is bool && value) {
               context.read<NewsBloc>().add(OnNewsTabInit());
             }
@@ -27,8 +25,7 @@ class _Body extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<NewsBloc, NewsState>(
       listener: (context, state) {},
-      buildWhen: (previous, current) =>
-          current is NewsLoadedState || current is NewsLoadingState,
+      buildWhen: (previous, current) => current is NewsLoadedState || current is NewsLoadingState,
       builder: (context, state) {
         if (state is NewsLoadedState) {
           if (state.newsModel.isEmpty) {
@@ -88,9 +85,7 @@ class _News extends StatelessWidget {
   final NewsModel news;
   @override
   Widget build(BuildContext context) {
-    final _newsText = news.newsText.length > 50
-        ? news.newsText.substring(0, 50)
-        : news.newsText;
+    final _newsText = news.newsText.length > 50 ? news.newsText.substring(0, 50) : news.newsText;
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -103,10 +98,7 @@ class _News extends StatelessWidget {
               child: Text(
                 'Новости',
                 textAlign: TextAlign.left,
-                style: getMainAppTheme(context)
-                    .textStyles
-                    .body
-                    .copyWith(color: ColorPalette.grey300),
+                style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
               ),
             ),
             Expanded(
@@ -116,10 +108,7 @@ class _News extends StatelessWidget {
                     .toString()
                     .toLowerCase(),
                 textAlign: TextAlign.right,
-                style: getMainAppTheme(context)
-                    .textStyles
-                    .body
-                    .copyWith(color: ColorPalette.grey300),
+                style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
               ),
             )
           ],
@@ -130,10 +119,7 @@ class _News extends StatelessWidget {
         Text(
           news.newsTitle,
           textAlign: TextAlign.left,
-          style: getMainAppTheme(context)
-              .textStyles
-              .title
-              .copyWith(color: ColorPalette.grey100),
+          style: getMainAppTheme(context).textStyles.title.copyWith(color: ColorPalette.grey100),
         ),
         const SizedBox(
           height: 12,
@@ -146,22 +132,20 @@ class _News extends StatelessWidget {
             children: [
               TextSpan(
                 text: _newsText + ' ',
-                style: getMainAppTheme(context)
-                    .textStyles
-                    .body
-                    .copyWith(color: ColorPalette.grey300),
+                style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
               ),
               if (_newsText.length == 50)
                 WidgetSpan(
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.of(context, rootNavigator: true)
-                          .push(viewNewsScreenFeature(news));
+                      Navigator.of(context, rootNavigator: true).push(viewNewsScreenFeature(news));
                     },
                     child: Text(
                       'Просмотреть полностью...',
-                      style: getMainAppTheme(context).textStyles.body.copyWith(
-                          color: getMainAppTheme(context).colors.activeText),
+                      style: getMainAppTheme(context)
+                          .textStyles
+                          .body
+                          .copyWith(color: getMainAppTheme(context).colors.activeText),
                     ),
                   ),
                 )
@@ -203,10 +187,7 @@ class _Poll extends StatelessWidget {
               child: Text(
                 'Опросы',
                 textAlign: TextAlign.left,
-                style: getMainAppTheme(context)
-                    .textStyles
-                    .body
-                    .copyWith(color: ColorPalette.grey300),
+                style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
               ),
             ),
             Expanded(
@@ -216,10 +197,7 @@ class _Poll extends StatelessWidget {
                     .toString()
                     .toLowerCase(),
                 textAlign: TextAlign.right,
-                style: getMainAppTheme(context)
-                    .textStyles
-                    .body
-                    .copyWith(color: ColorPalette.grey300),
+                style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
               ),
             )
           ],
@@ -230,10 +208,7 @@ class _Poll extends StatelessWidget {
         Text(
           news.newsTitle,
           textAlign: TextAlign.left,
-          style: getMainAppTheme(context)
-              .textStyles
-              .title
-              .copyWith(color: ColorPalette.grey100),
+          style: getMainAppTheme(context).textStyles.title.copyWith(color: ColorPalette.grey100),
         ),
         const SizedBox(
           height: 12,
@@ -250,9 +225,7 @@ class _Poll extends StatelessWidget {
                   tapCallBack: (value) {
                     _choosenValue.value = index;
                   },
-                  isActive: news.choosenPollValue == null
-                      ? value == index
-                      : news.choosenPollValue == index,
+                  isActive: news.choosenPollValue == null ? value == index : news.choosenPollValue == index,
                 );
               },
             );
@@ -264,16 +237,16 @@ class _Poll extends StatelessWidget {
           GestureDetector(
             onTap: () {
               if (_choosenValue.value != null) {
-                context
-                    .read<NewsBloc>()
-                    .add(UpdatePollEvent(id, _choosenValue.value!));
+                context.read<NewsBloc>().add(UpdatePollEvent(id, _choosenValue.value!));
               }
             },
             child: Align(
               alignment: Alignment.center,
               child: Text('Сохранить',
-                  style: getMainAppTheme(context).textStyles.title.copyWith(
-                      color: getMainAppTheme(context).colors.activeColor)),
+                  style: getMainAppTheme(context)
+                      .textStyles
+                      .title
+                      .copyWith(color: getMainAppTheme(context).colors.activeColor)),
             ),
           ),
           const SizedBox(height: 12),
@@ -285,11 +258,7 @@ class _Poll extends StatelessWidget {
 
 class _PollAnswer extends StatelessWidget {
   const _PollAnswer(
-      {super.key,
-      required this.answer,
-      required this.tapCallBack,
-      this.isSavedAnswer,
-      this.isActive = false});
+      {super.key, required this.answer, required this.tapCallBack, this.isSavedAnswer, this.isActive = false});
   final String answer;
   final Function(String) tapCallBack;
   final bool isActive;
@@ -310,14 +279,12 @@ class _PollAnswer extends StatelessWidget {
                 scale: 1.3,
                 child: Checkbox(
                   value: isActive,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                   onChanged: (value) {
                     tapCallBack.call(answer);
                   },
                   checkColor: getMainAppTheme(context).colors.activeColor,
-                  fillColor: MaterialStatePropertyAll(
-                      getMainAppTheme(context).colors.bgColor),
+                  fillColor: MaterialStatePropertyAll(getMainAppTheme(context).colors.bgColor),
                 ),
               ),
               const SizedBox(
@@ -328,10 +295,7 @@ class _PollAnswer extends StatelessWidget {
                 child: Text(
               answer,
               textAlign: TextAlign.left,
-              style: getMainAppTheme(context)
-                  .textStyles
-                  .body
-                  .copyWith(color: ColorPalette.grey300),
+              style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
             )),
             if (isSavedAnswer != null && isSavedAnswer!) ...[
               Transform.scale(
@@ -339,10 +303,7 @@ class _PollAnswer extends StatelessWidget {
                   child: Text(
                     'Ваш ответ',
                     textAlign: TextAlign.left,
-                    style: getMainAppTheme(context)
-                        .textStyles
-                        .caption
-                        .copyWith(color: ColorPalette.blue500),
+                    style: getMainAppTheme(context).textStyles.caption.copyWith(color: ColorPalette.blue500),
                   )),
               const SizedBox(
                 width: 12,

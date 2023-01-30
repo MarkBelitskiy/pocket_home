@@ -2,9 +2,10 @@ part of '../feature.dart';
 
 class _FilePickerWidget extends StatelessWidget {
   const _FilePickerWidget(
-      {super.key, required this.maxFiles, required this.onFilesAddedCallBack});
+      {required this.maxFiles, required this.onFilesAddedCallBack, required this.isProfilePhotoWidget});
   final int maxFiles;
   final Function(List<String>) onFilesAddedCallBack;
+  final bool isProfilePhotoWidget;
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<FilePickerBloc, FilePickerState>(
@@ -22,17 +23,22 @@ class _FilePickerWidget extends StatelessWidget {
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: state.paths.isEmpty || maxFiles == 1 ? 1 : 3,
                   mainAxisSpacing: 8,
-                  mainAxisExtent: 109,
+                  mainAxisExtent: isProfilePhotoWidget ? 170 : 109,
                   crossAxisSpacing: 8),
               itemBuilder: (context, index) {
-                if (index != state.paths.length) {
+                if (index != state.paths.length && !isProfilePhotoWidget) {
                   return _PreviewFileWidget(
                     path: state.paths[index],
                     index: index,
                   );
                 }
-
-                return _AddButton(onlyOneFileCanAdded: maxFiles == 1);
+                if (maxFiles > state.paths.length) {
+                  return _AddButton(
+                      onlyOneFileCanAdded: maxFiles == 1,
+                      isProfilePhoto: isProfilePhotoWidget,
+                      profilePhoto: state.paths.isNotEmpty ? state.paths[0] : null);
+                }
+                return const SizedBox.shrink();
               });
         }
         return const SizedBox.shrink();
@@ -42,20 +48,20 @@ class _FilePickerWidget extends StatelessWidget {
 }
 
 class _AddButton extends StatelessWidget {
-  const _AddButton({super.key, required this.onlyOneFileCanAdded});
+  const _AddButton({super.key, required this.onlyOneFileCanAdded, this.profilePhoto, required this.isProfilePhoto});
   final bool onlyOneFileCanAdded;
+  final String? profilePhoto;
+  final bool isProfilePhoto;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        showMainAppBottomSheet(context,
-            title: 'Добавить файл',
-            items: ['Сделать фото', 'Из галереи']).then((value) async {
+        showMainAppBottomSheet(context, title: 'Добавить файл', items: ['Сделать фото', 'Из галереи'])
+            .then((value) async {
           if (value is int) {
             List<String> pickedFiles = [];
             if (value == 0) {
-              final pickedFile = await ImagePicker.platform
-                  .pickImage(source: ImageSource.camera);
+              final pickedFile = await ImagePicker.platform.pickImage(source: ImageSource.camera);
               if (pickedFile != null) pickedFiles.add(pickedFile.path);
             }
             if (value == 1) {
@@ -65,40 +71,40 @@ class _AddButton extends StatelessWidget {
                   type: FileType.custom,
                   allowedExtensions: ['png', 'jpg']);
               if (files != null) {
-                files.paths.forEach((element) {
+                for (var element in files.paths) {
                   if (element?.isNotEmpty ?? false) {
                     pickedFiles.add(element!);
                   }
-                });
+                }
               }
             }
             if (pickedFiles.isNotEmpty) {
-              context
-                  .read<FilePickerBloc>()
-                  .add(PickedFilesEvent(filePickerPaths: pickedFiles));
+              context.read<FilePickerBloc>().add(PickedFilesEvent(filePickerPaths: pickedFiles));
             }
           }
         });
       },
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(
-              Radius.circular(12),
+      child: isProfilePhoto
+          ? _ProfilePhotoBody(
+              photopath: profilePhoto,
+            )
+          : Container(
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(12),
+                  ),
+                  border: Border.all(width: 3, color: getMainAppTheme(context).colors.buttonsColor)),
+              child: SvgPicture.asset(
+                getMainAppTheme(context).icons.add,
+                color: getMainAppTheme(context).colors.buttonsColor,
+              ),
             ),
-            border: Border.all(
-                width: 3, color: getMainAppTheme(context).colors.buttonsColor)),
-        child: SvgPicture.asset(
-          getMainAppTheme(context).icons.add,
-          color: getMainAppTheme(context).colors.buttonsColor,
-        ),
-      ),
     );
   }
 }
 
 class _PreviewFileWidget extends StatelessWidget {
-  const _PreviewFileWidget(
-      {super.key, required this.path, required this.index});
+  const _PreviewFileWidget({super.key, required this.path, required this.index});
   final String path;
   final int index;
   @override
@@ -117,29 +123,62 @@ class _PreviewFileWidget extends StatelessWidget {
               borderRadius: const BorderRadius.all(
                 Radius.circular(12),
               ),
-              border: Border.all(
-                  width: 3,
-                  color: getMainAppTheme(context).colors.buttonsColor)),
+              border: Border.all(width: 3, color: getMainAppTheme(context).colors.buttonsColor)),
         ),
         Positioned(
           top: 10,
           right: 10,
           child: GestureDetector(
             onTap: () {
-              context
-                  .read<FilePickerBloc>()
-                  .add(RemoveFileEvent(fileIndex: index));
+              context.read<FilePickerBloc>().add(RemoveFileEvent(fileIndex: index));
             },
             child: Container(
               padding: const EdgeInsets.all(2),
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50),
-                  color: getMainAppTheme(context).colors.cardColor),
+                  borderRadius: BorderRadius.circular(50), color: getMainAppTheme(context).colors.cardColor),
               child: SvgPicture.asset(
                 getMainAppTheme(context).icons.close,
                 color: getMainAppTheme(context).colors.mainTextColor,
               ),
             ),
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class _ProfilePhotoBody extends StatelessWidget {
+  const _ProfilePhotoBody({super.key, required this.photopath});
+  final String? photopath;
+
+  @override
+  Widget build(BuildContext context) {
+    File file = File(photopath ?? "");
+    return Stack(
+      alignment: Alignment.topCenter,
+      children: [
+        Container(
+          width: 150,
+          height: 150,
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  fit: BoxFit.fill,
+                  image: FileImage(
+                    file,
+                  )),
+              shape: BoxShape.circle,
+              border: Border.all(width: 3, color: getMainAppTheme(context).colors.buttonsColor)),
+        ),
+        Positioned(
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(color: getMainAppTheme(context).colors.buttonsColor, shape: BoxShape.circle),
+            child: SvgPicture.asset(getMainAppTheme(context).icons.camera,
+                width: 32, height: 32, color: ColorPalette.grey100),
           ),
         )
       ],

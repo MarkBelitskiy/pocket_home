@@ -14,9 +14,12 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
   Future<void> _onInit(
       OnInitAppEvent event, Emitter<MainScreenState> emit) async {
     prefs = await SharedPreferences.getInstance();
-
-    try {
-      await Future.delayed(const Duration(seconds: 2));
-    } catch (e) {}
+    bool? isauthorized = prefs.getBool("authorized");
+    if (isauthorized ?? false) {
+      emit(UserSuccessLoadedState());
+    }
+    // try {
+    //   await Future.delayed(const Duration(seconds: 2));
+    // } catch (e) {}
   }
 }

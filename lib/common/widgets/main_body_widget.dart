@@ -33,6 +33,7 @@ class MainAppBody extends StatelessWidget {
             child: SingleChildScrollView(
                 padding: EdgeInsets.all(needPadding ? 50 : 0),
                 child: Column(
+                  mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: children,

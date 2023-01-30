@@ -6,6 +6,7 @@ class _ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: getMainAppTheme(context).colors.bgColor,
         body: const _Body());
   }
@@ -20,11 +21,6 @@ class _Body extends StatelessWidget {
       isDoubleBlob: false,
       children: [
         const _MainInfoWidget(),
-        MainAppButton(
-          onPressed: () {},
-          title: 'myBuildings'.tr(),
-          assetIcon: getMainAppTheme(context).icons.myBuildings,
-        ),
         const SizedBox(
           height: 16,
         ),
@@ -105,17 +101,6 @@ class _MainInfoWidget extends StatelessWidget {
                   color: getMainAppTheme(context).colors.mainTextColor,
                 ))
           ],
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        Text(
-          'MRKBL',
-          textAlign: TextAlign.center,
-          style: getMainAppTheme(context)
-              .textStyles
-              .title
-              .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
         ),
         const SizedBox(
           height: 8,

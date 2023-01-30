@@ -6,9 +6,9 @@ class _ViewNewsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: false,
         backgroundColor: getMainAppTheme(context).colors.bgColor,
-        appBar: MainAppBar(
+        appBar: const MainAppBar(
           title: 'Просмотр новости',
         ),
         body: _Body(
@@ -51,15 +51,10 @@ class _NewsBody extends StatelessWidget {
         children: [
           Row(
             children: [
-              Expanded(
-                child: Text(
-                  news.newsTitle,
-                  textAlign: TextAlign.left,
-                  style: getMainAppTheme(context)
-                      .textStyles
-                      .body
-                      .copyWith(color: ColorPalette.grey300),
-                ),
+              Text(
+                news.newsTitle,
+                textAlign: TextAlign.left,
+                style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
               ),
               Expanded(
                 child: Text(
@@ -68,10 +63,7 @@ class _NewsBody extends StatelessWidget {
                       .toString()
                       .toLowerCase(),
                   textAlign: TextAlign.right,
-                  style: getMainAppTheme(context)
-                      .textStyles
-                      .body
-                      .copyWith(color: ColorPalette.grey300),
+                  style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
                 ),
               )
             ],
@@ -91,10 +83,7 @@ class _NewsBody extends StatelessWidget {
           ],
           Text(
             news.newsText,
-            style: getMainAppTheme(context)
-                .textStyles
-                .body
-                .copyWith(color: ColorPalette.grey300),
+            style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
           ),
         ],
       ),

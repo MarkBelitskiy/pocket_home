@@ -6,7 +6,7 @@ class _AddNewsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: false,
         backgroundColor: getMainAppTheme(context).colors.bgColor,
         appBar: MainAppBar(
           title: 'createNews'.tr(),

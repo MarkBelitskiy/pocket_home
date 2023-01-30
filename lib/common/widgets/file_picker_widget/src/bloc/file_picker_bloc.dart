@@ -1,11 +1,12 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'file_picker_event.dart';
 part 'file_picker_state.dart';
 
 class FilePickerBloc extends Bloc<FilePickerEvent, FilePickerState> {
   final List<String> paths = [];
-  FilePickerBloc() : super(FileAddedSuccessState([])) {
+  final bool onlyOneFileCanEdded;
+  FilePickerBloc(this.onlyOneFileCanEdded) : super(FileAddedSuccessState([])) {
     on<FilePickerEvent>((event, emit) {
       if (event is PickedFilesEvent) {
         _pickedFilesEvent(event, emit);
@@ -20,6 +21,9 @@ class FilePickerBloc extends Bloc<FilePickerEvent, FilePickerState> {
     Emitter<FilePickerState> emit,
   ) async {
     try {
+      if (onlyOneFileCanEdded) {
+        paths.clear();
+      }
       paths.addAll(event.filePickerPaths);
 
       emit(FileAddedSuccessState(paths));

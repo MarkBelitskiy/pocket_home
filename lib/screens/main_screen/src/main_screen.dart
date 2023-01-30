@@ -10,8 +10,7 @@ class _MainScreen extends StatelessWidget {
     final GlobalKey<CurvedNavigationBarState> bottomNavigationKey = GlobalKey();
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light
-          .copyWith(statusBarColor: Colors.transparent),
+      value: SystemUiOverlayStyle.light.copyWith(statusBarColor: Colors.transparent),
       child: Consumer<MainAppLocaleViewModel>(builder: (context, value, child) {
         return BlocConsumer<MainScreenBloc, MainScreenState>(
           listener: (context, state) {},
@@ -51,12 +50,10 @@ class _MainScreen extends StatelessWidget {
                     ),
                   ],
                   color: getMainAppTheme(context).colors.cardColor,
-                  buttonBackgroundColor:
-                      getMainAppTheme(context).colors.cardColor,
-                  backgroundColor:
-                      context.watch<MainScreenViewModel>().activeIndex == 4
-                          ? getMainAppTheme(context).colors.buttonsColor
-                          : getMainAppTheme(context).colors.bgColor,
+                  buttonBackgroundColor: getMainAppTheme(context).colors.cardColor,
+                  backgroundColor: context.watch<MainScreenViewModel>().activeIndex == 4
+                      ? getMainAppTheme(context).colors.buttonsColor
+                      : getMainAppTheme(context).colors.bgColor,
                   animationCurve: Curves.fastLinearToSlowEaseIn,
                   animationDuration: const Duration(milliseconds: 300),
                   onTap: (index) {
@@ -87,33 +84,28 @@ class _Body extends StatelessWidget {
         children: <Widget>[
           Navigator(
             key: value.navigatorKeys[0],
-            onGenerateRoute: (route) => CupertinoPageRoute(
-                settings: route,
-                builder: (context) => const NewsScreenFeature()),
+            onGenerateRoute: (route) =>
+                CupertinoPageRoute(settings: route, builder: (context) => const NewsScreenFeature()),
           ),
           Navigator(
             key: value.navigatorKeys[1],
-            onGenerateRoute: (route) => CupertinoPageRoute(
-                settings: route,
-                builder: (context) => const ServicesScreenFeature()),
+            onGenerateRoute: (route) =>
+                CupertinoPageRoute(settings: route, builder: (context) => const ServicesScreenFeature()),
           ),
           Navigator(
             key: value.navigatorKeys[2],
-            onGenerateRoute: (route) => CupertinoPageRoute(
-                settings: route,
-                builder: (context) => const ChatScreenFeature()),
+            onGenerateRoute: (route) =>
+                CupertinoPageRoute(settings: route, builder: (context) => const ChatScreenFeature()),
           ),
           Navigator(
             key: value.navigatorKeys[3],
-            onGenerateRoute: (route) => CupertinoPageRoute(
-                settings: route,
-                builder: (context) => const ReportsScreenFeature()),
+            onGenerateRoute: (route) =>
+                CupertinoPageRoute(settings: route, builder: (context) => const ReportsScreenFeature()),
           ),
           Navigator(
               key: value.navigatorKeys[4],
-              onGenerateRoute: (route) => CupertinoPageRoute(
-                  settings: route,
-                  builder: (context) => const ProfileScreenFeature())),
+              onGenerateRoute: (route) =>
+                  CupertinoPageRoute(settings: route, builder: (context) => const ProfileScreenFeature())),
         ],
       ),
     );
@@ -121,12 +113,7 @@ class _Body extends StatelessWidget {
 }
 
 class _NavBarItem extends StatelessWidget {
-  const _NavBarItem(
-      {Key? key,
-      required this.icon,
-      required this.index,
-      this.secondIcon,
-      required this.title})
+  const _NavBarItem({Key? key, required this.icon, required this.index, this.secondIcon, required this.title})
       : super(key: key);
   final String icon;
   final int index;
@@ -170,19 +157,20 @@ class _SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<_SplashScreen> {
   double opacity = 0.0;
-  double offset = -5;
+  double opacityButtons = 0.0;
   @override
   void initState() {
-    Future.delayed(const Duration(milliseconds: 1000))
-        .then((value) => setState(() {
-              opacity = 1;
-            }))
-        .then((value) {
-      Future.delayed(const Duration(milliseconds: 500))
+    if (!mounted) {
+      Future.delayed(const Duration(milliseconds: 1000))
           .then((value) => setState(() {
-                offset = 0;
-              }));
-    });
+                opacity = 1;
+              }))
+          .then((value) {
+        Future.delayed(const Duration(milliseconds: 500)).then((value) => setState(() {
+              opacityButtons = 1;
+            }));
+      });
+    }
 
     super.initState();
   }
@@ -226,55 +214,42 @@ class _SplashScreenState extends State<_SplashScreen> {
                     const SizedBox(
                       height: 64,
                     ),
-                    AnimatedSlide(
-                      offset: Offset(offset, 0),
+                    AnimatedOpacity(
+                      opacity: opacityButtons,
                       duration: const Duration(seconds: 1),
                       child: MaterialButton(
                         onPressed: () {
-                          Navigator.of(context).push(loginScreenFeature());
+                          Navigator.of(context).push(loginScreenFeature(context.read<MainScreenBloc>()));
                         },
                         color: getMainAppTheme(context).colors.buttonsColor,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 12, horizontal: 64),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 64),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                         child: Text(
                           'Войти',
                           textAlign: TextAlign.center,
-                          style: getMainAppTheme(context)
-                              .textStyles
-                              .title
-                              .copyWith(color: ColorPalette.blue200),
+                          style: getMainAppTheme(context).textStyles.title.copyWith(color: ColorPalette.blue200),
                         ),
                       ),
                     ),
                     const SizedBox(
                       height: 32,
                     ),
-                    AnimatedSlide(
-                      offset: Offset(offset, 0),
+                    AnimatedOpacity(
+                      opacity: opacityButtons,
                       duration: const Duration(seconds: 1),
                       child: MaterialButton(
                         onPressed: () {
-                          Navigator.of(context)
-                              .push(registrationScreenFeature());
+                          Navigator.of(context).push(registrationScreenFeature());
                         },
                         color: getMainAppTheme(context).colors.bgColor,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 12, horizontal: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                         shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                                color: getMainAppTheme(context)
-                                    .colors
-                                    .buttonsColor),
+                            side: BorderSide(color: getMainAppTheme(context).colors.buttonsColor),
                             borderRadius: BorderRadius.circular(10)),
                         child: Text(
                           'Зарегистрироваться',
                           textAlign: TextAlign.center,
-                          style: getMainAppTheme(context)
-                              .textStyles
-                              .title
-                              .copyWith(color: ColorPalette.blue200),
+                          style: getMainAppTheme(context).textStyles.title.copyWith(color: ColorPalette.blue200),
                         ),
                       ),
                     ),

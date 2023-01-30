@@ -5,9 +5,7 @@ class _ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: getMainAppTheme(context).colors.bgColor,
-        body: const _Body());
+    return Scaffold(backgroundColor: getMainAppTheme(context).colors.bgColor, body: const _Body());
   }
 }
 
@@ -24,9 +22,9 @@ class _Body extends StatelessWidget {
           SizedBox(
             height: MediaQuery.of(context).size.height,
             child: const EmptyPlaceholderWithLottie(
-              lottiePath: 'assets/lottie/chat.json',
+              lottiePath: 'assets/lottie/home.json',
               margin: EdgeInsets.only(bottom: 110, left: 20),
-              title: 'haveNotChats',
+              title: 'haveNotHomes',
             ),
           ),
         ],

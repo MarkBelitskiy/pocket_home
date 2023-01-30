@@ -1,0 +1,1 @@
+enum RegisterScreenBodyEnums { profile, password }

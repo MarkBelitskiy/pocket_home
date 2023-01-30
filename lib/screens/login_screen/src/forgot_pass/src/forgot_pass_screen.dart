@@ -6,6 +6,7 @@ class _ForgotPassScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: getMainAppTheme(context).colors.bgColor,
       appBar: const MainAppBar(title: 'Восстановление пароля'),
       body: const MainAppBody(isDoubleBlob: false, children: [_Body()]),
@@ -41,7 +42,11 @@ class _Body extends StatelessWidget {
           height: 24,
         ),
         MainAppButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(otpScreenRoute('89999999', (callback) {
+                Navigator.of(context).push(resetPasswordScreenFeature());
+              }));
+            },
             title: 'Продолжить',
             titleColor: ColorPalette.blue200,
             assetIcon: ''),
