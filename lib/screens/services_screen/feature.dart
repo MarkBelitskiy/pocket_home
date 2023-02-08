@@ -12,8 +12,7 @@ import 'package:pocket_home/common/widgets/main_body_widget.dart';
 import 'package:pocket_home/screens/services_screen/src/bloc/services_bloc.dart';
 
 import 'src/add_service_screen/feature.dart';
-import 'src/service_item_model.dart';
-
+import 'src/service_detailed_model.dart';
 part 'src/services_screen.dart';
 
 class ServicesScreenFeature extends StatelessWidget {

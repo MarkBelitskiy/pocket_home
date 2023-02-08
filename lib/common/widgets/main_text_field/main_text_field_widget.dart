@@ -60,9 +60,7 @@ class _MainTextFieldState extends State<MainTextField> {
     focusNode = widget.focusNode;
     focusNode.addListener(() {
       setState(() {
-        _borderColor = widget.errorText != null &&
-                textEditingController.text.isNotEmpty &&
-                !focusNode.hasFocus
+        _borderColor = widget.errorText != null && textEditingController.text.isNotEmpty && !focusNode.hasFocus
             ? ColorPalette.red500
             : focusNode.hasFocus
                 ? ColorPalette.blue500
@@ -91,10 +89,7 @@ class _MainTextFieldState extends State<MainTextField> {
             decoration: BoxDecoration(
                 color: widget.bgColor,
                 borderRadius: BorderRadius.circular(15),
-                border: Border.all(
-                    color: widget.borderColors ??
-                        _borderColor ??
-                        Colors.transparent)),
+                border: Border.all(color: widget.borderColors ?? _borderColor ?? Colors.transparent)),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
             width: MediaQuery.of(context).size.width,
             child: Row(
@@ -132,13 +127,9 @@ class _MainTextFieldState extends State<MainTextField> {
                               style: getMainAppTheme(context)
                                   .textStyles
                                   .body
-                                  .copyWith(
-                                      color: getMainAppTheme(context)
-                                          .colors
-                                          .mainTextColor),
+                                  .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
                               focusNode: focusNode,
-                              cursorColor:
-                                  getMainAppTheme(context).colors.mainTextColor,
+                              cursorColor: getMainAppTheme(context).colors.mainTextColor,
                               decoration: InputDecoration(
                                 isDense: true,
                                 labelText: widget.title,
@@ -146,10 +137,7 @@ class _MainTextFieldState extends State<MainTextField> {
                                     .textStyles
                                     .subBody
                                     .copyWith()
-                                    .copyWith(
-                                        color: getMainAppTheme(context)
-                                            .colors
-                                            .mainTextColor),
+                                    .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
                                 contentPadding: EdgeInsets.zero,
                                 border: borderStyle,
                                 disabledBorder: borderStyle,
@@ -169,8 +157,7 @@ class _MainTextFieldState extends State<MainTextField> {
                       builder: (context, value, child) {
                         if (widget.isPasswordField) {
                           return IconButton(
-                            constraints: const BoxConstraints(
-                                maxWidth: 24, maxHeight: 24),
+                            constraints: const BoxConstraints(maxWidth: 24, maxHeight: 24),
                             padding: EdgeInsets.zero,
                             icon: SvgPicture.asset(
                                 value
@@ -186,27 +173,20 @@ class _MainTextFieldState extends State<MainTextField> {
                         }
                         if (value && widget.clearAvailable) {
                           return IconButton(
-                            constraints: const BoxConstraints(
-                                maxWidth: 24, maxHeight: 24),
+                            constraints: const BoxConstraints(maxWidth: 24, maxHeight: 24),
                             padding: EdgeInsets.zero,
-                            icon: SvgPicture.asset(
-                                getMainAppTheme(context).icons.close,
-                                color: getMainAppTheme(context)
-                                    .colors
-                                    .borderColors,
-                                width: 24,
-                                height: 24),
+                            icon: SvgPicture.asset(getMainAppTheme(context).icons.close,
+                                color: getMainAppTheme(context).colors.borderColors, width: 24, height: 24),
                             onPressed: () {
                               textEditingController.clear();
-
+                              widget.onChanged?.call('');
                               _showSuffixIcon.value = false;
                             },
                           );
                         }
                         return const SizedBox.shrink();
                       }),
-                if (widget.suffixIcon != null)
-                  SvgPicture.asset(widget.suffixIcon!, width: 24, height: 24),
+                if (widget.suffixIcon != null) SvgPicture.asset(widget.suffixIcon!, width: 24, height: 24),
               ],
             ),
           ),
@@ -215,10 +195,7 @@ class _MainTextFieldState extends State<MainTextField> {
               padding: const EdgeInsets.only(top: 6.0),
               child: Text(
                 widget.errorText!,
-                style: getMainAppTheme(context)
-                    .textStyles
-                    .subBody
-                    .copyWith(color: ColorPalette.red500),
+                style: getMainAppTheme(context).textStyles.subBody.copyWith(color: ColorPalette.red500),
                 textAlign: TextAlign.start,
               ),
             ),

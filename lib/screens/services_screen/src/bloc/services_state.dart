@@ -5,8 +5,8 @@ abstract class ServicesState {}
 class ServicesInitial extends ServicesState {}
 
 class ServicesLoaded extends ServicesState {
-  final List<ServiceItemModel> activeModels;
-  final List<ServiceItemModel> historyModels;
+  final List<ServiceDetailedModel> activeModels;
+  final List<ServiceDetailedModel> historyModels;
   ServicesLoaded(this.activeModels, this.historyModels);
 }
 

@@ -7,7 +7,6 @@ class _AddServiceScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: getMainAppTheme(context).colors.bgColor,
-        // resizeToAvoidBottomInset: false,
         appBar: const MainAppBar(
           title: 'Создание заявки',
         ),
@@ -20,6 +19,7 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final vm = Provider.of<AddServicesScreenViewModel>(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
       child: Column(
@@ -40,7 +40,15 @@ class _Body extends StatelessWidget {
           Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               child: MainAppButton(
-                onPressed: () {},
+                onPressed: () {
+                  context.read<AddServiceBloc>().add(CreateServceEvent(ServiceDetailedModel(
+                      commentary: vm.commentController.text,
+                      name: vm.selectedProblem,
+                      files: vm.files,
+                      status: 1,
+                      publishDate: DateTime.now(),
+                      contactPerson: ContactPerson(name: vm.fullNameController.text, phone: vm.phoneController.text))));
+                },
                 title: 'Создать',
                 assetIcon: '',
                 titleColor: ColorPalette.blue200,
@@ -51,11 +59,18 @@ class _Body extends StatelessWidget {
   }
 }
 
-class _ChooseProblem extends StatelessWidget {
+class _ChooseProblem extends StatefulWidget {
   const _ChooseProblem({Key? key}) : super(key: key);
 
   @override
+  State<_ChooseProblem> createState() => _ChooseProblemState();
+}
+
+class _ChooseProblemState extends State<_ChooseProblem> {
+  List<String> modalTypes = ['Протечка крыши', 'Нет света на пролете', 'Не работает домофон'];
+  @override
   Widget build(BuildContext context) {
+    final vm = Provider.of<AddServicesScreenViewModel>(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -68,7 +83,20 @@ class _ChooseProblem extends StatelessWidget {
           height: 4,
         ),
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            showMainAppBottomSheet(
+              context,
+              title: 'Выбор услуги',
+              isNeedSearch: true,
+              items: modalTypes,
+            ).then((value) {
+              if (value is int) {
+                setState(() {
+                  vm.selectedProblem = modalTypes[value];
+                });
+              }
+            });
+          },
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
@@ -79,7 +107,7 @@ class _ChooseProblem extends StatelessWidget {
               children: [
                 Expanded(
                     child: Text(
-                  'a',
+                  vm.selectedProblem.isEmpty ? 'Выберите услугу' : vm.selectedProblem,
                   style: getMainAppTheme(context).textStyles.subBody.copyWith(color: ColorPalette.grey300),
                 )),
                 SvgPicture.asset(
@@ -95,11 +123,17 @@ class _ChooseProblem extends StatelessWidget {
   }
 }
 
-class _ContactPerson extends StatelessWidget {
+class _ContactPerson extends StatefulWidget {
   const _ContactPerson({Key? key}) : super(key: key);
 
   @override
+  State<_ContactPerson> createState() => _ContactPersonState();
+}
+
+class _ContactPersonState extends State<_ContactPerson> {
+  @override
   Widget build(BuildContext context) {
+    final vm = Provider.of<AddServicesScreenViewModel>(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -128,7 +162,7 @@ class _ContactPerson extends StatelessWidget {
                   )),
                   Expanded(
                       child: Text(
-                    'Белицкий М.И.',
+                    vm.fullNameController.text,
                     textAlign: TextAlign.right,
                     style: getMainAppTheme(context).textStyles.subBody.copyWith(color: ColorPalette.grey300),
                   )),
@@ -146,7 +180,7 @@ class _ContactPerson extends StatelessWidget {
                   )),
                   Expanded(
                       child: Text(
-                    '+7 777 777 77 77',
+                    vm.phoneController.text,
                     textAlign: TextAlign.right,
                     style: getMainAppTheme(context).textStyles.subBody.copyWith(color: ColorPalette.grey300),
                   )),
@@ -156,7 +190,9 @@ class _ContactPerson extends StatelessWidget {
                 height: 8,
               ),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  showChangePersonDataBottomSheet(context).then((value) => setState(() {}));
+                },
                 child: Row(
                   children: [
                     Expanded(
@@ -184,6 +220,7 @@ class _Files extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final vm = Provider.of<AddServicesScreenViewModel>(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -197,7 +234,9 @@ class _Files extends StatelessWidget {
         ),
         MainAppFilePicker(
           maxFiles: 3,
-          onFilesAddedCallBack: (files) {},
+          onFilesAddedCallBack: (files) {
+            vm.files = files;
+          },
           isProfilePhotoWidget: false,
         )
       ],
@@ -210,6 +249,7 @@ class _Commentary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final vm = Provider.of<AddServicesScreenViewModel>(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -222,8 +262,8 @@ class _Commentary extends StatelessWidget {
           height: 4,
         ),
         MainTextField(
-            textController: TextEditingController(),
-            focusNode: FocusNode(),
+            textController: vm.commentController,
+            focusNode: vm.commentFocusNode,
             bgColor: getMainAppTheme(context).colors.cardColor,
             isPasswordField: false,
             maxLines: 4,

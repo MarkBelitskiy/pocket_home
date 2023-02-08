@@ -7,14 +7,8 @@ class FilePickerBloc extends Bloc<FilePickerEvent, FilePickerState> {
   final List<String> paths = [];
   final bool onlyOneFileCanEdded;
   FilePickerBloc(this.onlyOneFileCanEdded) : super(FileAddedSuccessState([])) {
-    on<FilePickerEvent>((event, emit) {
-      if (event is PickedFilesEvent) {
-        _pickedFilesEvent(event, emit);
-      }
-      if (event is RemoveFileEvent) {
-        _fileDeleteEvent(event, emit);
-      }
-    });
+    on<PickedFilesEvent>(_pickedFilesEvent);
+    on<RemoveFileEvent>(_fileDeleteEvent);
   }
   Future<void> _pickedFilesEvent(
     PickedFilesEvent event,

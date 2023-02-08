@@ -7,16 +7,24 @@ import 'package:pocket_home/common/utils/colors_palette.dart';
 import 'package:pocket_home/common/widgets/button_widget.dart';
 import 'package:pocket_home/common/widgets/file_picker_widget/feature.dart';
 import 'package:pocket_home/common/widgets/main_app_bar_widget.dart';
+import 'package:pocket_home/common/widgets/main_app_bottom_sheet/main_app_bottom_sheet.dart';
 
 import 'package:pocket_home/common/widgets/main_text_field/main_text_field_widget.dart';
 import 'package:pocket_home/screens/services_screen/src/add_service_screen/src/bloc/add_service_bloc.dart';
+import 'package:pocket_home/screens/services_screen/src/service_detailed_model.dart';
+import 'package:provider/provider.dart';
+
+import 'src/change_person_data_modal.dart';
 
 part 'src/add_service_screen.dart';
+part 'src/view_model.dart';
 
 CupertinoPageRoute addServicesScreenFeature() {
   return CupertinoPageRoute(
-      builder: (context) => BlocProvider(
-            create: (context) => AddServiceBloc(),
-            child: const _AddServiceScreen(),
-          ));
+    builder: (context) => BlocProvider(
+      create: (context) => AddServiceBloc(),
+      child:
+          ChangeNotifierProvider(create: (context) => AddServicesScreenViewModel(), child: const _AddServiceScreen()),
+    ),
+  );
 }

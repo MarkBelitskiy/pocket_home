@@ -18,7 +18,7 @@ class _MainScreen extends StatelessWidget {
             if (state is UserSuccessLoadedState) {
               return Scaffold(
                 body: const _Body(),
-                backgroundColor: getMainAppTheme(context).colors.buttonsColor,
+                backgroundColor: getMainAppTheme(context).colors.bgColor,
                 bottomNavigationBar: CurvedNavigationBar(
                   key: bottomNavigationKey,
                   items: <Widget>[
