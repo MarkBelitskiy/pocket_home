@@ -6,8 +6,13 @@ import 'package:pocket_home/common/widgets/main_text_field/main_text_field_widge
 
 import 'bloc/main_app_bottom_sheet_bloc.dart';
 
-Future showMainAppBottomSheet(BuildContext contextFromScreen,
-    {required String title, required List<String> items, bool isNeedSearch = false}) {
+Future showMainAppBottomSheet(
+  BuildContext contextFromScreen, {
+  required String title,
+  required List<String> items,
+  bool isNeedSearch = false,
+  bool isRoot = true,
+}) {
   return showModalBottomSheet(
     isScrollControlled: true,
     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
@@ -22,10 +27,16 @@ Future showMainAppBottomSheet(BuildContext contextFromScreen,
 }
 
 class _ModalBody extends StatelessWidget {
-  const _ModalBody({super.key, required this.title, required this.isNeedSearch, required this.items});
+  const _ModalBody({
+    super.key,
+    required this.title,
+    required this.isNeedSearch,
+    required this.items,
+  });
   final String title;
   final List<String> items;
   final bool isNeedSearch;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -53,7 +64,7 @@ class _ModalBody extends StatelessWidget {
                   ),
                   IconButton(
                       onPressed: () {
-                        Navigator.of(context, rootNavigator: true).pop();
+                        Navigator.of(context).pop();
                       },
                       icon: SvgPicture.asset(
                         getMainAppTheme(context).icons.close,

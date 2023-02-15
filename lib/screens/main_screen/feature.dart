@@ -8,8 +8,9 @@ import 'package:pocket_home/common/utils/colors_palette.dart';
 import 'package:pocket_home/common/utils/locale_view_model.dart';
 import 'package:pocket_home/common/widgets/button_widget.dart';
 import 'package:pocket_home/common/widgets/lottie_animation_widget.dart';
-import 'package:pocket_home/screens/chat_screen/feature.dart';
+
 import 'package:pocket_home/screens/login_screen/feature.dart';
+import 'package:pocket_home/screens/my_home_screen/feature.dart';
 import 'package:pocket_home/screens/news_screen/feature.dart';
 import 'package:pocket_home/screens/profile_screen/feature.dart';
 import 'package:pocket_home/screens/registration_screen/feature.dart';

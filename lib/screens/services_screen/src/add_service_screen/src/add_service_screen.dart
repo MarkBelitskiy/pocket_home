@@ -20,40 +20,61 @@ class _Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<AddServicesScreenViewModel>(context);
-    return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-      child: Column(
-        children: [
-          const _ChooseProblem(),
-          const SizedBox(
-            height: 12,
-          ),
-          const _ContactPerson(),
-          const SizedBox(
-            height: 12,
-          ),
-          const _Files(),
-          const SizedBox(
-            height: 12,
-          ),
-          const _Commentary(),
-          Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-              child: MainAppButton(
-                onPressed: () {
-                  context.read<AddServiceBloc>().add(CreateServceEvent(ServiceDetailedModel(
-                      commentary: vm.commentController.text,
-                      name: vm.selectedProblem,
-                      files: vm.files,
-                      status: 1,
-                      publishDate: DateTime.now(),
-                      contactPerson: ContactPerson(name: vm.fullNameController.text, phone: vm.phoneController.text))));
-                },
-                title: 'Создать',
-                assetIcon: '',
-                titleColor: ColorPalette.blue200,
-              ))
-        ],
+    return BlocListener<AddServiceBloc, AddServiceState>(
+      listener: (context, state) {
+        if (state is ServicesAddedState) {
+          showModalBottomSheet(
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
+              backgroundColor: getMainAppTheme(context).colors.bgColor,
+              context: context,
+              builder: (context) => _ModalBody()).then((value) {
+            Navigator.of(context).pop(true);
+          });
+        }
+      },
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+        child: Column(
+          children: [
+            const _ChooseProblem(),
+            const SizedBox(
+              height: 12,
+            ),
+            const _ContactPerson(),
+            const SizedBox(
+              height: 12,
+            ),
+            const _Files(),
+            const SizedBox(
+              height: 12,
+            ),
+            const _Commentary(),
+            Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                child: MainAppButton(
+                  onPressed: () {
+                    if (vm.checkForAllIsFilled()) {
+                      context.read<AddServiceBloc>().add(
+                            CreateServceEvent(
+                              ServiceDetailedModel(
+                                commentary: vm.commentController.text,
+                                name: vm.selectedProblem,
+                                files: vm.files,
+                                status: 0,
+                                publishDate: DateTime.now(),
+                                contactPerson:
+                                    ContactPerson(name: vm.fullNameController.text, phone: vm.phoneController.text),
+                              ),
+                            ),
+                          );
+                    }
+                  },
+                  title: 'Создать',
+                  assetIcon: '',
+                  titleColor: ColorPalette.blue200,
+                ))
+          ],
+        ),
       ),
     );
   }
@@ -271,6 +292,60 @@ class _Commentary extends StatelessWidget {
             onChanged: (value) {},
             clearAvailable: true,
             autoFocus: false)
+      ],
+    );
+  }
+}
+
+class _ModalBody extends StatelessWidget {
+  const _ModalBody({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            const SizedBox(
+              width: 24,
+            ),
+            Expanded(
+              child: Text(
+                'Заявка успешно подана!',
+                textAlign: TextAlign.center,
+                style: getMainAppTheme(context)
+                    .textStyles
+                    .body
+                    .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+              ),
+            ),
+            IconButton(
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+                icon: SvgPicture.asset(
+                  getMainAppTheme(context).icons.close,
+                  color: getMainAppTheme(context).colors.mainTextColor,
+                ))
+          ],
+        ),
+        const SizedBox(
+          height: 12,
+        ),
+        SvgPicture.asset(getMainAppTheme(context).icons.actionSuccess),
+        Padding(
+          padding: const EdgeInsets.all(24),
+          child: MainAppButton(
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              },
+              title: 'Закрыть',
+              assetIcon: ''),
+        )
       ],
     );
   }

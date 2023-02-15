@@ -11,12 +11,13 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
   MainScreenBloc() : super(MainScreenInitial()) {
     on<OnInitAppEvent>(_onInit);
   }
-  Future<void> _onInit(
-      OnInitAppEvent event, Emitter<MainScreenState> emit) async {
+  Future<void> _onInit(OnInitAppEvent event, Emitter<MainScreenState> emit) async {
     prefs = await SharedPreferences.getInstance();
     bool? isauthorized = prefs.getBool("authorized");
     if (isauthorized ?? false) {
       emit(UserSuccessLoadedState());
+    } else {
+      emit(MainScreenInitial());
     }
     // try {
     //   await Future.delayed(const Duration(seconds: 2));

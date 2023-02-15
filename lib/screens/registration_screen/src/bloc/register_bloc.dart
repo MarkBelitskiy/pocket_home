@@ -20,14 +20,16 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     });
   }
 
-  Future<void> _createProfileEvent(
-      CreateProfileEvent event, Emitter<RegisterState> emit) async {
+  Future<void> _createProfileEvent(CreateProfileEvent event, Emitter<RegisterState> emit) async {
     final prefs = await SharedPreferences.getInstance();
 
     try {
       bool isALreadyRegistered = prefs.getString(event.login) != null;
       if (isALreadyRegistered) throw 'Аккаунт уже зарегистрирован';
-      prefs.setString(event.login, profileToJson(event.profile));
+      prefs.setString(event.login, event.login);
+      prefs.setString('profilekey', profileToJson(event.profile));
+      prefs.setBool('authorized', true);
+      emit(RegisterSuccesfullState());
     } catch (e) {
       emit(
         RegisterErrorState(

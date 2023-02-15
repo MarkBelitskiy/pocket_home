@@ -33,9 +33,8 @@ class _MainScreen extends StatelessWidget {
                       index: 1,
                     ),
                     _NavBarItem(
-                      icon: getMainAppTheme(context).icons.chatUnActive,
-                      secondIcon: getMainAppTheme(context).icons.chatActive,
-                      title: 'chat'.tr(),
+                      icon: getMainAppTheme(context).icons.buildingIcon,
+                      title: 'myhouses'.tr(),
                       index: 2,
                     ),
                     _NavBarItem(
@@ -95,7 +94,7 @@ class _Body extends StatelessWidget {
           Navigator(
             key: value.navigatorKeys[2],
             onGenerateRoute: (route) =>
-                CupertinoPageRoute(settings: route, builder: (context) => const ChatScreenFeature()),
+                CupertinoPageRoute(settings: route, builder: (context) => const MyHousesScreanFeature()),
           ),
           Navigator(
             key: value.navigatorKeys[3],
@@ -160,17 +159,15 @@ class _SplashScreenState extends State<_SplashScreen> {
   double opacityButtons = 0.0;
   @override
   void initState() {
-    if (!mounted) {
-      Future.delayed(const Duration(milliseconds: 1000))
-          .then((value) => setState(() {
-                opacity = 1;
-              }))
-          .then((value) {
-        Future.delayed(const Duration(milliseconds: 500)).then((value) => setState(() {
-              opacityButtons = 1;
-            }));
-      });
-    }
+    Future.delayed(const Duration(milliseconds: 1000))
+        .then((value) => setState(() {
+              opacity = 1;
+            }))
+        .then((value) {
+      Future.delayed(const Duration(milliseconds: 500)).then((value) => setState(() {
+            opacityButtons = 1;
+          }));
+    });
 
     super.initState();
   }
@@ -239,7 +236,7 @@ class _SplashScreenState extends State<_SplashScreen> {
                       duration: const Duration(seconds: 1),
                       child: MaterialButton(
                         onPressed: () {
-                          Navigator.of(context).push(registrationScreenFeature());
+                          Navigator.of(context).push(registrationScreenFeature(context.read<MainScreenBloc>()));
                         },
                         color: getMainAppTheme(context).colors.bgColor,
                         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),

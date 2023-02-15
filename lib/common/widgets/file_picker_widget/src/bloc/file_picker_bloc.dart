@@ -9,6 +9,7 @@ class FilePickerBloc extends Bloc<FilePickerEvent, FilePickerState> {
   FilePickerBloc(this.onlyOneFileCanEdded) : super(FileAddedSuccessState([])) {
     on<PickedFilesEvent>(_pickedFilesEvent);
     on<RemoveFileEvent>(_fileDeleteEvent);
+    on<InitEvent>(_onInit);
   }
   Future<void> _pickedFilesEvent(
     PickedFilesEvent event,
@@ -37,4 +38,9 @@ class FilePickerBloc extends Bloc<FilePickerEvent, FilePickerState> {
       emit(FilePickerErrorState(e.toString()));
     }
   }
+
+  Future<void> _onInit(
+    InitEvent event,
+    Emitter<FilePickerState> emit,
+  ) async {}
 }

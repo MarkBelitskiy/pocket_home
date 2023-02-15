@@ -9,6 +9,7 @@ import 'package:pocket_home/common/widgets/file_picker_widget/feature.dart';
 import 'package:pocket_home/common/widgets/main_app_bar_widget.dart';
 import 'package:pocket_home/common/widgets/main_body_widget.dart';
 import 'package:pocket_home/common/widgets/main_text_field/main_text_field_widget.dart';
+import 'package:pocket_home/screens/main_screen/src/bloc/main_screen_bloc.dart';
 import 'package:pocket_home/screens/registration_screen/src/body_enums.dart';
 import 'package:pocket_home/screens/registration_screen/src/profile_model.dart';
 import 'package:pocket_home/screens/registration_screen/src/view_model.dart';
@@ -19,12 +20,11 @@ part 'src/register_screen.dart';
 part 'src/create_password_body.dart';
 part 'src/create_profile_body.dart';
 
-CupertinoPageRoute registrationScreenFeature() {
+CupertinoPageRoute registrationScreenFeature(final MainScreenBloc bloc) {
   return CupertinoPageRoute(
       builder: (context) => BlocProvider(
             create: (context) => RegisterBloc(),
             child: ChangeNotifierProvider(
-                create: (context) => CreatePasswordModel()..init(),
-                child: const _RegisterScreen()),
+                create: (context) => CreatePasswordModel()..init(), child: _RegisterScreen(bloc: bloc)),
           ));
 }

@@ -6,8 +6,11 @@ import 'package:pocket_home/screens/main_screen/feature.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'notification_service.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await NotificationService().init(); //
   SharedPreferences preferences = await SharedPreferences.getInstance();
   // preferences.clear();
   await EasyLocalization.ensureInitialized();

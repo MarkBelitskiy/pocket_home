@@ -2,8 +2,12 @@ part of '../feature.dart';
 
 class _FilePickerWidget extends StatelessWidget {
   const _FilePickerWidget(
-      {required this.maxFiles, required this.onFilesAddedCallBack, required this.isProfilePhotoWidget});
+      {required this.maxFiles,
+      required this.onFilesAddedCallBack,
+      required this.isProfilePhotoWidget,
+      this.profilePhotoPath});
   final int maxFiles;
+  final String? profilePhotoPath;
   final Function(List<String>) onFilesAddedCallBack;
   final bool isProfilePhotoWidget;
   @override
@@ -18,7 +22,11 @@ class _FilePickerWidget extends StatelessWidget {
         if (state is FileAddedSuccessState) {
           return GridView.builder(
               shrinkWrap: true,
-              itemCount: maxFiles == 1 ? 1 : state.paths.length + 1,
+              itemCount: maxFiles == 1
+                  ? 1
+                  : state.paths.length == maxFiles
+                      ? maxFiles
+                      : state.paths.length + 1,
               physics: const NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: state.paths.isEmpty || maxFiles == 1 ? 1 : 3,
@@ -37,6 +45,11 @@ class _FilePickerWidget extends StatelessWidget {
                       onlyOneFileCanAdded: maxFiles == 1,
                       isProfilePhoto: isProfilePhotoWidget,
                       profilePhoto: state.paths.isNotEmpty ? state.paths[0] : null);
+                }
+                if (isProfilePhotoWidget && state.paths.isNotEmpty) {
+                  return _ProfilePhotoBody(
+                    photopath: state.paths[0],
+                  );
                 }
                 return const SizedBox.shrink();
               });

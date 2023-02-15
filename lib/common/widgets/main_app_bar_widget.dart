@@ -5,8 +5,17 @@ import 'package:pocket_home/common/utils/colors_palette.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   const MainAppBar(
-      {super.key, required this.title, this.actions, this.customOnTap, this.tabNames, this.leadingEnable = true});
+      {super.key,
+      required this.title,
+      this.actions,
+      this.customOnTap,
+      this.tabNames,
+      this.isRoot = false,
+      this.leadingEnable = true,
+      this.subTitle});
   final String title;
+  final bool isRoot;
+  final String? subTitle;
   final List<Widget>? actions;
   final Function? customOnTap;
   final List<String>? tabNames;
@@ -19,9 +28,28 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 1,
       shadowColor: ColorPalette.grey900.withOpacity(0.3),
       centerTitle: true,
-      title: Text(
-        title,
-        style: getMainAppTheme(context).textStyles.title.copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+      title: Column(
+        children: [
+          Text(
+            title,
+            style: getMainAppTheme(context)
+                .textStyles
+                .title
+                .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+          ),
+          if (subTitle != null) ...[
+            const SizedBox(
+              height: 4,
+            ),
+            Text(
+              subTitle!,
+              style: getMainAppTheme(context)
+                  .textStyles
+                  .subBody
+                  .copyWith(color: getMainAppTheme(context).colors.inactiveText),
+            ),
+          ]
+        ],
       ),
       leading: leadingEnable
           ? IconButton(
@@ -29,7 +57,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                 if (customOnTap != null) {
                   customOnTap!.call();
                 } else {
-                  Navigator.of(context).pop();
+                  Navigator.of(context, rootNavigator: isRoot).pop();
                 }
               },
               icon: SvgPicture.asset(
@@ -75,7 +103,7 @@ class _BottomTabBar extends StatelessWidget {
           child: TabBar(
               labelColor: Colors.white,
               unselectedLabelStyle: getMainAppTheme(context).textStyles.body,
-              unselectedLabelColor: ColorPalette.grey900,
+              unselectedLabelColor: getMainAppTheme(context).colors.inactiveText,
               labelStyle: getMainAppTheme(context).textStyles.body,
               indicatorSize: TabBarIndicatorSize.tab,
               indicator: BoxDecoration(color: ColorPalette.grey700, borderRadius: BorderRadius.circular(6), boxShadow: [

@@ -9,6 +9,7 @@ class MainAppIcons {
   String get profile => 'assets/icons/profile.svg';
   String get lock => 'assets/icons/lock.svg';
   String get myBuildings => 'assets/icons/my_buildings.svg';
+  String get homeWithNumber => 'assets/icons/home_with_number.svg';
   String get emptyBell => 'assets/icons/bell_empty.svg';
   String get earth => 'assets/icons/earth.svg';
   String get settings => 'assets/icons/settings.svg';
@@ -23,7 +24,8 @@ class MainAppIcons {
   String get search => 'assets/icons/search.svg';
   String get chevronRight => 'assets/icons/arrow_right.svg';
   String get actionSuccess => 'assets/icons/action_success.svg';
-
+  String get buildingIcon => 'assets/icons/building_icon.svg';
+  String get whatsapp => 'assets/icons/whatsapp.svg';
   String get lottieNews => 'assets/lottie/news.json';
 
   String get emptySingleBlob => 'assets/icons/empty_single_blob.svg';

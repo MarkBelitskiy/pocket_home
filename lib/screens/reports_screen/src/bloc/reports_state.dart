@@ -10,3 +10,9 @@ class OpenPdfState extends ReportsState {
 
   OpenPdfState(this.pdfData);
 }
+
+class OnRatingGettedState extends ReportsState {
+  final List<RatingReportModel> list;
+
+  OnRatingGettedState(this.list);
+}

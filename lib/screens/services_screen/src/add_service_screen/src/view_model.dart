@@ -9,4 +9,11 @@ class AddServicesScreenViewModel extends ChangeNotifier {
   FocusNode commentFocusNode = FocusNode();
   List<String> files = [];
   String selectedProblem = '';
+
+  bool checkForAllIsFilled() {
+    return fullNameController.text.isNotEmpty &&
+        phoneController.text.isNotEmpty &&
+        commentController.text.isNotEmpty &&
+        selectedProblem.isNotEmpty;
+  }
 }

@@ -13,3 +13,5 @@ class RemoveFileEvent extends FilePickerEvent {
 
   RemoveFileEvent({required this.fileIndex});
 }
+
+class InitEvent extends FilePickerEvent {}

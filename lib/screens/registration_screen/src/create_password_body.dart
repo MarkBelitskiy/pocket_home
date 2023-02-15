@@ -28,12 +28,10 @@ class _CreatePasswordBody extends StatelessWidget {
                 title: 'Пароль',
                 borderColors: snapshot.hasData && snapshot.data!
                     ? ColorPalette.green500
-                    : vm.passwordFocusNode.hasFocus ||
-                            vm.passwordTextController.text.isEmpty
+                    : vm.passwordFocusNode.hasFocus || vm.passwordTextController.text.isEmpty
                         ? null
                         : ColorPalette.red500,
-                errorText: (snapshot.hasData && snapshot.data! ||
-                        vm.passwordFocusNode.hasFocus)
+                errorText: (snapshot.hasData && snapshot.data! || vm.passwordFocusNode.hasFocus)
                     ? null
                     : vm.passwordTextController.text.isNotEmpty
                         ? 'Введенный пароль не соответствует требованиям'
@@ -52,12 +50,9 @@ class _CreatePasswordBody extends StatelessWidget {
                 bgColor: getMainAppTheme(context).colors.cardColor,
                 isPasswordField: true,
                 maxLines: 1,
-                borderColors: vm.passwordRepeatTextController.text.isNotEmpty &&
-                        snapshot.hasData &&
-                        snapshot.data!
+                borderColors: vm.passwordRepeatTextController.text.isNotEmpty && snapshot.hasData && snapshot.data!
                     ? ColorPalette.green500
-                    : vm.passwordRepeatTextController.text.isEmpty ||
-                            vm.passwordRepeatFocusNode.hasFocus
+                    : vm.passwordRepeatTextController.text.isEmpty || vm.passwordRepeatFocusNode.hasFocus
                         ? null
                         : ColorPalette.red500,
                 errorText: (snapshot.hasData && snapshot.data!)
@@ -89,18 +84,12 @@ class _CreatePasswordBody extends StatelessWidget {
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text('Длина пароля - не менее 8 символов;',
-                              style: getMainAppTheme(context)
-                                  .textStyles
-                                  .body
-                                  .copyWith(color: ColorPalette.green500)),
+                              style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.green500)),
                         )
                       ],
                     )
                   : Text('\u2022 Длина пароля - не менее 8 символов;',
-                      style: getMainAppTheme(context)
-                          .textStyles
-                          .body
-                          .copyWith(color: ColorPalette.grey500));
+                      style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey500));
             },
           ),
           const SizedBox(height: 8),
@@ -118,21 +107,13 @@ class _CreatePasswordBody extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Expanded(
-                          child: Text(
-                              'Состоит из букв латинского алфавита (A-z), арабских цифр (0-9)',
-                              style: getMainAppTheme(context)
-                                  .textStyles
-                                  .body
-                                  .copyWith(color: ColorPalette.green500)),
+                          child: Text('Состоит из букв латинского алфавита (A-z), арабских цифр (0-9)',
+                              style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.green500)),
                         )
                       ],
                     )
-                  : Text(
-                      '\u2022 Состоит из букв латинского алфавита (A-z), арабских цифр (0-9)',
-                      style: getMainAppTheme(context)
-                          .textStyles
-                          .body
-                          .copyWith(color: ColorPalette.grey500));
+                  : Text('\u2022 Состоит из букв латинского алфавита (A-z), арабских цифр (0-9)',
+                      style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey500));
             },
           ),
           const SizedBox(height: 8),
@@ -150,21 +131,13 @@ class _CreatePasswordBody extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Expanded(
-                          child: Text(
-                              'Буквенная часть пароля содержит прописные (заглавные) и строчные буквы.',
-                              style: getMainAppTheme(context)
-                                  .textStyles
-                                  .body
-                                  .copyWith(color: ColorPalette.green500)),
+                          child: Text('Буквенная часть пароля содержит прописные (заглавные) и строчные буквы.',
+                              style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.green500)),
                         )
                       ],
                     )
-                  : Text(
-                      '\u2022 Буквенная часть пароля содержит прописные (заглавные) и строчные буквы.',
-                      style: getMainAppTheme(context)
-                          .textStyles
-                          .body
-                          .copyWith(color: ColorPalette.grey500));
+                  : Text('\u2022 Буквенная часть пароля содержит прописные (заглавные) и строчные буквы.',
+                      style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey500));
             },
           ),
           const SizedBox(height: 24),
@@ -175,11 +148,13 @@ class _CreatePasswordBody extends StatelessWidget {
                   onPressed: () {
                     context.read<RegisterBloc>().add(
                           CreateProfileEvent(
-                              Profile(
-                                  name: vm.nameTextController.text,
-                                  password: vm.passwordTextController.text,
-                                  phone: vm.phoeTextController.text),
-                              vm.loginTextController.text),
+                            Profile(
+                                name: vm.nameTextController.text,
+                                password: vm.passwordTextController.text,
+                                phone: vm.phoeTextController.text,
+                                login: vm.loginTextController.text),
+                            vm.loginTextController.text,
+                          ),
                         );
                   },
                   titleColor: ColorPalette.blue200,

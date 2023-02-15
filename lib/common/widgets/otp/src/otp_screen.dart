@@ -1,13 +1,13 @@
 part of '../feature.dart';
 
 class OtpScreen extends StatelessWidget {
-  const OtpScreen(
-      {Key? key, required this.phone, required this.continueButtonCallBack})
-      : super(key: key);
+  const OtpScreen({Key? key, required this.phone, required this.continueButtonCallBack}) : super(key: key);
   final String phone;
   final Function(OtpReturnDataModel) continueButtonCallBack;
   @override
   Widget build(BuildContext context) {
+    NotificationService service = NotificationService();
+    service.showNotificationWithoutSound();
     TextEditingController _controller = TextEditingController();
     FocusNode _focus = FocusNode();
     ValueNotifier<bool> _notifier = ValueNotifier<bool>(false);
@@ -24,10 +24,7 @@ class OtpScreen extends StatelessWidget {
           children: [
             Column(
               children: [
-                OtpWidget(
-                    maskedPhone: phone,
-                    textEditingController: _controller,
-                    focusNode: _focus),
+                OtpWidget(maskedPhone: phone, textEditingController: _controller, focusNode: _focus),
                 const SizedBox(
                   height: 80,
                 ),
@@ -39,8 +36,7 @@ class OtpScreen extends StatelessWidget {
                         child: MainAppButton(
                           title: 'Продолжить',
                           onPressed: () {
-                            continueButtonCallBack.call(OtpReturnDataModel(
-                                phone, messageId, _controller.text));
+                            continueButtonCallBack.call(OtpReturnDataModel(phone, messageId, _controller.text));
                           },
                           assetIcon: '',
                         ),
@@ -79,7 +75,7 @@ class OtpWidgetState extends State<OtpWidget> {
   void startTimer() {
     _time.add(60);
 
-    _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
       if (_time.value < 1) {
         _timer?.cancel();
         _time.add(0);
@@ -183,7 +179,7 @@ class _PinCodeField extends StatelessWidget {
         autoDismissKeyboard: false,
         keyboardType: TextInputType.number,
         animationType: AnimationType.fade,
-        animationDuration: Duration(milliseconds: 300),
+        animationDuration: const Duration(milliseconds: 300),
         enableActiveFill: true,
         backgroundColor: Colors.transparent,
         pinTheme: PinTheme(
@@ -226,8 +222,10 @@ class _ResendSMS extends StatelessWidget {
             ? Text(
                 'Прислать код повторно через: ${snapshot.data}',
                 // style: ProjectTextStyle.black15W400LetterNeg17Opacity5,
-                style: getMainAppTheme(context).textStyles.body.copyWith(
-                    color: getMainAppTheme(context).colors.mainTextColor),
+                style: getMainAppTheme(context)
+                    .textStyles
+                    .body
+                    .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
               )
             : InkWell(
                 onTap: () {
@@ -235,8 +233,10 @@ class _ResendSMS extends StatelessWidget {
                 },
                 child: Text(
                   'Прислать код повторно',
-                  style: getMainAppTheme(context).textStyles.body.copyWith(
-                      color: getMainAppTheme(context).colors.activeColor),
+                  style: getMainAppTheme(context)
+                      .textStyles
+                      .body
+                      .copyWith(color: getMainAppTheme(context).colors.activeColor),
                 ),
               );
       },

@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'services_detailed_screen.dart/src/service_person_model.dart';
+
 List<ServiceDetailedModel> addServiceModelFromJson(String str) =>
     List<ServiceDetailedModel>.from(json.decode(str).map((x) => ServiceDetailedModel.fromJson(x)));
 
@@ -18,6 +20,8 @@ class ServiceDetailedModel {
       required this.commentary,
       required this.status,
       required this.publishDate,
+      this.choosePerson,
+      this.ratingValue,
       this.workerCommentary});
   DateTime publishDate;
   String name;
@@ -26,15 +30,21 @@ class ServiceDetailedModel {
   String commentary;
   String? workerCommentary;
   int status;
-
-  factory ServiceDetailedModel.fromJson(Map<String, dynamic> json) => ServiceDetailedModel(
-      name: json["name"],
-      contactPerson: ContactPerson.fromJson(json["contactPerson"]),
-      files: List<String>.from(json["files"].map((x) => x)),
-      commentary: json["commentary"],
-      status: json["status"],
-      publishDate: DateTime.parse(json["publishDate"]),
-      workerCommentary: json["workerCommentary"]);
+  ServicePersonModel? choosePerson;
+  int? ratingValue;
+  factory ServiceDetailedModel.fromJson(Map<String, dynamic> json) {
+    return ServiceDetailedModel(
+        name: json["name"],
+        contactPerson: ContactPerson.fromJson(json["contactPerson"]),
+        files: List<String>.from(json["files"].map((x) => x)),
+        commentary: json["commentary"],
+        status: json["status"],
+        choosePerson:
+            json["choosePerson"] == null ? null : serviceSinglePersonFromJson(json["choosePerson"].toString()),
+        publishDate: DateTime.parse(json["publishDate"]),
+        ratingValue: json["ratingValue"],
+        workerCommentary: json["workerCommentary"]);
+  }
 
   Map<String, dynamic> toJson() => {
         "name": name,
@@ -42,8 +52,10 @@ class ServiceDetailedModel {
         "contactPerson": contactPerson.toJson(),
         "files": List<dynamic>.from(files.map((x) => x)),
         "commentary": commentary,
+        "choosePerson": serviceSinglePersonToJson(choosePerson),
         "status": status,
-        "workerCommentary": workerCommentary
+        "workerCommentary": workerCommentary,
+        "ratingValue": ratingValue
       };
 }
 

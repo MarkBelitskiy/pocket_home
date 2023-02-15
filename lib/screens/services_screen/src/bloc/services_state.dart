@@ -15,3 +15,5 @@ class LoadingState extends ServicesState {
 
   LoadingState(this.isLaoding);
 }
+
+class RatingSetToServiceState extends ServicesState {}

@@ -64,17 +64,18 @@ class _NewsBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
+        padding: const EdgeInsets.only(bottom: 80),
         itemCount: news.length,
         separatorBuilder: (context, index) => const SizedBox(
               height: 8,
             ),
         itemBuilder: (context, index) {
-          final _news = news[index];
-          if (_news.pollAnswers?.isNotEmpty ?? false) {
-            return _Poll(news: _news, id: index);
+          final news = this.news[index];
+          if (news.pollAnswers?.isNotEmpty ?? false) {
+            return _Poll(news: news, id: index);
           }
           return _News(
-            news: _news,
+            news: news,
           );
         });
   }
@@ -85,7 +86,7 @@ class _News extends StatelessWidget {
   final NewsModel news;
   @override
   Widget build(BuildContext context) {
-    final _newsText = news.newsText.length > 50 ? news.newsText.substring(0, 50) : news.newsText;
+    final newsText = news.newsText.length > 30 ? news.newsText.substring(0, 30) : news.newsText;
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -131,10 +132,10 @@ class _News extends StatelessWidget {
           text: TextSpan(
             children: [
               TextSpan(
-                text: _newsText + ' ',
+                text: '$newsText ',
                 style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
               ),
-              if (_newsText.length == 50)
+              if (newsText.length == 30)
                 WidgetSpan(
                   child: GestureDetector(
                     onTap: () {
@@ -174,7 +175,7 @@ class _Poll extends StatelessWidget {
   final int id;
   @override
   Widget build(BuildContext context) {
-    ValueNotifier<int?> _choosenValue = ValueNotifier(null);
+    ValueNotifier<int?> choosenValue = ValueNotifier(null);
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -214,16 +215,17 @@ class _Poll extends StatelessWidget {
           height: 12,
         ),
         ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           itemBuilder: (count, index) {
             return ValueListenableBuilder<int?>(
-              valueListenable: _choosenValue,
+              valueListenable: choosenValue,
               builder: (context, value, child) {
                 return _PollAnswer(
                   answer: news.pollAnswers![index],
                   isSavedAnswer: news.choosenPollValue == index,
                   tapCallBack: (value) {
-                    _choosenValue.value = index;
+                    choosenValue.value = index;
                   },
                   isActive: news.choosenPollValue == null ? value == index : news.choosenPollValue == index,
                 );
@@ -236,8 +238,8 @@ class _Poll extends StatelessWidget {
           const SizedBox(height: 12),
           GestureDetector(
             onTap: () {
-              if (_choosenValue.value != null) {
-                context.read<NewsBloc>().add(UpdatePollEvent(id, _choosenValue.value!));
+              if (choosenValue.value != null) {
+                context.read<NewsBloc>().add(UpdatePollEvent(id, choosenValue.value!));
               }
             },
             child: Align(

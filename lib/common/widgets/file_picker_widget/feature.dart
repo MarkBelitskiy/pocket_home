@@ -15,19 +15,27 @@ part 'src/widget.dart';
 
 class MainAppFilePicker extends StatelessWidget {
   const MainAppFilePicker(
-      {super.key, required this.maxFiles, required this.onFilesAddedCallBack, this.isProfilePhotoWidget = false});
+      {super.key,
+      required this.maxFiles,
+      required this.onFilesAddedCallBack,
+      this.isProfilePhotoWidget = false,
+      this.profilePhotoPath});
   final int maxFiles;
+  final String? profilePhotoPath;
   final Function(List<String>) onFilesAddedCallBack;
   final bool isProfilePhotoWidget;
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => FilePickerBloc(maxFiles == 1),
+      create: (context) => FilePickerBloc(maxFiles == 1)
+        ..add(profilePhotoPath != null && profilePhotoPath!.isNotEmpty
+            ? PickedFilesEvent(filePickerPaths: [profilePhotoPath!])
+            : InitEvent()),
       child: _FilePickerWidget(
-        maxFiles: maxFiles,
-        isProfilePhotoWidget: isProfilePhotoWidget,
-        onFilesAddedCallBack: onFilesAddedCallBack,
-      ),
+          maxFiles: maxFiles,
+          isProfilePhotoWidget: isProfilePhotoWidget,
+          onFilesAddedCallBack: onFilesAddedCallBack,
+          profilePhotoPath: profilePhotoPath),
     );
   }
 }

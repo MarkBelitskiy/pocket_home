@@ -15,13 +15,13 @@ class LoginScreenBloc extends Bloc<LoginScreenEvent, LoginScreenState> {
     });
   }
 
-  Future<void> _loginEvent(
-      LoginEvent event, Emitter<LoginScreenState> emit) async {
+  Future<void> _loginEvent(LoginEvent event, Emitter<LoginScreenState> emit) async {
     final prefs = await SharedPreferences.getInstance();
-    String? profileFromPRefs = prefs.getString(event.login);
+
+    String? loginfromPrefs = prefs.getString(event.login);
+
     try {
-      if (profileFromPRefs != null) {
-        Profile? profile = profileFromJson(profileFromPRefs);
+      if (loginfromPrefs != null && loginfromPrefs.isNotEmpty) {
         prefs.setBool('authorized', true);
         emit(AuthorizedSuccessState());
       } else

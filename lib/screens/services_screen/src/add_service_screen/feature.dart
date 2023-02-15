@@ -11,6 +11,7 @@ import 'package:pocket_home/common/widgets/main_app_bottom_sheet/main_app_bottom
 
 import 'package:pocket_home/common/widgets/main_text_field/main_text_field_widget.dart';
 import 'package:pocket_home/screens/services_screen/src/add_service_screen/src/bloc/add_service_bloc.dart';
+import 'package:pocket_home/screens/services_screen/src/bloc/services_bloc.dart';
 import 'package:pocket_home/screens/services_screen/src/service_detailed_model.dart';
 import 'package:provider/provider.dart';
 
@@ -19,10 +20,10 @@ import 'src/change_person_data_modal.dart';
 part 'src/add_service_screen.dart';
 part 'src/view_model.dart';
 
-CupertinoPageRoute addServicesScreenFeature() {
+CupertinoPageRoute addServicesScreenFeature(final ServicesBloc servicesBloc) {
   return CupertinoPageRoute(
     builder: (context) => BlocProvider(
-      create: (context) => AddServiceBloc(),
+      create: (context) => AddServiceBloc(servicesBloc: servicesBloc),
       child:
           ChangeNotifierProvider(create: (context) => AddServicesScreenViewModel(), child: const _AddServiceScreen()),
     ),

@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pocket_home/screens/services_screen/src/bloc/services_bloc.dart';
 import 'package:pocket_home/screens/services_screen/src/service_detailed_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -6,10 +7,10 @@ part 'add_service_event.dart';
 part 'add_service_state.dart';
 
 class AddServiceBloc extends Bloc<AddServiceEvent, AddServiceState> {
-  AddServiceBloc() : super(AddServiceInitial()) {
+  AddServiceBloc({required this.servicesBloc}) : super(AddServiceInitial()) {
     on<CreateServceEvent>(createServiceEvent);
   }
-
+  final ServicesBloc servicesBloc;
   Future<void> createServiceEvent(CreateServceEvent event, Emitter<AddServiceState> emit) async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -21,5 +22,7 @@ class AddServiceBloc extends Bloc<AddServiceEvent, AddServiceState> {
 
     model.add(event.modelToPrefs);
     prefs.setString("servicesModels", addServiceModelToJson(model));
+    servicesBloc.add(InitEvent());
+    emit(ServicesAddedState());
   }
 }
