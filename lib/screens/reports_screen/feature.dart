@@ -5,11 +5,15 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:pocket_home/common/theme/theme_getter.dart';
 import 'package:pocket_home/common/utils/colors_palette.dart';
+import 'package:pocket_home/common/utils/formatter_utils.dart';
 import 'package:pocket_home/common/widgets/button_widget.dart';
 import 'package:pocket_home/common/widgets/lottie_animation_widget.dart';
 
 import 'package:flutter/material.dart';
+import 'package:pocket_home/screens/my_home_screen/src/bloc/my_houses_bloc.dart';
+import 'package:pocket_home/screens/my_home_screen/src/workers_screen/src/add_new_worker_screen.dart/src/worker_model.dart';
 import 'package:pocket_home/screens/pdf_view/pdf_titled_screen.dart';
+import 'package:pocket_home/screens/reports_screen/src/budget_report_model.dart';
 
 import 'src/bloc/reports_bloc.dart';
 import 'src/rating_report_model.dart';
@@ -22,7 +26,7 @@ class ReportsScreenFeature extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ReportsBloc(),
+      create: (context) => ReportsBloc(context.read<MyHousesBloc>()),
       child: const _ReportsScreen(),
     );
   }

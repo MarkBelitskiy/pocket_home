@@ -6,7 +6,7 @@ class _AddNewsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         backgroundColor: getMainAppTheme(context).colors.bgColor,
         appBar: MainAppBar(
           title: 'createNews'.tr(),
@@ -25,7 +25,6 @@ class _Body extends StatelessWidget {
         FocusScope.of(context).unfocus();
       },
       child: MainAppBody(
-        isDoubleBlob: true,
         children: [
           const _PickTypeWidget(),
           const SizedBox(
@@ -33,11 +32,19 @@ class _Body extends StatelessWidget {
           ),
           BlocConsumer<AddNewsBloc, AddNewsState>(
               listener: (context, state) {
+                if (state is LoadingState) {
+                  state.isLaoding
+                      ? showDialog(
+                          context: context,
+                          builder: (context) => const Center(
+                                child: CircularProgressIndicator(),
+                              ))
+                      : Navigator.of(context, rootNavigator: true).pop();
+                }
                 if (state is NewsAddedSuccessState) {
                   showModalBottomSheet(
-                      shape: const RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.vertical(top: Radius.circular(10))),
+                      shape:
+                          const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
                       backgroundColor: getMainAppTheme(context).colors.bgColor,
                       context: context,
                       builder: (context) => _ModalBody()).then((value) {
@@ -45,8 +52,7 @@ class _Body extends StatelessWidget {
                   });
                 }
               },
-              buildWhen: (previous, current) =>
-                  current is NewsBodyState || current is PollsBodyState,
+              buildWhen: (previous, current) => current is NewsBodyState || current is PollsBodyState,
               builder: (context, state) {
                 if (state is NewsBodyState) {
                   return const _NewsBody();
@@ -75,9 +81,7 @@ class _PickTypeWidgetState extends State<_PickTypeWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () =>
-          showMainAppBottomSheet(context, title: 'Выберите тип', items: items)
-              .then((value) {
+      onTap: () => showMainAppBottomSheet(context, title: 'Выберите тип', items: items).then((value) {
         if (value is int) {
           context.read<AddNewsBloc>().add(ChangeBodyEvent(value));
           setState(() {
@@ -86,17 +90,18 @@ class _PickTypeWidgetState extends State<_PickTypeWidget> {
         }
       }),
       child: Container(
-        decoration: BoxDecoration(
-            color: getMainAppTheme(context).colors.cardColor,
-            borderRadius: BorderRadius.circular(10)),
+        decoration:
+            BoxDecoration(color: getMainAppTheme(context).colors.cardColor, borderRadius: BorderRadius.circular(10)),
         padding: const EdgeInsets.all(12),
         child: Row(children: [
           Expanded(
             child: Text(
               title,
               textAlign: TextAlign.left,
-              style: getMainAppTheme(context).textStyles.body.copyWith(
-                  color: getMainAppTheme(context).colors.inactiveText),
+              style: getMainAppTheme(context)
+                  .textStyles
+                  .body
+                  .copyWith(color: getMainAppTheme(context).colors.inactiveText),
             ),
           ),
           const SizedBox(
@@ -302,8 +307,10 @@ class _ModalBody extends StatelessWidget {
               child: Text(
                 'Новость успешно создана',
                 textAlign: TextAlign.center,
-                style: getMainAppTheme(context).textStyles.body.copyWith(
-                    color: getMainAppTheme(context).colors.mainTextColor),
+                style: getMainAppTheme(context)
+                    .textStyles
+                    .body
+                    .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
               ),
             ),
             IconButton(

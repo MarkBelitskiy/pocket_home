@@ -9,7 +9,7 @@ class _ForgotPassScreen extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       backgroundColor: getMainAppTheme(context).colors.bgColor,
       appBar: const MainAppBar(title: 'Восстановление пароля'),
-      body: const MainAppBody(isDoubleBlob: false, children: [_Body()]),
+      body: const MainAppBody(children: [_Body()]),
     );
   }
 }
@@ -19,6 +19,7 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = TextEditingController();
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -28,7 +29,7 @@ class _Body extends StatelessWidget {
         ),
         MainTextField(
             title: 'Телефон',
-            textController: TextEditingController(),
+            textController: controller,
             focusNode: FocusNode(),
             keyboardType: TextInputType.phone,
             bgColor: getMainAppTheme(context).colors.cardColor,
@@ -43,7 +44,7 @@ class _Body extends StatelessWidget {
         ),
         MainAppButton(
             onPressed: () {
-              Navigator.of(context).push(otpScreenRoute('89999999', (callback) {
+              Navigator.of(context).push(otpScreenRoute(controller.text, (callback) {
                 Navigator.of(context).push(resetPasswordScreenFeature());
               }));
             },

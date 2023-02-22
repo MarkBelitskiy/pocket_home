@@ -13,7 +13,11 @@ class _MainScreen extends StatelessWidget {
       value: SystemUiOverlayStyle.light.copyWith(statusBarColor: Colors.transparent),
       child: Consumer<MainAppLocaleViewModel>(builder: (context, value, child) {
         return BlocConsumer<MainScreenBloc, MainScreenState>(
-          listener: (context, state) {},
+          listener: (context, state) {
+            if (state is MainScreenInitial) {
+              context.read<MainScreenViewModel>().changeScreen(0);
+            }
+          },
           builder: (context, state) {
             if (state is UserSuccessLoadedState) {
               return Scaffold(
@@ -57,6 +61,12 @@ class _MainScreen extends StatelessWidget {
                   animationDuration: const Duration(milliseconds: 300),
                   onTap: (index) {
                     context.read<MainScreenViewModel>().changeScreen(index);
+                    if (index == 1) {
+                      context.read<ServicesBloc>().add(InitEvent());
+                    }
+                    if (index == 0) {
+                      context.read<NewsBloc>().add(OnNewsTabInit());
+                    }
                   },
                   letIndexChange: (index) => true,
                 ),

@@ -1,60 +1,57 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pocket_home/screens/services_screen/src/services_detailed_screen.dart/src/service_person_model.dart';
+import 'package:pocket_home/screens/my_home_screen/src/bloc/my_houses_bloc.dart';
+import 'package:pocket_home/screens/my_home_screen/src/workers_screen/src/add_new_worker_screen.dart/src/worker_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'chose_service_person_event.dart';
 part 'chose_service_person_state.dart';
 
 class ChoseServicePersonBloc extends Bloc<ChoseServicePersonEvent, ChoseServicePersonState> {
-  List<ServicePersonModel> persons = [
-    ServicePersonModel(jobTitle: 'Слесарь-Сантехник', name: 'Иван Иваныч', phone: '+7 700 777 777 77'),
-    ServicePersonModel(jobTitle: 'Дворник', name: 'Иван Иваныч', phone: '+7 770 777 777 77')
-  ];
-  ChoseServicePersonBloc() : super(ChoseServicePersonInitial()) {
+  final MyHousesBloc myHousesBloc;
+  ChoseServicePersonBloc(this.myHousesBloc) : super(ChoseServicePersonInitial()) {
     on<InitPersonsDataEvent>(_onInit);
     on<SearchPersonsEvent>(_onSearch);
   }
+  List<WorkerModel> workers = [];
   Future _onInit(InitPersonsDataEvent event, Emitter<ChoseServicePersonState> emit) async {
     emit(LoadingPersonsDataState(true));
     final prefs = await SharedPreferences.getInstance();
 
     final modelFromPrefs = prefs.getString('servicesPersonsModels');
+    workers.addAll(myHousesBloc.currentHouse?.workers ?? []);
 
-    if (modelFromPrefs != null) {
-      persons.addAll(servicePersonModelFromJson(modelFromPrefs));
-    }
     emit(LoadingPersonsDataState(false));
-    emit(PersonsLoadedState(persons));
+    emit(PersonsLoadedState(workers));
   }
 
   Future _onSearch(SearchPersonsEvent event, Emitter<ChoseServicePersonState> emit) async {
-    List<ServicePersonModel> searchableList = [];
+    List<WorkerModel> searchableList = [];
 
-    for (var person in persons) {
+    for (var worker in workers) {
       if (event.searchableValue.contains(
         RegExp("[0-9]"),
       )) {
-        if (person.phone.toLowerCase().contains(
+        if (worker.phone.toLowerCase().contains(
               event.searchableValue.toLowerCase(),
             )) {
-          if (!searchableList.contains(person)) {
-            searchableList.add(person);
+          if (!searchableList.contains(worker)) {
+            searchableList.add(worker);
           }
         }
       } else {
-        if (person.name.toLowerCase().contains(
+        if (worker.fullName.toLowerCase().contains(
               event.searchableValue.toLowerCase(),
             )) {
-          if (!searchableList.contains(person)) {
-            searchableList.add(person);
+          if (!searchableList.contains(worker)) {
+            searchableList.add(worker);
           }
         }
       }
-      if (person.jobTitle.toLowerCase().contains(
+      if (worker.jobTitle.toLowerCase().contains(
             event.searchableValue.toLowerCase(),
           )) {
-        if (!searchableList.contains(person)) {
-          searchableList.add(person);
+        if (!searchableList.contains(worker)) {
+          searchableList.add(worker);
         }
       }
     }

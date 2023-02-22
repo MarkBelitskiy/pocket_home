@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
+import 'package:pocket_home/screens/my_home_screen/src/bloc/my_houses_bloc.dart';
+import 'package:pocket_home/screens/my_home_screen/src/workers_screen/src/add_new_worker_screen.dart/src/worker_model.dart';
+import 'package:pocket_home/screens/reports_screen/src/budget_report_model.dart';
 import 'package:pocket_home/screens/reports_screen/src/rating_report_model.dart';
 import 'package:pocket_home/screens/services_screen/src/service_detailed_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,9 +14,11 @@ part 'reports_event.dart';
 part 'reports_state.dart';
 
 class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
-  ReportsBloc() : super(PollsInitial()) {
+  final MyHousesBloc myHousesBloc;
+  ReportsBloc(this.myHousesBloc) : super(PollsInitial()) {
     on<OnPdfViewEvent>(_onPdfViewEvent);
     on<GenerateReportEvent>(_onGenerateReport);
+    on<GenerateBudgetReportEvent>(_onGenerateBudgetReport);
   }
 
   Future<void> _onPdfViewEvent(OnPdfViewEvent event, Emitter<ReportsState> emit) async {
@@ -27,13 +32,8 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
 
   Future<void> _onGenerateReport(GenerateReportEvent event, Emitter<ReportsState> emit) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-
-      List<ServiceDetailedModel> model = [];
+      List<ServiceDetailedModel> model = myHousesBloc.currentHouse!.services!;
       List<RatingReportModel> rating = [];
-      final modelFromPrefs = prefs.getString('servicesModels');
-
-      if (modelFromPrefs != null) model = addServiceModelFromJson(modelFromPrefs);
 
       for (var element in model) {
         if (element.choosePerson != null && element.ratingValue != null) {
@@ -41,6 +41,20 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
         }
       }
       emit(OnRatingGettedState(rating));
+    } catch (e) {}
+  }
+
+  Future<void> _onGenerateBudgetReport(GenerateBudgetReportEvent event, Emitter<ReportsState> emit) async {
+    try {
+      int totalToMonth = myHousesBloc.currentHouse!.budget;
+
+      for (var element in myHousesBloc.currentHouse!.workers ?? <WorkerModel>[]) {
+        totalToMonth -= int.parse(element.sallary);
+      }
+      BudgetReportModel model =
+          BudgetReportModel(myHousesBloc.currentHouse!.budget, myHousesBloc.currentHouse!.workers ?? [], totalToMonth);
+
+      emit(OnBudgetGeneratedState(model));
     } catch (e) {}
   }
 }

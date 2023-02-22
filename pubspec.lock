@@ -71,6 +71,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.16.0"
+  contact_picker_platform_interface:
+    dependency: transitive
+    description:
+      name: contact_picker_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.7.0"
+  contact_picker_web:
+    dependency: transitive
+    description:
+      name: contact_picker_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.7.0"
   convert:
     dependency: transitive
     description:
@@ -120,6 +134,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.7.8"
+  dio:
+    dependency: "direct main"
+    description:
+      name: dio
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.0.0"
   easy_localization:
     dependency: "direct main"
     description:
@@ -245,6 +266,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  fluttercontactpicker:
+    dependency: "direct main"
+    description:
+      name: fluttercontactpicker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.7.0"
   html:
     dependency: transitive
     description:
@@ -343,6 +371,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  mask_text_input_formatter:
+    dependency: "direct main"
+    description:
+      name: mask_text_input_formatter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.4.0"
   matcher:
     dependency: transitive
     description:

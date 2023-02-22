@@ -148,12 +148,12 @@ class _CreatePasswordBody extends StatelessWidget {
                   onPressed: () {
                     context.read<RegisterBloc>().add(
                           CreateProfileEvent(
-                            Profile(
+                            UserModel(
                                 name: vm.nameTextController.text,
                                 password: vm.passwordTextController.text,
                                 phone: vm.phoeTextController.text,
+                                photoPath: vm.photoPath,
                                 login: vm.loginTextController.text),
-                            vm.loginTextController.text,
                           ),
                         );
                   },

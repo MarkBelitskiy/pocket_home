@@ -1,6 +1,7 @@
 part of '../feature.dart';
 
 class AddServicesScreenViewModel extends ChangeNotifier {
+  late UserModel currentUser;
   TextEditingController fullNameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController commentController = TextEditingController();
@@ -15,5 +16,11 @@ class AddServicesScreenViewModel extends ChangeNotifier {
         phoneController.text.isNotEmpty &&
         commentController.text.isNotEmpty &&
         selectedProblem.isNotEmpty;
+  }
+
+  void init(UserModel currentUser) {
+    currentUser = currentUser;
+    fullNameController.text = currentUser.name;
+    phoneController.text = currentUser.phone;
   }
 }

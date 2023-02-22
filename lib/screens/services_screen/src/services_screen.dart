@@ -85,9 +85,14 @@ class _EpmtyBody extends StatelessWidget {
 }
 
 class _TabBody extends StatelessWidget {
-  const _TabBody({Key? key, required this.models, required this.title}) : super(key: key);
+  const _TabBody({
+    Key? key,
+    required this.models,
+    required this.title,
+  }) : super(key: key);
   final List<ServiceDetailedModel> models;
   final String title;
+
   @override
   Widget build(BuildContext context) {
     if (models.isEmpty) {
@@ -108,9 +113,14 @@ class _TabBody extends StatelessWidget {
 }
 
 class _CardItem extends StatelessWidget {
-  const _CardItem({super.key, required this.item, required this.index});
+  const _CardItem({
+    super.key,
+    required this.item,
+    required this.index,
+  });
   final ServiceDetailedModel item;
   final int index;
+
   @override
   Widget build(BuildContext context) {
     List<String> itemValues = [
@@ -120,7 +130,9 @@ class _CardItem extends StatelessWidget {
     ];
     return GestureDetector(
       onTap: () {
-        if (item.status == 1) {
+        if (item.status == 1 &&
+            FormatterUtils.preparePhoneToMask(context.read<MyHousesBloc>().currentUser!.phone) ==
+                FormatterUtils.preparePhoneToMask(item.contactPerson.phone)) {
           showModalBottomSheet(
               isScrollControlled: true,
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
@@ -167,10 +179,7 @@ class _CardItem extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  DateFormat('d MMMM yyyy', context.locale.languageCode)
-                      .format(item.publishDate)
-                      .toString()
-                      .toLowerCase(),
+                  FormatterUtils.formattedDate(item.publishDate, context.locale.languageCode),
                   textAlign: TextAlign.right,
                   style: getMainAppTheme(context).textStyles.body.copyWith(color: getItemColor(0)),
                 ),
@@ -346,10 +355,9 @@ class _ModalBody extends StatelessWidget {
                 isPasswordField: false,
                 maxLines: 1,
                 title: 'Комментарий',
+                keyboardType: TextInputType.text,
                 readOnly: false,
-                onChanged: (value) {
-                  controller.text = value;
-                },
+                onChanged: (value) {},
                 clearAvailable: true,
                 autoFocus: false),
           ),

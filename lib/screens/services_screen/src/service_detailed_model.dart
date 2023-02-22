@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'services_detailed_screen.dart/src/service_person_model.dart';
+import 'package:pocket_home/screens/my_home_screen/src/workers_screen/src/add_new_worker_screen.dart/src/worker_model.dart';
 
 List<ServiceDetailedModel> addServiceModelFromJson(String str) =>
     List<ServiceDetailedModel>.from(json.decode(str).map((x) => ServiceDetailedModel.fromJson(x)));
@@ -30,7 +30,7 @@ class ServiceDetailedModel {
   String commentary;
   String? workerCommentary;
   int status;
-  ServicePersonModel? choosePerson;
+  WorkerModel? choosePerson;
   int? ratingValue;
   factory ServiceDetailedModel.fromJson(Map<String, dynamic> json) {
     return ServiceDetailedModel(
@@ -39,8 +39,7 @@ class ServiceDetailedModel {
         files: List<String>.from(json["files"].map((x) => x)),
         commentary: json["commentary"],
         status: json["status"],
-        choosePerson:
-            json["choosePerson"] == null ? null : serviceSinglePersonFromJson(json["choosePerson"].toString()),
+        choosePerson: json["choosePerson"] == null ? null : WorkerModel.fromJson(json["choosePerson"]),
         publishDate: DateTime.parse(json["publishDate"]),
         ratingValue: json["ratingValue"],
         workerCommentary: json["workerCommentary"]);
@@ -52,7 +51,7 @@ class ServiceDetailedModel {
         "contactPerson": contactPerson.toJson(),
         "files": List<dynamic>.from(files.map((x) => x)),
         "commentary": commentary,
-        "choosePerson": serviceSinglePersonToJson(choosePerson),
+        "choosePerson": choosePerson != null ? choosePerson!.toJson() : null,
         "status": status,
         "workerCommentary": workerCommentary,
         "ratingValue": ratingValue

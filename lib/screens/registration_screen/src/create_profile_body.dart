@@ -15,7 +15,9 @@ class _CreateProfileBody extends StatelessWidget {
         children: [
           MainAppFilePicker(
             maxFiles: 1,
-            onFilesAddedCallBack: (callback) {},
+            onFilesAddedCallBack: (callback) {
+              vm.photoPath = callback.first;
+            },
             isProfilePhotoWidget: true,
           ),
           const SizedBox(
@@ -66,9 +68,7 @@ class _CreateProfileBody extends StatelessWidget {
           ),
           MainAppButton(
               onPressed: () {
-                context
-                    .read<RegisterBloc>()
-                    .add(ChangeBodyEvent(RegisterScreenBodyEnums.password));
+                context.read<RegisterBloc>().add(ChangeBodyEvent(RegisterScreenBodyEnums.password));
               },
               titleColor: ColorPalette.blue200,
               title: 'Продолжить',

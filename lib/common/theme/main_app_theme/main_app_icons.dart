@@ -25,8 +25,12 @@ class MainAppIcons {
   String get chevronRight => 'assets/icons/arrow_right.svg';
   String get actionSuccess => 'assets/icons/action_success.svg';
   String get buildingIcon => 'assets/icons/building_icon.svg';
-  String get whatsapp => 'assets/icons/whatsapp.svg';
+  String get telegram => 'assets/icons/telegram.svg';
   String get lottieNews => 'assets/lottie/news.json';
+  String get cleaning => 'assets/icons/cleaning.svg';
+  String get furniture => 'assets/icons/furniture.svg';
+  String get workers => 'assets/icons/workers.svg';
+  String get money => 'assets/icons/money.svg';
 
   String get emptySingleBlob => 'assets/icons/empty_single_blob.svg';
   String get emptyDoubleBlob => 'assets/icons/empty_double_blob.svg';

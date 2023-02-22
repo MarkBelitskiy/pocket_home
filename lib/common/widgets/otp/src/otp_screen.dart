@@ -20,7 +20,6 @@ class OtpScreen extends StatelessWidget {
         backgroundColor: getMainAppTheme(context).colors.bgColor,
         appBar: const MainAppBar(title: 'Восстановление пароля'),
         body: MainAppBody(
-          isDoubleBlob: false,
           children: [
             Column(
               children: [
@@ -100,16 +99,15 @@ class OtpWidgetState extends State<OtpWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // String _phone =
-    // '${FormatsTheme().newMask.maskText(widget.maskedPhone.replaceFirst(RegExp(r"^8"), "+7"))}';
+    String _phone = FormatterUtils.preparePhoneToMask(widget.maskedPhone);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         children: [
           const SizedBox(height: 24),
-          // _InfoText(
-          // maskedPhone: _phone,
-          // ),
+          _InfoText(
+            maskedPhone: _phone,
+          ),
           const SizedBox(height: 16),
           _PinCodeField(
             textEditingController: widget.textEditingController,
@@ -140,7 +138,8 @@ class _InfoText extends StatelessWidget {
         padding: const EdgeInsets.only(top: 8),
         child: Text(
           'На номер, $maskedPhone был отправлен SMS код',
-          // style: ProjectTextStyle.black15W400LetterNeg17Opacity5,
+          style:
+              getMainAppTheme(context).textStyles.body.copyWith(color: getMainAppTheme(context).colors.mainTextColor),
         ),
       ),
     );

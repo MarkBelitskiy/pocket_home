@@ -12,6 +12,7 @@ import 'package:pocket_home/main.dart';
 import 'package:pocket_home/screens/login_screen/src/bloc/login_screen_bloc.dart';
 import 'package:pocket_home/screens/login_screen/src/forgot_pass/feature.dart';
 import 'package:pocket_home/screens/main_screen/src/bloc/main_screen_bloc.dart';
+import 'package:pocket_home/screens/my_home_screen/src/bloc/my_houses_bloc.dart';
 
 part 'src/login_screen.dart';
 

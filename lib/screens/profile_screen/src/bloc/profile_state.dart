@@ -1,12 +1,11 @@
 part of 'profile_bloc.dart';
 
-@immutable
 abstract class ProfileState {}
 
 class ProfileInitial extends ProfileState {}
 
 class ProfileLoadedState extends ProfileState {
-  final Profile profile;
+  final UserModel profile;
 
   ProfileLoadedState(this.profile);
 }

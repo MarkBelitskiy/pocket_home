@@ -12,15 +12,16 @@ import 'package:pocket_home/common/widgets/lottie_animation_widget.dart';
 import 'package:pocket_home/screens/login_screen/feature.dart';
 import 'package:pocket_home/screens/my_home_screen/feature.dart';
 import 'package:pocket_home/screens/news_screen/feature.dart';
+import 'package:pocket_home/screens/news_screen/src/bloc/news_bloc.dart';
 import 'package:pocket_home/screens/profile_screen/feature.dart';
 import 'package:pocket_home/screens/registration_screen/feature.dart';
 import 'package:pocket_home/screens/reports_screen/feature.dart';
 import 'package:pocket_home/screens/services_screen/feature.dart';
+import 'package:pocket_home/screens/services_screen/src/bloc/services_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'src/bloc/main_screen_bloc.dart';
 

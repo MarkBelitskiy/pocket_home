@@ -10,7 +10,7 @@ class ChangeBodyEvent extends RegisterEvent {
 }
 
 class CreateProfileEvent extends RegisterEvent {
-  final Profile profile;
-  final String login;
-  CreateProfileEvent(this.profile, this.login);
+  final UserModel profile;
+
+  CreateProfileEvent(this.profile);
 }

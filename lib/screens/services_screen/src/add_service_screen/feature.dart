@@ -10,6 +10,8 @@ import 'package:pocket_home/common/widgets/main_app_bar_widget.dart';
 import 'package:pocket_home/common/widgets/main_app_bottom_sheet/main_app_bottom_sheet.dart';
 
 import 'package:pocket_home/common/widgets/main_text_field/main_text_field_widget.dart';
+import 'package:pocket_home/screens/my_home_screen/src/bloc/my_houses_bloc.dart';
+import 'package:pocket_home/screens/registration_screen/src/profile_model.dart';
 import 'package:pocket_home/screens/services_screen/src/add_service_screen/src/bloc/add_service_bloc.dart';
 import 'package:pocket_home/screens/services_screen/src/bloc/services_bloc.dart';
 import 'package:pocket_home/screens/services_screen/src/service_detailed_model.dart';
@@ -23,9 +25,10 @@ part 'src/view_model.dart';
 CupertinoPageRoute addServicesScreenFeature(final ServicesBloc servicesBloc) {
   return CupertinoPageRoute(
     builder: (context) => BlocProvider(
-      create: (context) => AddServiceBloc(servicesBloc: servicesBloc),
-      child:
-          ChangeNotifierProvider(create: (context) => AddServicesScreenViewModel(), child: const _AddServiceScreen()),
+      create: (context) => AddServiceBloc(servicesBloc: servicesBloc, myHousesBloc: context.read<MyHousesBloc>()),
+      child: ChangeNotifierProvider(
+          create: (context) => AddServicesScreenViewModel()..init(context.read<MyHousesBloc>().currentUser!),
+          child: const _AddServiceScreen()),
     ),
   );
 }

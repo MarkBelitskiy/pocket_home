@@ -16,3 +16,9 @@ class OnRatingGettedState extends ReportsState {
 
   OnRatingGettedState(this.list);
 }
+
+class OnBudgetGeneratedState extends ReportsState {
+  final BudgetReportModel model;
+
+  OnBudgetGeneratedState(this.model);
+}

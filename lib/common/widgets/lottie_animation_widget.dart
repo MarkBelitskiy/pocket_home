@@ -8,8 +8,7 @@ class EmptyPlaceholderWithLottie extends StatelessWidget {
   final String lottiePath;
   final EdgeInsets margin;
   final String? title;
-  const EmptyPlaceholderWithLottie(
-      {Key? key, required this.lottiePath, this.title, required this.margin})
+  const EmptyPlaceholderWithLottie({Key? key, required this.lottiePath, this.title, required this.margin})
       : super(key: key);
 
   @override
@@ -34,10 +33,8 @@ class EmptyPlaceholderWithLottie extends StatelessWidget {
                         style: getMainAppTheme(context)
                             .textStyles
                             .title
-                            .copyWith(
-                                color: getMainAppTheme(context)
-                                    .colors
-                                    .mainTextColor),
+                            .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+                        textAlign: TextAlign.center,
                       ).tr(),
                       const SizedBox(height: 32),
                     ]

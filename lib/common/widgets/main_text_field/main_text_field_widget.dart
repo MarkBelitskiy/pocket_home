@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:pocket_home/common/theme/theme_getter.dart';
 import 'package:pocket_home/common/utils/colors_palette.dart';
+import 'package:pocket_home/common/utils/formatter_utils.dart';
 
 class MainTextField extends StatefulWidget {
   const MainTextField(
@@ -44,6 +46,7 @@ class MainTextField extends StatefulWidget {
   final Function(String value)? onChanged;
   final Function? onTap;
   final TextInputType? keyboardType;
+
   @override
   State<MainTextField> createState() => _MainTextFieldState();
 }
@@ -55,8 +58,12 @@ class _MainTextFieldState extends State<MainTextField> {
   late FocusNode focusNode;
   late TextEditingController textEditingController;
   late ValueNotifier<bool> _showSuffixIcon;
+
+  bool isPhoneField = false;
+  final mask = FormatterUtils.phoneFormatter;
   @override
   void initState() {
+    isPhoneField = widget.keyboardType == TextInputType.phone;
     focusNode = widget.focusNode;
     focusNode.addListener(() {
       setState(() {
@@ -85,7 +92,7 @@ class _MainTextFieldState extends State<MainTextField> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            constraints: BoxConstraints(minHeight: 60),
+            constraints: const BoxConstraints(minHeight: 60),
             decoration: BoxDecoration(
                 color: widget.bgColor,
                 borderRadius: BorderRadius.circular(15),
@@ -110,10 +117,12 @@ class _MainTextFieldState extends State<MainTextField> {
                             return TextFormField(
                               keyboardType: widget.keyboardType,
                               readOnly: widget.readOnly,
-                              textInputAction: widget.textInputAction,
+                              autocorrect: false,
+                              textInputAction: widget.textInputAction ?? TextInputAction.done,
                               onFieldSubmitted: (value) {
                                 widget.onSubmitted?.call(value);
                               },
+                              inputFormatters: isPhoneField ? [mask] : null,
                               onChanged: (value) {
                                 if (!widget.isPasswordField) {
                                   _showSuffixIcon.value = value.isNotEmpty;

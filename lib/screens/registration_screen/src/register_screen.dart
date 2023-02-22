@@ -19,7 +19,7 @@ class _RegisterScreen extends StatelessWidget {
           }
         },
       ),
-      body: MainAppBody(isDoubleBlob: false, children: [
+      body: MainAppBody(children: [
         BlocConsumer<RegisterBloc, RegisterState>(
           listener: (context, state) {
             if (state is RegisterChangeBodyState) {

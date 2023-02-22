@@ -26,7 +26,7 @@ class SetRatingValueEvent extends ServicesEvent {
 }
 
 class SetWorkerEvent extends ServicesEvent {
-  final ServicePersonModel worker;
+  final WorkerModel worker;
   final int index;
   SetWorkerEvent(this.worker, this.index);
 }

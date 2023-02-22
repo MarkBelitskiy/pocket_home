@@ -5,16 +5,29 @@ class _NewsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: getMainAppTheme(context).colors.bgColor,
-        floatingActionButton: MainAppFloatingButton(onTap: () {
-          Navigator.of(context, rootNavigator: true).push(addNewsScreenFeature()).then((value) {
-            if (value is bool && value) {
-              context.read<NewsBloc>().add(OnNewsTabInit());
-            }
-          });
-        }),
-        body: const _Body());
+    return SafeArea(
+      child: Scaffold(
+          backgroundColor: getMainAppTheme(context).colors.bgColor,
+          floatingActionButton: BlocBuilder<MyHousesBloc, MyHousesState>(
+            builder: (context, state) {
+              if (state is MyHousesLoadedState) {
+                return FormatterUtils.preparePhoneToMask(
+                            context.read<MyHousesBloc>().currentHouse?.manager.phone ?? '') ==
+                        FormatterUtils.preparePhoneToMask(context.read<MyHousesBloc>().currentUser?.phone ?? '')
+                    ? MainAppFloatingButton(onTap: () {
+                        Navigator.of(context, rootNavigator: true).push(addNewsScreenFeature()).then((value) {
+                          if (value is bool && value) {
+                            context.read<NewsBloc>().add(OnNewsTabInit());
+                          }
+                        });
+                      })
+                    : const SizedBox.shrink();
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+          body: const _Body()),
+    );
   }
 }
 
@@ -104,10 +117,7 @@ class _News extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                locale.DateFormat('d MMMM yyyy', context.locale.languageCode)
-                    .format(news.publishDate)
-                    .toString()
-                    .toLowerCase(),
+                FormatterUtils.formattedDate(news.publishDate, context.locale.languageCode),
                 textAlign: TextAlign.right,
                 style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
               ),
@@ -193,10 +203,7 @@ class _Poll extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                locale.DateFormat('d MMMM yyyy', context.locale.languageCode)
-                    .format(news.publishDate)
-                    .toString()
-                    .toLowerCase(),
+                FormatterUtils.formattedDate(news.publishDate, context.locale.languageCode),
                 textAlign: TextAlign.right,
                 style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
               ),

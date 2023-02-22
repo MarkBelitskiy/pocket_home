@@ -28,7 +28,6 @@ class _Body extends StatelessWidget {
       },
       child: MainAppBody(
         needPadding: false,
-        isDoubleBlob: false,
         children: [
           _NewsBody(
             news: news,
@@ -58,10 +57,7 @@ class _NewsBody extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  DateFormat('d MMMM yyyy', context.locale.languageCode)
-                      .format(news.publishDate)
-                      .toString()
-                      .toLowerCase(),
+                  FormatterUtils.formattedDate(news.publishDate, context.locale.languageCode),
                   textAlign: TextAlign.right,
                   style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
                 ),

@@ -1,27 +1,35 @@
-// To parse this JSON data, do
-//
-//     final profile = profileFromJson(jsonString);
-
 import 'dart:convert';
 
-Profile profileFromJson(String str) => Profile.fromJson(json.decode(str));
+import 'package:pocket_home/screens/my_home_screen/my_home_model.dart';
 
-String profileToJson(Profile data) => json.encode(data.toJson());
+List<UserModel> usersModelFromJson(String str) =>
+    List<UserModel>.from(json.decode(str).map((x) => UserModel.fromJson(x)));
 
-class Profile {
-  Profile({required this.phone, required this.name, this.photoPath, required this.password, required this.login});
+String usersModelToJson(List<UserModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+class UserModel {
+  UserModel(
+      {required this.phone,
+      required this.name,
+      required this.photoPath,
+      required this.password,
+      required this.login,
+      this.userHouses});
 
   String phone;
   String name;
   String? photoPath;
   String password;
   String login;
-  factory Profile.fromJson(Map<String, dynamic> json) => Profile(
+  List<HouseModel>? userHouses;
+
+  factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
       phone: json["phone"],
       name: json["name"],
       photoPath: json["photoPath"],
       password: json["password"],
-      login: json["login"]);
+      login: json["login"],
+      userHouses: json["userHouses"] != null ? houseModelFromJson(json["userHouses"]) : null);
 
   Map<String, dynamic> toJson() => {
         "phone": phone,
@@ -29,5 +37,6 @@ class Profile {
         "photoPath": photoPath,
         "password": password,
         "login": login,
+        "userHouses": userHouses != null ? houseModelToJson(userHouses!) : null
       };
 }

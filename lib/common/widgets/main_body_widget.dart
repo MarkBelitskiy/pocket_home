@@ -3,13 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pocket_home/common/theme/theme_getter.dart';
 
 class MainAppBody extends StatelessWidget {
-  const MainAppBody(
-      {Key? key,
-      required this.isDoubleBlob,
-      required this.children,
-      this.needPadding = true})
-      : super(key: key);
-  final bool isDoubleBlob;
+  const MainAppBody({Key? key, required this.children, this.needPadding = true}) : super(key: key);
+
   final List<Widget> children;
   final bool needPadding;
   @override

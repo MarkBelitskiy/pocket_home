@@ -1,5 +1,5 @@
-import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pocket_home/common/utils/preferences_utils.dart';
 import 'package:pocket_home/screens/registration_screen/src/profile_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -7,7 +7,7 @@ part 'profile_event.dart';
 part 'profile_state.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
-  Profile? profile;
+  UserModel? profile;
   ProfileBloc() : super(ProfileInitial()) {
     on<InitEvent>(_onInit);
     on<OnDeleteAccountEvent>(_onDelete);
@@ -16,28 +16,45 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   Future _onInit(InitEvent event, Emitter<ProfileState> emit) async {
     final prefs = await SharedPreferences.getInstance();
-    String? profileFromPrefs = prefs.getString('profilekey');
-    try {
-      if (profileFromPrefs != null) {
-        profile = profileFromJson(profileFromPrefs);
 
-        emit(ProfileLoadedState(profile!));
+    try {
+      String? usersStringFromPrefs = prefs.getString(PreferencesUtils.usersKey);
+      String? login = prefs.getString(PreferencesUtils.loginKey);
+
+      List<UserModel> users = usersStringFromPrefs != null && usersStringFromPrefs.isNotEmpty
+          ? usersModelFromJson(usersStringFromPrefs)
+          : [];
+
+      UserModel? user;
+
+      for (var i = 0; i < users.length; i++) {
+        if (users[i].login == login) {
+          user = users[i];
+        }
       }
+
+      emit(ProfileLoadedState(user!));
     } catch (e) {}
   }
 
   Future _onDelete(OnDeleteAccountEvent event, Emitter<ProfileState> emit) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString(profile!.login, '');
-    prefs.setString('profilekey', '');
-    prefs.setBool('authorized', false);
+    String? usersStringFromPrefs = prefs.getString(PreferencesUtils.usersKey);
+    String? login = prefs.getString(PreferencesUtils.loginKey);
+    List<UserModel> users =
+        usersStringFromPrefs != null && usersStringFromPrefs.isNotEmpty ? usersModelFromJson(usersStringFromPrefs) : [];
+    users.removeWhere((element) => element.login == login);
+    prefs.setString(PreferencesUtils.usersKey, usersModelToJson(users));
+    prefs.setString(PreferencesUtils.loginKey, '');
+    prefs.setBool(PreferencesUtils.authorizedKey, false);
     emit(ProfileSuccessDeletedState());
   }
 
   Future _onLogout(OnLogoutEvent event, Emitter<ProfileState> emit) async {
     final prefs = await SharedPreferences.getInstance();
 
-    prefs.setBool('authorized', false);
+    prefs.setBool(PreferencesUtils.authorizedKey, false);
+    prefs.setString(PreferencesUtils.loginKey, '');
     emit(LogoutState());
   }
 }

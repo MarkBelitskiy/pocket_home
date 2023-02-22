@@ -1,12 +1,16 @@
 part of '../feature.dart';
 
 class _ServicesDetailedScreen extends StatelessWidget {
-  const _ServicesDetailedScreen(
-      {Key? key, required this.model, required this.numberOfService, required this.servicesBloc})
-      : super(key: key);
+  const _ServicesDetailedScreen({
+    Key? key,
+    required this.model,
+    required this.numberOfService,
+    required this.servicesBloc,
+  }) : super(key: key);
   final ServiceDetailedModel model;
   final int numberOfService;
   final ServicesBloc servicesBloc;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,10 +26,16 @@ class _ServicesDetailedScreen extends StatelessWidget {
 }
 
 class _Body extends StatelessWidget {
-  const _Body({Key? key, required this.model, required this.servicesBloc, required this.index}) : super(key: key);
+  const _Body({
+    Key? key,
+    required this.model,
+    required this.servicesBloc,
+    required this.index,
+  }) : super(key: key);
   final ServiceDetailedModel model;
   final ServicesBloc servicesBloc;
   final int index;
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -57,7 +67,43 @@ class _Body extends StatelessWidget {
           const SizedBox(
             height: 12,
           ),
-          Padding(
+          if (FormatterUtils.preparePhoneToMask(context.read<MyHousesBloc>().currentUser?.phone ?? '') ==
+                  FormatterUtils.preparePhoneToMask(context.read<MyHousesBloc>().currentHouse?.manager.phone ?? '') &&
+              model.status != 1 &&
+              model.status != 2 &&
+              model.status != 3) ...[
+            Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                child: GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                        isScrollControlled: true,
+                        shape:
+                            const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
+                        backgroundColor: getMainAppTheme(context).colors.bgColor,
+                        context: context,
+                        builder: (context) => _SetSpecialystBody(
+                              itemIndex: index,
+                              servicesBloc: servicesBloc,
+                            )).then((value) {
+                      if (value is Map) {
+                        servicesBloc.add(SetWorkerEvent(value[0], value[1]));
+                        Navigator.of(context, rootNavigator: true).pop();
+                      }
+                    });
+                  },
+                  child: Text(
+                    "Назначить специалиста",
+                    style: getMainAppTheme(context)
+                        .textStyles
+                        .title
+                        .copyWith(color: getMainAppTheme(context).colors.activeText),
+                  ),
+                )),
+            const SizedBox(
+              height: 12,
+            ),
+            Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               child: GestureDetector(
                 onTap: () {
@@ -67,49 +113,36 @@ class _Body extends StatelessWidget {
                           const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
                       backgroundColor: getMainAppTheme(context).colors.bgColor,
                       context: context,
-                      builder: (context) => _SetSpecialystBody(
-                            itemIndex: index,
-                            servicesBloc: servicesBloc,
-                          )).then((value) {
-                    if (value is Map) {
-                      servicesBloc.add(SetWorkerEvent(value[0], value[1]));
+                      builder: (context) => const _ModalBody()).then((value) {
+                    if (value is String && value.isNotEmpty) {
+                      servicesBloc.add(DeclineServiceEvent(index, value));
                       Navigator.of(context, rootNavigator: true).pop();
                     }
                   });
                 },
                 child: Text(
-                  "Назначить специалиста",
-                  style: getMainAppTheme(context)
-                      .textStyles
-                      .title
-                      .copyWith(color: getMainAppTheme(context).colors.activeText),
+                  "Отклонить",
+                  style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.red500),
                 ),
-              )),
-          const SizedBox(
-            height: 12,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-            child: GestureDetector(
-              onTap: () {
-                showModalBottomSheet(
-                    isScrollControlled: true,
-                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
-                    backgroundColor: getMainAppTheme(context).colors.bgColor,
-                    context: context,
-                    builder: (context) => const _ModalBody()).then((value) {
-                  if (value is String && value.isNotEmpty) {
-                    servicesBloc.add(DeclineServiceEvent(index, value));
-                    Navigator.of(context, rootNavigator: true).pop();
-                  }
-                });
-              },
-              child: Text(
-                "Отклонить",
-                style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.red500),
               ),
             ),
-          ),
+          ],
+          if (FormatterUtils.preparePhoneToMask(context.read<MyHousesBloc>().currentUser?.phone ?? '') ==
+                  FormatterUtils.preparePhoneToMask(model.choosePerson?.phone ?? '') &&
+              model.status != 1 &&
+              model.status != 2 &&
+              model.status != 3) ...[
+            const SizedBox(
+              height: 8,
+            ),
+            MainAppButton(
+                onPressed: () {
+                  context.read<ServicesBloc>().add(ChangeServiceValue(1, index));
+                  Navigator.of(context).pop();
+                },
+                title: 'Закончить работу',
+                assetIcon: '')
+          ]
         ],
       ),
     );
@@ -366,7 +399,7 @@ class _SetSpecialystBody extends StatelessWidget {
   Widget build(BuildContext context) {
     TextEditingController controller = TextEditingController();
     return BlocProvider<ChoseServicePersonBloc>(
-      create: (context) => ChoseServicePersonBloc()..add(InitPersonsDataEvent()),
+      create: (context) => ChoseServicePersonBloc(context.read<MyHousesBloc>())..add(InitPersonsDataEvent()),
       child: Padding(
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Column(
@@ -439,7 +472,7 @@ class _SetSpecialystBody extends StatelessWidget {
                                 shrinkWrap: true,
                                 itemCount: state.items.length,
                                 itemBuilder: (context, index) {
-                                  final ServicePersonModel item = state.items[index];
+                                  final WorkerModel item = state.items[index];
                                   return GestureDetector(
                                       onTap: () {
                                         Navigator.of(context, rootNavigator: true).pop({0: item, 1: itemIndex});
@@ -469,7 +502,7 @@ class _SetSpecialystBody extends StatelessWidget {
 
 class _PersonCard extends StatelessWidget {
   const _PersonCard({super.key, required this.person, this.isBordered = false});
-  final ServicePersonModel person;
+  final WorkerModel person;
   final bool isBordered;
   @override
   Widget build(BuildContext context) {
@@ -493,7 +526,7 @@ class _PersonCard extends StatelessWidget {
                 ),
                 Expanded(
                   child: Text(
-                    person.name,
+                    person.fullName,
                     textAlign: TextAlign.right,
                     style: getMainAppTheme(context)
                         .textStyles

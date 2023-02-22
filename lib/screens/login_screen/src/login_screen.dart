@@ -11,7 +11,7 @@ class _LoginScreen extends StatelessWidget {
       appBar: const MainAppBar(
         title: 'Авторизация',
       ),
-      body: MainAppBody(isDoubleBlob: false, children: [
+      body: MainAppBody(children: [
         _Body(
           mainScreenBloc: mainScreenBloc,
         )
@@ -33,6 +33,7 @@ class _Body extends StatelessWidget {
       listener: (context, state) {
         if (state is AuthorizedSuccessState) {
           Navigator.of(context).pop();
+          context.read<MyHousesBloc>().add(InitHousesEvent());
           mainScreenBloc.add(OnInitAppEvent());
         }
       },
@@ -88,8 +89,7 @@ class _Body extends StatelessWidget {
             ),
             MainAppButton(
                 onPressed: () {
-                  context.read<LoginScreenBloc>().add(
-                      LoginEvent(loginController.text, passController.text));
+                  context.read<LoginScreenBloc>().add(LoginEvent(loginController.text, passController.text));
                 },
                 title: 'Продолжить',
                 titleColor: ColorPalette.blue200,

@@ -19,13 +19,13 @@ class _Body extends StatelessWidget {
       listener: (context, state) {
         if (state is ProfileSuccessDeletedState || state is LogoutState) {
           context.read<MainScreenBloc>().add(OnInitAppEvent());
+          context.read<MyHousesBloc>().add(ClearDataEvent());
         }
       },
       buildWhen: (previous, current) => current is ProfileLoadedState,
       builder: (context, state) {
         if (state is ProfileLoadedState) {
           return MainAppBody(
-            isDoubleBlob: false,
             children: [
               _MainInfoWidget(profile: state.profile),
               const SizedBox(
@@ -89,7 +89,7 @@ class _Body extends StatelessWidget {
 
 class _MainInfoWidget extends StatelessWidget {
   const _MainInfoWidget({super.key, required this.profile});
-  final Profile profile;
+  final UserModel profile;
   @override
   Widget build(BuildContext context) {
     return Column(

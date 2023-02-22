@@ -23,6 +23,13 @@ class _ReportsScreen extends StatelessWidget {
                   context: context,
                   builder: (context) => _ModalBody(list: state.list));
             }
+            if (state is OnBudgetGeneratedState) {
+              showModalBottomSheet(
+                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
+                  backgroundColor: getMainAppTheme(context).colors.bgColor,
+                  context: context,
+                  builder: (context) => _BudgetModalBody(model: state.model));
+            }
           },
           builder: (context, state) {
             return const _Reports();
@@ -60,7 +67,7 @@ class _Reports extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> items = ['Жильцы', 'Рейтинг оказанных услуг', 'Бюджет на год'];
+    List<String> items = ['Рейтинг оказанных услуг', 'Отчет по бюджету за Месяц', 'ПДФ-Отчёт'];
     return ListView.separated(
         separatorBuilder: (context, index) => const SizedBox(
               height: 8,
@@ -96,9 +103,16 @@ class _Reports extends StatelessWidget {
               ),
               GestureDetector(
                   onTap: () {
-                    index == 1
-                        ? context.read<ReportsBloc>().add(GenerateReportEvent())
-                        : context.read<ReportsBloc>().add(OnPdfViewEvent());
+                    switch (index) {
+                      case 0:
+                        context.read<ReportsBloc>().add(GenerateReportEvent());
+                        break;
+                      case 1:
+                        context.read<ReportsBloc>().add(GenerateBudgetReportEvent());
+                        break;
+                      default:
+                        context.read<ReportsBloc>().add(OnPdfViewEvent());
+                    }
                   },
                   child: Row(
                     children: [
@@ -185,7 +199,7 @@ class _ModalBody extends StatelessWidget {
                       )),
                       Expanded(
                           child: Text(
-                        DateFormat.MMMEd().format(list[index].date),
+                        FormatterUtils.formattedDate(list[index].date, context.locale.languageCode),
                         textAlign: TextAlign.right,
                         style: getMainAppTheme(context)
                             .textStyles
@@ -212,7 +226,7 @@ class _ModalBody extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            '${list[index].worker.name} ${list[index].worker.jobTitle}',
+                            '${list[index].worker.fullName} ${list[index].worker.jobTitle}',
                             textAlign: TextAlign.right,
                             style: getMainAppTheme(context)
                                 .textStyles
@@ -273,6 +287,187 @@ class _ModalBody extends StatelessWidget {
               assetIcon: ''),
         )
       ],
+    );
+  }
+}
+
+class _BudgetModalBody extends StatelessWidget {
+  const _BudgetModalBody({
+    super.key,
+    required this.model,
+  });
+  final BudgetReportModel model;
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              const SizedBox(
+                width: 24,
+              ),
+              Expanded(
+                child: Text(
+                  'Отчёт по бюджету дома за месяц',
+                  textAlign: TextAlign.center,
+                  style: getMainAppTheme(context)
+                      .textStyles
+                      .body
+                      .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+                ),
+              ),
+              IconButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  icon: SvgPicture.asset(
+                    getMainAppTheme(context).icons.close,
+                    color: getMainAppTheme(context).colors.mainTextColor,
+                  ))
+            ],
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Row(
+              children: [
+                Expanded(
+                    child: Text(
+                  'Бюджет на начало месяца',
+                  style: getMainAppTheme(context)
+                      .textStyles
+                      .body
+                      .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+                )),
+                Expanded(
+                    child: Text(
+                  '${model.total} ₸',
+                  textAlign: TextAlign.right,
+                  style: getMainAppTheme(context)
+                      .textStyles
+                      .body
+                      .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+                )),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text(
+              'Выплата рабочим',
+              style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.yellow500),
+            ),
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          ListView.separated(
+            physics: const NeverScrollableScrollPhysics(),
+            separatorBuilder: (context, index) => Divider(
+              height: 25,
+              thickness: 1,
+              color: getMainAppTheme(context).colors.cardColor,
+            ),
+            shrinkWrap: true,
+            itemCount: model.worker.length,
+            itemBuilder: (context, index) {
+              WorkerModel worker = model.worker[index];
+              return Container(
+                padding: const EdgeInsets.only(left: 16, right: 8),
+                child: Column(children: [
+                  Row(
+                    children: [
+                      Expanded(
+                          child: Text(
+                        'Имя рабочего',
+                        style: getMainAppTheme(context)
+                            .textStyles
+                            .body
+                            .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+                      )),
+                      Expanded(
+                          child: Text(
+                        worker.fullName,
+                        textAlign: TextAlign.right,
+                        style: getMainAppTheme(context)
+                            .textStyles
+                            .body
+                            .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+                      )),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                          child: Text(
+                        'Оклад',
+                        style: getMainAppTheme(context)
+                            .textStyles
+                            .body
+                            .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+                      )),
+                      Expanded(
+                          child: Text(
+                        '${worker.sallary} ₸',
+                        textAlign: TextAlign.right,
+                        style: getMainAppTheme(context)
+                            .textStyles
+                            .body
+                            .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+                      )),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                ]),
+              );
+            },
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Row(
+              children: [
+                Expanded(
+                    child: Text(
+                  'Остаток на конец месяца',
+                  style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.green500),
+                )),
+                Expanded(
+                    child: Text(
+                  '${model.totalFromMonth} ₸',
+                  textAlign: TextAlign.right,
+                  style: getMainAppTheme(context)
+                      .textStyles
+                      .body
+                      .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+                )),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(24),
+            child: MainAppButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                title: 'Закрыть',
+                assetIcon: ''),
+          )
+        ],
+      ),
     );
   }
 }

@@ -1,5 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pocket_home/screens/services_screen/src/services_detailed_screen.dart/src/service_person_model.dart';
+import 'package:pocket_home/common/utils/preferences_utils.dart';
+import 'package:pocket_home/screens/my_home_screen/src/bloc/my_houses_bloc.dart';
+import 'package:pocket_home/screens/my_home_screen/src/workers_screen/src/add_new_worker_screen.dart/src/worker_model.dart';
+import 'package:pocket_home/screens/registration_screen/src/profile_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../service_detailed_model.dart';
@@ -8,7 +11,8 @@ part 'services_event.dart';
 part 'services_state.dart';
 
 class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
-  ServicesBloc() : super(ServicesInitial()) {
+  final MyHousesBloc myHousesBloc;
+  ServicesBloc(this.myHousesBloc) : super(ServicesInitial()) {
     on<InitEvent>(_onInit);
     on<ChangeServiceValue>(_onChangeStatusEvent);
     on<DeclineServiceEvent>(_onDeclineEvent);
@@ -20,57 +24,84 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
   ///Модельки
   List<ServiceDetailedModel> activeModels = [];
   List<ServiceDetailedModel> historyModels = [];
-
+  late UserModel currentUser;
   Future<void> _onInit(InitEvent event, Emitter<ServicesState> emit) async {
     final prefs = await SharedPreferences.getInstance();
-
     try {
       activeModels.clear();
       historyModels.clear();
-      List<ServiceDetailedModel> model = [];
+
       emit(LoadingState(true));
 
-      final modelFromPrefs = prefs.getString('servicesModels');
+      String? usersStringFromPrefs = prefs.getString(PreferencesUtils.usersKey);
+      String? login = prefs.getString(PreferencesUtils.loginKey);
 
-      if (modelFromPrefs != null) model = addServiceModelFromJson(modelFromPrefs);
-      for (var element in model) {
-        if (element.status == 1 || element.status == 0) {
-          activeModels.add(element);
-        } else {
-          historyModels.add(element);
+      List<UserModel> users = usersStringFromPrefs != null && usersStringFromPrefs.isNotEmpty
+          ? usersModelFromJson(usersStringFromPrefs)
+          : [];
+
+      for (var i = 0; i < users.length; i++) {
+        if (users[i].login == login) {
+          currentUser = users[i];
+        }
+      }
+
+      print('ERROR ${myHousesBloc.currentHouse?.services?.toString()}');
+      if (myHousesBloc.currentHouse?.services?.isNotEmpty ?? false) {
+        for (var element in myHousesBloc.currentHouse!.services!) {
+          if (element.contactPerson.phone == currentUser.phone ||
+              currentUser.phone == myHousesBloc.currentHouse?.manager.phone ||
+              currentUser.phone == element.choosePerson?.phone) {
+            if (element.status == 1 || element.status == 0) {
+              activeModels.add(element);
+            } else {
+              historyModels.add(element);
+            }
+          }
         }
       }
       activeModels.sort((a, b) => a.publishDate.millisecondsSinceEpoch);
       historyModels.sort((a, b) => a.publishDate.millisecondsSinceEpoch);
       emit(LoadingState(false));
-      emit(ServicesLoaded(activeModels, historyModels));
+      emit(ServicesLoaded(
+        activeModels,
+        historyModels,
+      ));
     } catch (e) {
+      print('SERVICES_BLOC_ON_INIT_ERROR:$e');
       emit(LoadingState(false));
-      emit(ServicesLoaded(const [], const []));
+      emit(ServicesLoaded(
+        const [],
+        const [],
+      ));
     }
   }
 
   Future<void> _onChangeStatusEvent(ChangeServiceValue event, Emitter<ServicesState> emit) async {
-    final prefs = await SharedPreferences.getInstance();
-
     try {
       emit(LoadingState(true));
 
       activeModels[event.model].status = event.value;
       List<ServiceDetailedModel> model = [...activeModels, ...historyModels];
 
-      prefs.setString('servicesModels', addServiceModelToJson(model));
+      myHousesBloc.currentHouse!.services!.clear();
+      myHousesBloc.currentHouse!.services!.addAll(model);
+      myHousesBloc.add(SaveHouseToPrefs());
       emit(LoadingState(false));
-      emit(ServicesLoaded(activeModels, historyModels));
+      emit(ServicesLoaded(
+        activeModels,
+        historyModels,
+      ));
     } catch (e) {
       emit(LoadingState(false));
-      emit(ServicesLoaded(const [], const []));
+      emit(ServicesLoaded(
+        const [],
+        const [],
+      ));
     }
   }
 
   Future<void> _onDeclineEvent(DeclineServiceEvent event, Emitter<ServicesState> emit) async {
-    final prefs = await SharedPreferences.getInstance();
-
     try {
       emit(LoadingState(true));
 
@@ -79,18 +110,19 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
       List<ServiceDetailedModel> model = [...activeModels, ...historyModels];
       historyModels.add(activeModels[event.index]);
       activeModels.removeAt(event.index);
-      prefs.setString('servicesModels', addServiceModelToJson(model));
+      myHousesBloc.currentHouse!.services!.clear();
+      myHousesBloc.currentHouse!.services!.addAll(model);
+      myHousesBloc.add(SaveHouseToPrefs());
       emit(LoadingState(false));
       // emit(ServicesLoaded(activeModels, historyModels));
     } catch (e) {
       emit(LoadingState(false));
+      print('SERVICES_BLOC_ON_DECLINE_ERROR:$e');
       // emit(ServicesLoaded(const [], const []));
     }
   }
 
   Future<void> _onSetRatingEvent(SetRatingValueEvent event, Emitter<ServicesState> emit) async {
-    final prefs = await SharedPreferences.getInstance();
-
     try {
       emit(LoadingState(true));
 
@@ -101,41 +133,62 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
 
       historyModels.add(activeModels[event.item]);
       activeModels.removeAt(event.item);
-      prefs.setString('servicesModels', addServiceModelToJson(model));
+      myHousesBloc.currentHouse!.services!.clear();
+      myHousesBloc.currentHouse!.services!.addAll(model);
+      myHousesBloc.add(SaveHouseToPrefs());
       emit(RatingSetToServiceState());
       emit(LoadingState(false));
-      emit(ServicesLoaded(activeModels, historyModels));
+      emit(ServicesLoaded(
+        activeModels,
+        historyModels,
+      ));
     } catch (e) {
       emit(LoadingState(false));
-      emit(ServicesLoaded(const [], const []));
+      emit(ServicesLoaded(
+        const [],
+        const [],
+      ));
     }
   }
 
   Future<void> _setWorkerEvent(SetWorkerEvent event, Emitter<ServicesState> emit) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
       emit(LoadingState(true));
 
       activeModels[event.index].choosePerson = event.worker;
 
       List<ServiceDetailedModel> model = [...activeModels, ...historyModels];
 
-      prefs.setString('servicesModels', addServiceModelToJson(model));
+      myHousesBloc.currentHouse!.services!.clear();
+      myHousesBloc.currentHouse!.services!.addAll(model);
+      myHousesBloc.add(SaveHouseToPrefs());
 
       emit(LoadingState(false));
-      emit(ServicesLoaded(activeModels, historyModels));
+      emit(ServicesLoaded(
+        activeModels,
+        historyModels,
+      ));
     } catch (e) {
       emit(LoadingState(false));
-      emit(ServicesLoaded(const [], const []));
+      emit(ServicesLoaded(
+        const [],
+        const [],
+      ));
     }
   }
 
   Future<void> _updateScreenEvent(ScreenUpdateEvent event, Emitter<ServicesState> emit) async {
     try {
-      emit(ServicesLoaded(activeModels, historyModels));
+      emit(ServicesLoaded(
+        activeModels,
+        historyModels,
+      ));
     } catch (e) {
       emit(LoadingState(false));
-      emit(ServicesLoaded(const [], const []));
+      emit(ServicesLoaded(
+        const [],
+        const [],
+      ));
     }
   }
 }

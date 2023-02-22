@@ -5,7 +5,7 @@ abstract class ChoseServicePersonState {}
 class ChoseServicePersonInitial extends ChoseServicePersonState {}
 
 class PersonsLoadedState extends ChoseServicePersonInitial {
-  final List<ServicePersonModel> items;
+  final List<WorkerModel> items;
 
   PersonsLoadedState(this.items);
 }
