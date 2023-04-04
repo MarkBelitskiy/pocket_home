@@ -16,7 +16,9 @@ class _AddNewsScreen extends StatelessWidget {
 }
 
 class _Body extends StatelessWidget {
-  const _Body({Key? key}) : super(key: key);
+  const _Body({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +49,8 @@ class _Body extends StatelessWidget {
                           const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
                       backgroundColor: getMainAppTheme(context).colors.bgColor,
                       context: context,
-                      builder: (context) => _ModalBody()).then((value) {
-                    Navigator.of(context).pop(true);
+                      builder: (context) => const _ModalBody()).then((value) {
+                    Navigator.of(context).pop();
                   });
                 }
               },
@@ -69,7 +71,7 @@ class _Body extends StatelessWidget {
 }
 
 class _PickTypeWidget extends StatefulWidget {
-  const _PickTypeWidget({super.key});
+  const _PickTypeWidget();
 
   @override
   State<_PickTypeWidget> createState() => _PickTypeWidgetState();
@@ -77,11 +79,11 @@ class _PickTypeWidget extends StatefulWidget {
 
 class _PickTypeWidgetState extends State<_PickTypeWidget> {
   String title = 'publishType'.tr();
-  final List<String> items = ['Новости', 'Опросы'];
+  final List<String> items = ['news'.tr(), 'polls'.tr()];
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => showMainAppBottomSheet(context, title: 'Выберите тип', items: items).then((value) {
+      onTap: () => showMainAppBottomSheet(context, title: 'chooseType', items: items).then((value) {
         if (value is int) {
           context.read<AddNewsBloc>().add(ChangeBodyEvent(value));
           setState(() {
@@ -120,7 +122,7 @@ class _PickTypeWidgetState extends State<_PickTypeWidget> {
 }
 
 class _NewsBody extends StatelessWidget {
-  const _NewsBody({super.key});
+  const _NewsBody();
 
   @override
   Widget build(BuildContext context) {
@@ -134,41 +136,35 @@ class _NewsBody extends StatelessWidget {
         MainAppFilePicker(
           maxFiles: 1,
           onFilesAddedCallBack: (filesPath) {
-            filePath = filesPath.isNotEmpty ? filesPath[0] : '';
+            filePath = filesPath.isNotEmpty ? filesPath.first : '';
           },
         ),
         const SizedBox(
           height: 24,
         ),
         MainTextField(
-            textController: TextEditingController(),
-            focusNode: FocusNode(),
-            bgColor: getMainAppTheme(context).colors.cardColor,
-            isPasswordField: false,
-            maxLines: 1,
-            title: 'header'.tr(),
-            readOnly: false,
-            onChanged: (value) {
-              title = value;
-            },
-            clearAvailable: true,
-            autoFocus: false),
+          textController: TextEditingController(),
+          focusNode: FocusNode(),
+          title: 'header'.tr(),
+          onChanged: (value) {
+            title = value;
+          },
+        ),
         const SizedBox(
           height: 24,
         ),
         MainTextField(
-            textController: TextEditingController(),
-            focusNode: FocusNode(),
-            bgColor: getMainAppTheme(context).colors.cardColor,
-            isPasswordField: false,
-            maxLines: 5,
-            title: 'newsText'.tr(),
-            readOnly: false,
-            onChanged: (value) {
-              newsText = value;
-            },
-            clearAvailable: true,
-            autoFocus: false),
+          textController: TextEditingController(),
+          focusNode: FocusNode(),
+          isPasswordField: false,
+          maxLines: 5,
+          title: 'newsText'.tr(),
+          readOnly: false,
+          onChanged: (value) {
+            newsText = value;
+          },
+          clearAvailable: true,
+        ),
         const SizedBox(
           height: 48,
         ),
@@ -185,85 +181,63 @@ class _NewsBody extends StatelessWidget {
                         publishDate: DateTime.now()),
                   ));
             },
-            title: 'publish'.tr(),
+            title: 'publish',
             assetIcon: ''),
       ],
     );
   }
 }
 
-class _PollsBody extends StatelessWidget {
-  const _PollsBody({super.key});
+class _PollsBody extends StatefulWidget {
+  const _PollsBody();
+
+  @override
+  State<_PollsBody> createState() => _PollsBodyState();
+}
+
+class _PollsBodyState extends State<_PollsBody> {
+  final titleController = TextEditingController();
+  final titleFocus = FocusNode();
+  final varianController1 = TextEditingController();
+  final variantFocus1 = FocusNode();
+  final varianController2 = TextEditingController();
+  final variantFocus2 = FocusNode();
+  final variantController3 = TextEditingController();
+  final variantFocus3 = FocusNode();
 
   @override
   Widget build(BuildContext context) {
-    String title = '';
-
-    List<String> pollAnswers = [];
-
     return Column(
       children: [
         MainTextField(
-            textController: TextEditingController(),
-            focusNode: FocusNode(),
-            bgColor: getMainAppTheme(context).colors.cardColor,
-            isPasswordField: false,
-            maxLines: 1,
-            title: 'header'.tr(),
-            readOnly: false,
-            onChanged: (value) {
-              title = value;
-            },
-            clearAvailable: true,
-            autoFocus: false),
+          textController: titleController,
+          focusNode: titleFocus,
+          title: 'header'.tr(),
+        ),
         const SizedBox(
           height: 24,
         ),
         MainTextField(
-            textController: TextEditingController(),
-            focusNode: FocusNode(),
-            bgColor: getMainAppTheme(context).colors.cardColor,
-            isPasswordField: false,
-            maxLines: 1,
-            title: 'Вариант ответа 1',
-            readOnly: false,
-            onChanged: (value) {
-              pollAnswers.add(value);
-            },
-            clearAvailable: true,
-            autoFocus: false),
+          textController: varianController1,
+          focusNode: variantFocus1,
+          title: '${'answerVariant'.tr()} 1',
+        ),
         const SizedBox(
           height: 24,
         ),
         MainTextField(
-            textController: TextEditingController(),
-            focusNode: FocusNode(),
-            bgColor: getMainAppTheme(context).colors.cardColor,
-            isPasswordField: false,
-            maxLines: 1,
-            title: 'Вариант ответа 2',
-            readOnly: false,
-            onChanged: (value) {
-              pollAnswers.add(value);
-            },
-            clearAvailable: true,
-            autoFocus: false),
+          textController: varianController2,
+          focusNode: variantFocus2,
+          title: '${'answerVariant'.tr()} 2',
+        ),
         const SizedBox(
           height: 24,
         ),
         MainTextField(
-            textController: TextEditingController(),
-            focusNode: FocusNode(),
-            bgColor: getMainAppTheme(context).colors.cardColor,
-            isPasswordField: false,
-            maxLines: 1,
-            title: 'Вариант ответа 3',
-            readOnly: false,
-            onChanged: (value) {
-              pollAnswers.add(value);
-            },
-            clearAvailable: true,
-            autoFocus: false),
+          textController: variantController3,
+          focusNode: variantFocus3,
+          title: '${'answerVariant'.tr()} 3',
+        ),
         const SizedBox(
           height: 24,
         ),
@@ -274,13 +248,13 @@ class _PollsBody extends StatelessWidget {
                     model: NewsModel(
                         filePath: '',
                         newsText: '',
-                        newsTitle: title,
-                        pollAnswers: pollAnswers,
+                        newsTitle: titleController.text,
+                        pollAnswers: [varianController1.text, varianController2.text, variantController3.text],
                         choosenPollValue: null,
                         publishDate: DateTime.now()),
                   ));
             },
-            title: 'publish'.tr(),
+            title: 'publish',
             assetIcon: ''),
       ],
     );
@@ -288,12 +262,11 @@ class _PollsBody extends StatelessWidget {
 }
 
 class _ModalBody extends StatelessWidget {
-  const _ModalBody({
-    super.key,
-  });
+  const _ModalBody();
 
   @override
   Widget build(BuildContext context) {
+    //TODO добавить вариант "Опрос успешно создан с апишками телеги"
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -314,13 +287,14 @@ class _ModalBody extends StatelessWidget {
               ),
             ),
             IconButton(
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true).pop();
-                },
-                icon: SvgPicture.asset(
-                  getMainAppTheme(context).icons.close,
-                  color: getMainAppTheme(context).colors.mainTextColor,
-                ))
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              },
+              icon: SvgPicture.asset(
+                getMainAppTheme(context).icons.close,
+                color: getMainAppTheme(context).colors.mainTextColor,
+              ),
+            )
           ],
         ),
         const SizedBox(
@@ -330,11 +304,11 @@ class _ModalBody extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(24),
           child: MainAppButton(
-              onPressed: () {
-                Navigator.of(context, rootNavigator: true).pop();
-              },
-              title: 'Закрыть',
-              assetIcon: ''),
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).pop();
+            },
+            title: 'close',
+          ),
         )
       ],
     );

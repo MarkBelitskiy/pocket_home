@@ -7,6 +7,7 @@ class AddNewWorkersViewModel extends ChangeNotifier {
   FocusNode fullNameFocusNode = FocusNode();
   FocusNode phoneFocusNode = FocusNode();
   FocusNode sallaryFocusNode = FocusNode();
+  //TODO вынести в префы + перевод
   List<String> jobTitles = ['Дворник', 'Слесарь', 'Электрик'];
   String currentJobTitle = '';
   void setCurrentJobTitle(int value) {

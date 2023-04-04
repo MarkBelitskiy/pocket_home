@@ -10,11 +10,11 @@ class _ReportsScreen extends StatelessWidget {
         body: BlocConsumer<ReportsBloc, ReportsState>(
           listener: (context, state) {
             if (state is OpenPdfState) {
-              Navigator.of(context).push(CupertinoPageRoute(
-                  builder: (context) => PdfTitlesScreen(
-                        pdfData: state.pdfData,
-                        pdfPath: '',
-                      )));
+              // Navigator.of(context).push(CupertinoPageRoute(
+              // builder: (context) => PdfTitlesScreen(
+              // pdfData: state.pdfData,
+              // pdfPath: '',
+              // )));
             }
             if (state is OnRatingGettedState) {
               showModalBottomSheet(
@@ -38,6 +38,7 @@ class _ReportsScreen extends StatelessWidget {
   }
 }
 
+//TODO Удалить
 class _Body extends StatelessWidget {
   const _Body({Key? key}) : super(key: key);
 
@@ -63,11 +64,16 @@ class _Body extends StatelessWidget {
 }
 
 class _Reports extends StatelessWidget {
-  const _Reports({super.key});
+  const _Reports();
 
   @override
   Widget build(BuildContext context) {
-    List<String> items = ['Рейтинг оказанных услуг', 'Отчет по бюджету за Месяц', 'ПДФ-Отчёт'];
+    //TODO вынести в префы + локаль
+    List<String> items = [
+      'Рейтинг оказанных услуг',
+      'Отчет по бюджету за Месяц',
+      'ПДФ-Отчёт',
+    ];
     return ListView.separated(
         separatorBuilder: (context, index) => const SizedBox(
               height: 8,
@@ -84,10 +90,10 @@ class _Reports extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      'Отчет',
+                      'report',
                       textAlign: TextAlign.left,
                       style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
-                    ),
+                    ).tr(),
                   ),
                   Expanded(
                     child: Text(
@@ -117,11 +123,12 @@ class _Reports extends StatelessWidget {
                   child: Row(
                     children: [
                       Expanded(
-                        child: Text('Формировать',
-                            style: getMainAppTheme(context)
-                                .textStyles
-                                .title
-                                .copyWith(color: getMainAppTheme(context).colors.activeColor)),
+                        child: Text('generate',
+                                style: getMainAppTheme(context)
+                                    .textStyles
+                                    .title
+                                    .copyWith(color: getMainAppTheme(context).colors.activeColor))
+                            .tr(),
                       ),
                       SvgPicture.asset(
                         getMainAppTheme(context).icons.chevronRight,
@@ -137,12 +144,12 @@ class _Reports extends StatelessWidget {
 
 class _ModalBody extends StatelessWidget {
   const _ModalBody({
-    super.key,
     required this.list,
   });
   final List<RatingReportModel> list;
   @override
   Widget build(BuildContext context) {
+    //TODO заменить на генерацию PDF widget
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -163,13 +170,14 @@ class _ModalBody extends StatelessWidget {
               ),
             ),
             IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: SvgPicture.asset(
-                  getMainAppTheme(context).icons.close,
-                  color: getMainAppTheme(context).colors.mainTextColor,
-                ))
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: SvgPicture.asset(
+                getMainAppTheme(context).icons.close,
+                color: getMainAppTheme(context).colors.mainTextColor,
+              ),
+            )
           ],
         ),
         const SizedBox(
@@ -293,12 +301,12 @@ class _ModalBody extends StatelessWidget {
 
 class _BudgetModalBody extends StatelessWidget {
   const _BudgetModalBody({
-    super.key,
     required this.model,
   });
   final BudgetReportModel model;
   @override
   Widget build(BuildContext context) {
+    //TODO заменить на генерацию PDF widget
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,

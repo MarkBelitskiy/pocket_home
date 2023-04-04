@@ -4,35 +4,30 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:pocket_home/common/widgets/button_widget.dart';
 
 import 'package:rxdart/rxdart.dart';
+import 'package:share_plus/share_plus.dart';
 
 class PdfWidget extends StatefulWidget {
-  final String pdfPath;
+  final String path;
   final bool isVertical;
-  final Uint8List pdfData;
-  PdfWidget(
-      {Key? key,
-      required this.pdfPath,
-      required this.pdfData,
-      this.isVertical = true})
-      : super(key: key);
+
+  const PdfWidget({Key? key, this.isVertical = true, required this.path}) : super(key: key);
 
   @override
-  _PdfViewScreenState createState() => _PdfViewScreenState();
+  State<PdfWidget> createState() => _PdfWidgetState();
 }
 
-class _PdfViewScreenState extends State<PdfWidget> {
+class _PdfWidgetState extends State<PdfWidget> {
   final pagesIndicator = BehaviorSubject<String>.seeded("-/-");
 
   Stream<String> get pagesIndicatorStream => pagesIndicator.stream;
-  bool _isInitComplete = false;
-  ValueNotifier<bool> _notifier = ValueNotifier(!Platform.isAndroid);
+  final ValueNotifier<bool> _notifier = ValueNotifier(!Platform.isAndroid);
   @override
   void initState() {
     if (Platform.isAndroid) {
-      Future.delayed(Duration(milliseconds: 500))
-          .then((value) => _notifier.value = true);
+      Future.delayed(const Duration(milliseconds: 500)).then((value) => _notifier.value = true);
     }
 
     super.initState();
@@ -57,16 +52,12 @@ class _PdfViewScreenState extends State<PdfWidget> {
                 Factory<VerticalDragGestureRecognizer>(
                   () => VerticalDragGestureRecognizer()..onUpdate = (_) {},
                 ),
-                Factory<HorizontalDragGestureRecognizer>(
-                    () => HorizontalDragGestureRecognizer()..onUpdate = (_) {})
+                Factory<HorizontalDragGestureRecognizer>(() => HorizontalDragGestureRecognizer()..onUpdate = (_) {})
               },
-              pdfData: widget.pdfData,
+              filePath: widget.path,
               preventLinkNavigation: true,
               onRender: (int? value) {
-                Future.delayed(Duration(milliseconds: 100))
-                    .then((value) => setState(() {
-                          _isInitComplete = true;
-                        }));
+                Future.delayed(const Duration(milliseconds: 100)).then((value) => setState(() {}));
               },
               onViewCreated: (controller) {
                 try {
@@ -79,20 +70,27 @@ class _PdfViewScreenState extends State<PdfWidget> {
               },
               onLinkHandler: (String? link) {},
               onPageChanged: (current, count) {
-                pagesIndicator.sink.add(
-                    "${current != null ? current + 1 : '-'}/${count ?? '-'}");
+                pagesIndicator.sink.add("${current != null ? current + 1 : '-'}/${count ?? '-'}");
               },
             ),
           if (value)
             StreamBuilder<String>(
                 stream: pagesIndicatorStream,
                 builder: (context, snapshot) {
-                  return snapshot.connectionState == ConnectionState.active &&
-                          snapshot.hasData
+                  return snapshot.connectionState == ConnectionState.active && snapshot.hasData
                       ? pageCounterWidget(snapshot.data!)
                       : const SizedBox.shrink();
                 }),
-          // if (!_isInitComplete)
+          Positioned(
+              bottom: 60,
+              left: 40,
+              right: 40,
+              child: MainAppButton(
+                onPressed: () {
+                  Share.shareXFiles([XFile(widget.path)]);
+                },
+                title: 'share',
+              ))
         ],
       ),
     );
@@ -103,12 +101,10 @@ class _PdfViewScreenState extends State<PdfWidget> {
       top: 10,
       left: 10,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        decoration: BoxDecoration(
-            color: Colors.black54,
-            borderRadius: const BorderRadius.all(Radius.circular(10))),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: const BoxDecoration(color: Colors.black54, borderRadius: BorderRadius.all(Radius.circular(10))),
         child: Text(
-          "$indicator",
+          indicator,
         ),
       ),
     );

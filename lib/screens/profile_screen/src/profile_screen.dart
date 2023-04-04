@@ -18,7 +18,6 @@ class _Body extends StatelessWidget {
     return BlocConsumer<ProfileBloc, ProfileState>(
       listener: (context, state) {
         if (state is ProfileSuccessDeletedState || state is LogoutState) {
-          context.read<MainScreenBloc>().add(OnInitAppEvent());
           context.read<MyHousesBloc>().add(ClearDataEvent());
         }
       },
@@ -35,17 +34,22 @@ class _Body extends StatelessWidget {
                 onPressed: () {
                   context.read<MainAppLocaleViewModel>().changeLocale(context);
                 },
-                title: 'localeLanguage'.tr(),
+                title: 'localeLanguage',
                 assetIcon: getMainAppTheme(context).icons.earth,
               ),
-              const SizedBox(
-                height: 16,
-              ),
-              MainAppButton(
-                onPressed: () {},
-                title: 'settings'.tr(),
-                assetIcon: getMainAppTheme(context).icons.settings,
-              ),
+              // const SizedBox(
+              //   height: 16,
+              // ),
+              // MainAppButton(
+              //   onPressed: () async {
+              //     final file = await monthBudgetPdfGenerate();
+              //     if (file != null)
+              //       Navigator.of(context, rootNavigator: true)
+              //           .push(MaterialPageRoute(builder: (context) => PdfTitlesScreen(path: file.path)));
+              //   },
+              //   title: 'settings'.tr(),
+              //   assetIcon: getMainAppTheme(context).icons.settings,
+              // ),
               const SizedBox(
                 height: 32,
               ),
@@ -88,7 +92,7 @@ class _Body extends StatelessWidget {
 }
 
 class _MainInfoWidget extends StatelessWidget {
-  const _MainInfoWidget({super.key, required this.profile});
+  const _MainInfoWidget({required this.profile});
   final UserModel profile;
   @override
   Widget build(BuildContext context) {
@@ -96,7 +100,10 @@ class _MainInfoWidget extends StatelessWidget {
       children: [
         MainAppFilePicker(
           maxFiles: 1,
-          onFilesAddedCallBack: (values) {},
+          onFilesAddedCallBack: (values) {
+            profile.photoPath = values.first;
+            context.read<ProfileBloc>().add(UpdateProfileEvent(profile));
+          },
           isProfilePhotoWidget: true,
           profilePhotoPath: profile.photoPath,
         ),

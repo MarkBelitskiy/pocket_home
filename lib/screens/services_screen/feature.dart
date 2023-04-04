@@ -6,16 +6,15 @@ import 'package:pocket_home/common/theme/theme_getter.dart';
 import 'package:pocket_home/common/utils/colors_palette.dart';
 import 'package:pocket_home/common/utils/formatter_utils.dart';
 import 'package:pocket_home/common/widgets/button_widget.dart';
-import 'package:pocket_home/common/widgets/floating_action_button_widget.dart';
+import 'package:pocket_home/common/widgets/floating_button/floating_action_button_widget.dart';
+import 'package:pocket_home/common/widgets/floating_button/floating_button_access_enums.dart';
 import 'package:pocket_home/common/widgets/lottie_animation_widget.dart';
 
 import 'package:flutter/material.dart';
 import 'package:pocket_home/common/widgets/main_app_bar_widget.dart';
-import 'package:pocket_home/common/widgets/main_app_bottom_sheet/main_app_bottom_sheet.dart';
-import 'package:pocket_home/common/widgets/main_body_widget.dart';
 import 'package:pocket_home/common/widgets/main_text_field/main_text_field_widget.dart';
+import 'package:pocket_home/screens/login_screen/src/bloc/auth_bloc.dart';
 import 'package:pocket_home/screens/my_home_screen/src/bloc/my_houses_bloc.dart';
-import 'package:pocket_home/screens/registration_screen/src/profile_model.dart';
 import 'package:pocket_home/screens/services_screen/src/bloc/services_bloc.dart';
 
 import 'src/add_service_screen/feature.dart';
@@ -28,6 +27,12 @@ class ServicesScreenFeature extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _ServicesScreen();
+    return BlocProvider(
+      create: (context) => ServicesBloc(
+        authBloc: context.read<AuthBloc>(),
+        myHousesBloc: context.read<MyHousesBloc>(),
+      ),
+      child: const _ServicesScreen(),
+    );
   }
 }

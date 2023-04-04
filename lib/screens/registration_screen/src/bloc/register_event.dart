@@ -1,6 +1,6 @@
 part of 'register_bloc.dart';
 
-@immutable
+
 abstract class RegisterEvent {}
 
 class ChangeBodyEvent extends RegisterEvent {

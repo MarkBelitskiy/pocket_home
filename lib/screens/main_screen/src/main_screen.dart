@@ -7,72 +7,19 @@ class _MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<CurvedNavigationBarState> bottomNavigationKey = GlobalKey();
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light.copyWith(statusBarColor: Colors.transparent),
       child: Consumer<MainAppLocaleViewModel>(builder: (context, value, child) {
-        return BlocConsumer<MainScreenBloc, MainScreenState>(
-          listener: (context, state) {
-            if (state is MainScreenInitial) {
-              context.read<MainScreenViewModel>().changeScreen(0);
-            }
-          },
+        return BlocBuilder<AuthBloc, AuthState>(
+          buildWhen: (previous, current) => current is AuthorizedSuccessState || current is UserIsNotAuthorizedState,
           builder: (context, state) {
-            if (state is UserSuccessLoadedState) {
-              return Scaffold(
-                body: const _Body(),
-                backgroundColor: getMainAppTheme(context).colors.bgColor,
-                bottomNavigationBar: CurvedNavigationBar(
-                  key: bottomNavigationKey,
-                  items: <Widget>[
-                    _NavBarItem(
-                      icon: getMainAppTheme(context).icons.news,
-                      title: 'news'.tr(),
-                      index: 0,
-                    ),
-                    _NavBarItem(
-                      icon: getMainAppTheme(context).icons.services,
-                      title: 'services'.tr(),
-                      index: 1,
-                    ),
-                    _NavBarItem(
-                      icon: getMainAppTheme(context).icons.buildingIcon,
-                      title: 'myhouses'.tr(),
-                      index: 2,
-                    ),
-                    _NavBarItem(
-                      icon: getMainAppTheme(context).icons.reports,
-                      title: 'reports'.tr(),
-                      index: 3,
-                    ),
-                    _NavBarItem(
-                      icon: getMainAppTheme(context).icons.profile,
-                      title: 'profile'.tr(),
-                      index: 4,
-                    ),
-                  ],
-                  color: getMainAppTheme(context).colors.cardColor,
-                  buttonBackgroundColor: getMainAppTheme(context).colors.cardColor,
-                  backgroundColor: context.watch<MainScreenViewModel>().activeIndex == 4
-                      ? getMainAppTheme(context).colors.buttonsColor
-                      : getMainAppTheme(context).colors.bgColor,
-                  animationCurve: Curves.fastLinearToSlowEaseIn,
-                  animationDuration: const Duration(milliseconds: 300),
-                  onTap: (index) {
-                    context.read<MainScreenViewModel>().changeScreen(index);
-                    if (index == 1) {
-                      context.read<ServicesBloc>().add(InitEvent());
-                    }
-                    if (index == 0) {
-                      context.read<NewsBloc>().add(OnNewsTabInit());
-                    }
-                  },
-                  letIndexChange: (index) => true,
-                ),
-              );
+            if (state is AuthorizedSuccessState) {
+              return const Scaffold(body: _Body(), extendBody: true, bottomNavigationBar: CustomNavBar());
             }
-            return _SplashScreen();
+            if (state is UserIsNotAuthorizedState) {
+              return const _UserNotLoadedScreen();
+            }
+            return const _SplashScreen();
           },
         );
       }),
@@ -80,103 +27,90 @@ class _MainScreen extends StatelessWidget {
   }
 }
 
-class _Body extends StatelessWidget {
+class _Body extends StatefulWidget {
   const _Body({
     Key? key,
   }) : super(key: key);
 
   @override
+  State<_Body> createState() => _BodyState();
+}
+
+class _BodyState extends State<_Body> {
+  @override
   Widget build(BuildContext context) {
+    // WidgetsBinding.instance.addPostFrameCallback(
+    //   (timeStamp) {
+    //     context.read<AuthBloc>().add(UpdateUserDataInOtherBlocksEvent());
+    //   },
+    // );
     return Consumer<MainScreenViewModel>(
-      builder: (context, value, child) => IndexedStack(
-        index: value.activeIndex,
-        children: <Widget>[
-          Navigator(
-            key: value.navigatorKeys[0],
-            onGenerateRoute: (route) =>
-                CupertinoPageRoute(settings: route, builder: (context) => const NewsScreenFeature()),
+      builder: (context, value, child) => Stack(
+        children: [
+          IndexedStack(
+            index: value.activeIndex,
+            children: <Widget>[
+              Navigator(
+                key: value.navigatorKeys[0],
+                onGenerateRoute: (route) =>
+                    CupertinoPageRoute(settings: route, builder: (context) => const NewsScreenFeature()),
+              ),
+              Navigator(
+                key: value.navigatorKeys[1],
+                onGenerateRoute: (route) =>
+                    CupertinoPageRoute(settings: route, builder: (context) => const ServicesScreenFeature()),
+              ),
+              Navigator(
+                key: value.navigatorKeys[2],
+                onGenerateRoute: (route) => CupertinoPageRoute(
+                    settings: route,
+                    builder: (context) {
+                      return const MyHousesScreanFeature();
+                    }),
+              ),
+              Navigator(
+                key: value.navigatorKeys[3],
+                onGenerateRoute: (route) =>
+                    CupertinoPageRoute(settings: route, builder: (context) => const ReportsScreenFeature()),
+              ),
+              Navigator(
+                  key: value.navigatorKeys[4],
+                  onGenerateRoute: (route) =>
+                      CupertinoPageRoute(settings: route, builder: (context) => const ProfileScreenFeature())),
+            ],
           ),
-          Navigator(
-            key: value.navigatorKeys[1],
-            onGenerateRoute: (route) =>
-                CupertinoPageRoute(settings: route, builder: (context) => const ServicesScreenFeature()),
-          ),
-          Navigator(
-            key: value.navigatorKeys[2],
-            onGenerateRoute: (route) =>
-                CupertinoPageRoute(settings: route, builder: (context) => const MyHousesScreanFeature()),
-          ),
-          Navigator(
-            key: value.navigatorKeys[3],
-            onGenerateRoute: (route) =>
-                CupertinoPageRoute(settings: route, builder: (context) => const ReportsScreenFeature()),
-          ),
-          Navigator(
-              key: value.navigatorKeys[4],
-              onGenerateRoute: (route) =>
-                  CupertinoPageRoute(settings: route, builder: (context) => const ProfileScreenFeature())),
         ],
       ),
     );
   }
 }
 
-class _NavBarItem extends StatelessWidget {
-  const _NavBarItem({Key? key, required this.icon, required this.index, this.secondIcon, required this.title})
-      : super(key: key);
-  final String icon;
-  final int index;
-  final String? secondIcon;
-  final String title;
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<MainScreenViewModel>(builder: (context, value, child) {
-      bool isActive = value.activeIndex == index;
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (!isActive) const SizedBox(height: 8),
-          SvgPicture.asset(isActive ? secondIcon ?? icon : icon,
-              color: isActive
-                  ? getMainAppTheme(context).colors.activeColor
-                  : getMainAppTheme(context).colors.inactiveColor),
-          if (!isActive) ...[
-            const SizedBox(height: 4),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: getMainAppTheme(context).textStyles.caption.copyWith(
-                  color: isActive
-                      ? getMainAppTheme(context).colors.activeText
-                      : getMainAppTheme(context).colors.inactiveText),
-            )
-          ]
-        ],
-      );
-    });
-  }
-}
-
-class _SplashScreen extends StatefulWidget {
-  const _SplashScreen({super.key});
+class _UserNotLoadedScreen extends StatefulWidget {
+  const _UserNotLoadedScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
-  State<_SplashScreen> createState() => _SplashScreenState();
+  State<_UserNotLoadedScreen> createState() => _UserNotLoadedScreenState();
 }
 
-class _SplashScreenState extends State<_SplashScreen> {
+class _UserNotLoadedScreenState extends State<_UserNotLoadedScreen> {
   double opacity = 0.0;
   double opacityButtons = 0.0;
   @override
   void initState() {
     Future.delayed(const Duration(milliseconds: 1000))
-        .then((value) => setState(() {
-              opacity = 1;
-            }))
+        .then(
+      (value) => setState(() {
+        opacity = 1;
+      }),
+    )
         .then((value) {
-      Future.delayed(const Duration(milliseconds: 500)).then((value) => setState(() {
-            opacityButtons = 1;
-          }));
+      Future.delayed(const Duration(milliseconds: 500)).then(
+        (value) => setState(() {
+          opacityButtons = 1;
+        }),
+      );
     });
 
     super.initState();
@@ -184,38 +118,34 @@ class _SplashScreenState extends State<_SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: getMainAppTheme(context).colors.bgColor,
       body: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
+        height: size.height,
+        width: size.width,
         child: Stack(
           children: <Widget>[
             Positioned.fill(
               child: SvgPicture.asset(
-                "assets/icons/splash_bg.svg",
+                getMainAppTheme(context).icons.splashBg,
                 fit: BoxFit.fill,
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
+                height: size.height,
+                width: size.width,
               ),
             ),
-            Positioned(
-              left: 0,
-              top: 0,
-              bottom: 0,
-              right: 0,
+            Positioned.fill(
               child: SingleChildScrollView(
                 child: Column(
                   children: [
                     SizedBox(
-                      height: MediaQuery.of(context).size.height / 6,
+                      height: size.height / 6,
                     ),
                     AnimatedOpacity(
                       opacity: opacity,
                       duration: const Duration(milliseconds: 1500),
                       child: SvgPicture.asset(
-                        'assets/icons/splash_logo.svg',
-                        // fit: BoxFit.fill,
+                        getMainAppTheme(context).icons.splashLogo,
                       ),
                     ),
                     const SizedBox(
@@ -224,17 +154,14 @@ class _SplashScreenState extends State<_SplashScreen> {
                     AnimatedOpacity(
                       opacity: opacityButtons,
                       duration: const Duration(seconds: 1),
-                      child: MaterialButton(
-                        onPressed: () {
-                          Navigator.of(context).push(loginScreenFeature(context.read<MainScreenBloc>()));
-                        },
-                        color: getMainAppTheme(context).colors.buttonsColor,
-                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 64),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                        child: Text(
-                          'Войти',
-                          textAlign: TextAlign.center,
-                          style: getMainAppTheme(context).textStyles.title.copyWith(color: ColorPalette.blue200),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 2),
+                        child: MainAppButton(
+                          onPressed: () {
+                            Navigator.of(context).push(loginScreenFeature());
+                          },
+                          title: 'enter',
+                          titleColor: getMainAppTheme(context).colors.activeColor,
                         ),
                       ),
                     ),
@@ -244,19 +171,14 @@ class _SplashScreenState extends State<_SplashScreen> {
                     AnimatedOpacity(
                       opacity: opacityButtons,
                       duration: const Duration(seconds: 1),
-                      child: MaterialButton(
-                        onPressed: () {
-                          Navigator.of(context).push(registrationScreenFeature(context.read<MainScreenBloc>()));
-                        },
-                        color: getMainAppTheme(context).colors.bgColor,
-                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                        shape: RoundedRectangleBorder(
-                            side: BorderSide(color: getMainAppTheme(context).colors.buttonsColor),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Text(
-                          'Зарегистрироваться',
-                          textAlign: TextAlign.center,
-                          style: getMainAppTheme(context).textStyles.title.copyWith(color: ColorPalette.blue200),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width / 1.4),
+                        child: MainAppButton(
+                          onPressed: () {
+                            Navigator.of(context).push(registrationScreenFeature());
+                          },
+                          titleColor: getMainAppTheme(context).colors.activeColor,
+                          title: 'register',
                         ),
                       ),
                     ),
@@ -271,20 +193,18 @@ class _SplashScreenState extends State<_SplashScreen> {
   }
 }
 
+class _SplashScreen extends StatelessWidget {
+  const _SplashScreen({Key? key}) : super(key: key);
 
-  // @override
-  // void initState() {
-  //   top = bottom = 250;
-  //   Future.delayed(Duration(seconds: 1)).then((value) {
-  //     Future.delayed(Duration(milliseconds: 300)).then((value) {
-  //       setState(() {
-  //         top = 0;
-  //       });
-  //     });
-  //     setState(() {
-  //       bottom = 0;
-  //     });
-  //   });
-  //   super.initState();
-  // }
-
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: getMainAppTheme(context).colors.bgColor,
+      body: Center(
+        child: SvgPicture.asset(
+          getMainAppTheme(context).icons.splashLogo,
+        ),
+      ),
+    );
+  }
+}

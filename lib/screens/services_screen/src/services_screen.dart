@@ -12,14 +12,14 @@ class _ServicesScreen extends StatelessWidget {
         backgroundColor: getMainAppTheme(context).colors.bgColor,
         resizeToAvoidBottomInset: false,
         floatingActionButton: MainAppFloatingButton(
+          enumValue: MainFloatingActionButton.services,
           onTap: () {
             Navigator.of(context, rootNavigator: true).push(addServicesScreenFeature(context.read<ServicesBloc>()));
           },
         ),
         appBar: const MainAppBar(
-          title: '',
           leadingEnable: false,
-          tabNames: ['Активные', 'История'],
+          tabNames: ['active', 'history'],
         ),
         body: BlocConsumer<ServicesBloc, ServicesState>(
           listener: (context, state) {
@@ -41,11 +41,11 @@ class _ServicesScreen extends StatelessWidget {
                 children: [
                   _TabBody(
                     models: state.activeModels,
-                    title: 'У вас пока нет активных заявок',
+                    title: "haveNotActiveServices",
                   ),
                   _TabBody(
                     models: state.historyModels,
-                    title: 'У вас пока нет истории заявок',
+                    title: 'uHaveNotHistoryOfServicesRequests',
                   ),
                 ],
               );
@@ -114,7 +114,6 @@ class _TabBody extends StatelessWidget {
 
 class _CardItem extends StatelessWidget {
   const _CardItem({
-    super.key,
     required this.item,
     required this.index,
   });
@@ -123,11 +122,6 @@ class _CardItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> itemValues = [
-      'В работе',
-      'Выполнена',
-      'Отклонена',
-    ];
     return GestureDetector(
       onTap: () {
         if (item.status == 1 &&
@@ -154,17 +148,6 @@ class _CardItem extends StatelessWidget {
               .then((value) => context.read<ServicesBloc>().add(ScreenUpdateEvent()));
         }
       },
-      onLongPress: () {
-        showMainAppBottomSheet(
-          context,
-          title: 'Изменение статуса(Тест сборка)',
-          items: itemValues,
-        ).then(
-          (value) => context.read<ServicesBloc>().add(
-                ChangeServiceValue(value, index),
-              ),
-        );
-      },
       child: Container(
         color: getMainAppTheme(context).colors.cardColor,
         padding: const EdgeInsets.all(12),
@@ -173,10 +156,10 @@ class _CardItem extends StatelessWidget {
           Row(
             children: [
               Text(
-                'Заявка № ${index + 1}',
+                'serviceNumber',
                 textAlign: TextAlign.left,
                 style: getMainAppTheme(context).textStyles.body.copyWith(color: getItemColor(0)),
-              ),
+              ).tr(args: [(index + 1).toString()]),
               Expanded(
                 child: Text(
                   FormatterUtils.formattedDate(item.publishDate, context.locale.languageCode),
@@ -192,10 +175,10 @@ class _CardItem extends StatelessWidget {
           Row(
             children: [
               Text(
-                'Наименование',
+                'serviceName',
                 textAlign: TextAlign.left,
                 style: getMainAppTheme(context).textStyles.body.copyWith(color: getItemColor(0)),
-              ),
+              ).tr(),
               Expanded(
                 child: Text(
                   item.name,
@@ -211,10 +194,10 @@ class _CardItem extends StatelessWidget {
           Row(
             children: [
               Text(
-                'Статус',
+                'status',
                 textAlign: TextAlign.left,
                 style: getMainAppTheme(context).textStyles.body.copyWith(color: getItemColor(0)),
-              ),
+              ).tr(),
               Expanded(
                 child: Text(
                   getStatusText(item.status),
@@ -234,10 +217,10 @@ class _CardItem extends StatelessWidget {
                   height: 14,
                 ),
                 Text(
-                  'Комментарий',
+                  'comment',
                   textAlign: TextAlign.left,
                   style: getMainAppTheme(context).textStyles.body.copyWith(color: getItemColor(0)),
-                ),
+                ).tr(),
                 Expanded(
                   child: Text(
                     item.workerCommentary!,
@@ -294,7 +277,6 @@ class _CardItem extends StatelessWidget {
 
 class _ModalBody extends StatelessWidget {
   const _ModalBody({
-    super.key,
     required this.item,
     required this.servicesBloc,
   });
@@ -303,6 +285,7 @@ class _ModalBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextEditingController controller = TextEditingController();
+    FocusNode focus = FocusNode();
     int value = 0;
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -317,13 +300,13 @@ class _ModalBody extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  'Оценка работы',
+                  'workRating',
                   textAlign: TextAlign.center,
                   style: getMainAppTheme(context)
                       .textStyles
                       .body
                       .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-                ),
+                ).tr(),
               ),
               IconButton(
                   onPressed: () {
@@ -349,17 +332,10 @@ class _ModalBody extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: MainTextField(
-                textController: controller,
-                focusNode: FocusNode(),
-                bgColor: getMainAppTheme(context).colors.buttonsColor,
-                isPasswordField: false,
-                maxLines: 1,
-                title: 'Комментарий',
-                keyboardType: TextInputType.text,
-                readOnly: false,
-                onChanged: (value) {},
-                clearAvailable: true,
-                autoFocus: false),
+              textController: controller,
+              focusNode: focus,
+              title: 'comment',
+            ),
           ),
           const SizedBox(
             height: 12,
@@ -367,13 +343,13 @@ class _ModalBody extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(24),
             child: MainAppButton(
-                onPressed: () {
-                  if (value != 0) {
-                    servicesBloc.add(SetRatingValueEvent(value, item));
-                  }
-                },
-                title: 'Сохранить',
-                assetIcon: ''),
+              onPressed: () {
+                if (value != 0) {
+                  servicesBloc.add(SetRatingValueEvent(value, item));
+                }
+              },
+              title: 'save',
+            ),
           )
         ],
       ),
@@ -382,7 +358,7 @@ class _ModalBody extends StatelessWidget {
 }
 
 class _RateWidget extends StatefulWidget {
-  const _RateWidget({super.key, required this.callback});
+  const _RateWidget({required this.callback});
   final Function(int value) callback;
   @override
   State<_RateWidget> createState() => _RateWidgetState();
@@ -408,7 +384,6 @@ class _RateWidgetState extends State<_RateWidget> {
             index < value ? Icons.star : Icons.star_border,
           ),
           padding: EdgeInsets.zero,
-          tooltip: "${index + 1} of 5",
         );
       }),
     );

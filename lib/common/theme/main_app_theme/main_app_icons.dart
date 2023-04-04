@@ -1,5 +1,3 @@
-part of 'main_app_theme.dart';
-
 class MainAppIcons {
   String get news => 'assets/icons/news.svg';
   String get services => 'assets/icons/services.svg';
@@ -32,6 +30,8 @@ class MainAppIcons {
   String get workers => 'assets/icons/workers.svg';
   String get money => 'assets/icons/money.svg';
 
-  String get emptySingleBlob => 'assets/icons/empty_single_blob.svg';
+  String get lottieBlob => 'assets/icons/blob_lottie.svg';
+  String get splashBg => 'assets/icons/splash_bg.svg';
+  String get splashLogo => 'assets/icons/splash_logo.svg';
   String get emptyDoubleBlob => 'assets/icons/empty_double_blob.svg';
 }

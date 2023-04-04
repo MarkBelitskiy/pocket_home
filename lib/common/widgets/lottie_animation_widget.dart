@@ -23,7 +23,7 @@ class EmptyPlaceholderWithLottie extends StatelessWidget {
                 child: Column(
                   children: [
                     SvgPicture.asset(
-                      'assets/icons/blob_lottie.svg',
+                      getMainAppTheme(context).icons.lottieBlob,
                       width: MediaQuery.of(context).size.width,
                     ),
                     if (title != null) ...[

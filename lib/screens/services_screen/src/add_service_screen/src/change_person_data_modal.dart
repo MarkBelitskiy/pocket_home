@@ -21,9 +21,7 @@ Future showChangePersonDataBottomSheet(
 }
 
 class _ModalBody extends StatelessWidget {
-  const _ModalBody({
-    super.key,
-  });
+  const _ModalBody();
 
   @override
   Widget build(BuildContext context) {
@@ -63,31 +61,29 @@ class _ModalBody extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
             child: MainTextField(
-                textController: vm.fullNameController,
-                focusNode: vm.fullNameFocuseNode,
-                bgColor: getMainAppTheme(context).colors.buttonsColor,
-                isPasswordField: false,
-                maxLines: 1,
-                title: 'ФИО',
-                readOnly: false,
-                onChanged: (value) {},
-                clearAvailable: true,
-                autoFocus: false),
+              textController: vm.fullNameController,
+              focusNode: vm.fullNameFocuseNode,
+              isPasswordField: false,
+              maxLines: 1,
+              title: 'ФИО',
+              readOnly: false,
+              onChanged: (value) {},
+              clearAvailable: true,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
             child: MainTextField(
-                textController: vm.phoneController,
-                focusNode: vm.phoneFocusNode,
-                bgColor: getMainAppTheme(context).colors.buttonsColor,
-                isPasswordField: false,
-                maxLines: 1,
-                keyboardType: TextInputType.phone,
-                title: 'Телефон',
-                readOnly: false,
-                onChanged: (value) {},
-                clearAvailable: true,
-                autoFocus: false),
+              textController: vm.phoneController,
+              focusNode: vm.phoneFocusNode,
+              isPasswordField: false,
+              maxLines: 1,
+              keyboardType: TextInputType.phone,
+              title: 'Телефон',
+              readOnly: false,
+              onChanged: (value) {},
+              clearAvailable: true,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16),

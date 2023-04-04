@@ -27,7 +27,7 @@ class _Body extends StatelessWidget {
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
               backgroundColor: getMainAppTheme(context).colors.bgColor,
               context: context,
-              builder: (context) => _ModalBody()).then((value) {
+              builder: (context) => const _ModalBody()).then((value) {
             Navigator.of(context).pop(true);
           });
         }
@@ -266,7 +266,7 @@ class _Files extends StatelessWidget {
 }
 
 class _Commentary extends StatelessWidget {
-  const _Commentary({super.key});
+  const _Commentary();
 
   @override
   Widget build(BuildContext context) {
@@ -283,24 +283,21 @@ class _Commentary extends StatelessWidget {
           height: 4,
         ),
         MainTextField(
-            textController: vm.commentController,
-            focusNode: vm.commentFocusNode,
-            bgColor: getMainAppTheme(context).colors.cardColor,
-            isPasswordField: false,
-            maxLines: 4,
-            readOnly: false,
-            onChanged: (value) {},
-            clearAvailable: true,
-            autoFocus: false)
+          textController: vm.commentController,
+          focusNode: vm.commentFocusNode,
+          isPasswordField: false,
+          maxLines: 4,
+          readOnly: false,
+          onChanged: (value) {},
+          clearAvailable: true,
+        )
       ],
     );
   }
 }
 
 class _ModalBody extends StatelessWidget {
-  const _ModalBody({
-    super.key,
-  });
+  const _ModalBody();
 
   @override
   Widget build(BuildContext context) {

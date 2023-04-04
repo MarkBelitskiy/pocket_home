@@ -3,7 +3,8 @@ part of 'news_bloc.dart';
 abstract class NewsEvent {}
 
 class OnNewsTabInit extends NewsEvent {
-  OnNewsTabInit();
+  final bool needUpdateHome;
+  OnNewsTabInit(this.needUpdateHome);
 }
 
 class UpdatePollEvent extends NewsEvent {

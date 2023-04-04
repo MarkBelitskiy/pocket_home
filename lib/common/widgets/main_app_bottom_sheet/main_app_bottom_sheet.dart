@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,10 +12,10 @@ Future showMainAppBottomSheet(
   required String title,
   required List<String> items,
   bool isNeedSearch = false,
-  bool isRoot = true,
 }) {
   return showModalBottomSheet(
     isScrollControlled: true,
+    useRootNavigator: true,
     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
     backgroundColor: getMainAppTheme(contextFromScreen).colors.bgColor,
     context: contextFromScreen,
@@ -28,7 +29,6 @@ Future showMainAppBottomSheet(
 
 class _ModalBody extends StatelessWidget {
   const _ModalBody({
-    super.key,
     required this.title,
     required this.isNeedSearch,
     required this.items,
@@ -50,7 +50,7 @@ class _ModalBody extends StatelessWidget {
               Row(
                 children: [
                   const SizedBox(
-                    width: 24,
+                    width: 48,
                   ),
                   Expanded(
                     child: Text(
@@ -60,7 +60,7 @@ class _ModalBody extends StatelessWidget {
                           .textStyles
                           .body
                           .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-                    ),
+                    ).tr(),
                   ),
                   IconButton(
                       onPressed: () {
@@ -85,19 +85,16 @@ class _ModalBody extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 50),
                                 child: MainTextField(
-                                    prefixIcon: getMainAppTheme(context).icons.search,
-                                    textController: TextEditingController(),
-                                    focusNode: FocusNode(),
-                                    bgColor: getMainAppTheme(context).colors.buttonsColor,
-                                    isPasswordField: false,
-                                    maxLines: 1,
-                                    title: 'Поиск',
-                                    readOnly: false,
-                                    onChanged: (value) {
-                                      context.read<MainAppBottomSheetBloc>().add(SearchItemsEvent(value));
-                                    },
-                                    clearAvailable: true,
-                                    autoFocus: false),
+                                  prefixIcon: getMainAppTheme(context).icons.search,
+                                  textController: TextEditingController(),
+                                  focusNode: FocusNode(),
+                                  maxLines: 1,
+                                  title: 'search',
+                                  onChanged: (value) {
+                                    context.read<MainAppBottomSheetBloc>().add(SearchItemsEvent(value));
+                                  },
+                                  clearAvailable: true,
+                                ),
                               ),
                             Flexible(
                               fit: FlexFit.loose,
@@ -125,17 +122,17 @@ class _ModalBody extends StatelessWidget {
                                                     .textStyles
                                                     .body
                                                     .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-                                              ),
+                                              ).tr(),
                                             ),
                                             Row(
                                               children: [
                                                 Text(
-                                                  'Выбрать',
+                                                  'choose',
                                                   style: getMainAppTheme(context)
                                                       .textStyles
                                                       .body
                                                       .copyWith(color: getMainAppTheme(context).colors.activeText),
-                                                ),
+                                                ).tr(),
                                                 SvgPicture.asset(
                                                   getMainAppTheme(context).icons.chevronRight,
                                                   color: getMainAppTheme(context).colors.activeColor,

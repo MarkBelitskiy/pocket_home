@@ -1,50 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:pocket_home/common/theme/theme_getter.dart';
 import 'package:pocket_home/common/utils/colors_palette.dart';
 import 'package:pocket_home/common/utils/formatter_utils.dart';
 
 class MainTextField extends StatefulWidget {
-  const MainTextField(
-      {Key? key,
-      required this.textController,
-      required this.focusNode,
-      required this.bgColor,
-      this.title,
-      required this.isPasswordField,
-      this.errorText,
-      required this.maxLines,
-      this.borderColors,
-      this.onTap,
-      required this.readOnly,
-      required this.onChanged,
-      required this.clearAvailable,
-      this.prefixIcon,
-      this.suffixIcon,
-      required this.autoFocus,
-      this.textInputAction,
-      this.keyboardType,
-      this.onSubmitted})
-      : super(key: key);
+  const MainTextField({
+    Key? key,
+    required this.textController,
+    required this.focusNode,
+    this.title,
+    this.isPasswordField = false,
+    this.errorText,
+    this.maxLines = 1,
+    this.readOnly = false,
+    this.onChanged,
+    this.clearAvailable = true,
+    this.prefixIcon,
+    this.stringToValidate,
+    this.regExpToValidate,
+    this.textInputAction,
+    this.keyboardType,
+  })  : assert(
+            !(regExpToValidate != null && stringToValidate != null), 'You can use only one of this fields to validate'),
+        assert(!(isPasswordField && clearAvailable), 'If you use isPasswordField set clearAvailable to false'),
+        assert(!(errorText == null && (regExpToValidate != null || stringToValidate != null)),
+            'You need set errorText to show message on the screen'),
+        assert(!(errorText != null && (regExpToValidate == null && stringToValidate == null)),
+            'If you want show error message use regExpToValidate or stringToValidate'),
+        super(key: key);
   final TextEditingController textController;
   final FocusNode focusNode;
-
   final bool clearAvailable;
-  final bool autoFocus;
-  final Color? borderColors;
-  final Color bgColor;
+
   final bool isPasswordField;
   final String? title;
   final String? errorText;
   final int? maxLines;
   final bool readOnly;
-  final String? suffixIcon;
+  final RegExp? regExpToValidate;
+  final String? stringToValidate;
   final String? prefixIcon;
   final dynamic textInputAction;
-  final Function(String value)? onSubmitted;
+
   final Function(String value)? onChanged;
-  final Function? onTap;
+
   final TextInputType? keyboardType;
 
   @override
@@ -52,164 +52,151 @@ class MainTextField extends StatefulWidget {
 }
 
 class _MainTextFieldState extends State<MainTextField> {
-  final borderStyle = InputBorder.none;
-  Color? _borderColor;
-
-  late FocusNode focusNode;
-  late TextEditingController textEditingController;
-  late ValueNotifier<bool> _showSuffixIcon;
-
-  bool isPhoneField = false;
+  late bool showSuffixIcon;
+  bool isValidate = false;
+  late bool isPhoneField;
   final mask = FormatterUtils.phoneFormatter;
+
   @override
   void initState() {
+    showSuffixIcon = widget.isPasswordField;
     isPhoneField = widget.keyboardType == TextInputType.phone;
-    focusNode = widget.focusNode;
-    focusNode.addListener(() {
-      setState(() {
-        _borderColor = widget.errorText != null && textEditingController.text.isNotEmpty && !focusNode.hasFocus
-            ? ColorPalette.red500
-            : focusNode.hasFocus
-                ? ColorPalette.blue500
-                : Colors.transparent;
-      });
-    });
-    textEditingController = widget.textController;
-
-    _showSuffixIcon = ValueNotifier<bool>(widget.isPasswordField);
 
     super.initState();
   }
 
   @override
+  void dispose() {
+    widget.textController.dispose();
+    widget.focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).requestFocus(focusNode);
-        widget.onTap?.call();
-      },
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            constraints: const BoxConstraints(minHeight: 60),
-            decoration: BoxDecoration(
-                color: widget.bgColor,
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(color: widget.borderColors ?? _borderColor ?? Colors.transparent)),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            width: MediaQuery.of(context).size.width,
-            child: Row(
-              children: [
-                if (widget.prefixIcon != null) ...[
-                  SvgPicture.asset(widget.prefixIcon!, width: 24, height: 24),
-                  const SizedBox(
-                    width: 8,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        //TODO ADD TITLE
+        TextFormField(
+          keyboardType: widget.keyboardType,
+          readOnly: widget.readOnly,
+          autocorrect: false,
+          textInputAction: widget.textInputAction ?? TextInputAction.done,
+          inputFormatters: isPhoneField ? [mask] : null,
+          validator: (value) {
+            return _validateFunc(value);
+          },
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          onChanged: (value) {
+            if (_validateFunc(value) == null) {
+              setState(() {
+                isValidate = value.isNotEmpty;
+                if (!widget.isPasswordField) {
+                  showSuffixIcon = value.isNotEmpty;
+                }
+              });
+            } else {
+              setState(() {
+                isValidate = false;
+                if (!widget.isPasswordField) {
+                  showSuffixIcon = value.isNotEmpty;
+                }
+              });
+            }
+
+            widget.onChanged?.call(value);
+          },
+          maxLines: widget.maxLines,
+          obscureText: widget.isPasswordField && showSuffixIcon,
+          controller: widget.textController,
+          style:
+              getMainAppTheme(context).textStyles.body.copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+          focusNode: widget.focusNode,
+          cursorColor: getMainAppTheme(context).colors.mainTextColor,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: getMainAppTheme(context).colors.cardColor,
+            prefixIcon: widget.prefixIcon != null ? SvgPicture.asset(widget.prefixIcon!, width: 24, height: 24) : null,
+            suffixIcon: widget.isPasswordField
+                ? IconButton(
+                    constraints: const BoxConstraints(maxWidth: 24, maxHeight: 24),
+                    padding: EdgeInsets.zero,
+                    icon: SvgPicture.asset(
+                        showSuffixIcon
+                            ? getMainAppTheme(context).icons.eyeOpen
+                            : getMainAppTheme(context).icons.eyeClose,
+                        color: ColorPalette.blue500,
+                        width: 24,
+                        height: 24),
+                    onPressed: () {
+                      setState(() {
+                        showSuffixIcon = !showSuffixIcon;
+                      });
+                    },
                   )
-                ],
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ValueListenableBuilder<bool>(
-                          valueListenable: _showSuffixIcon,
-                          builder: (context, value, child) {
-                            return TextFormField(
-                              keyboardType: widget.keyboardType,
-                              readOnly: widget.readOnly,
-                              autocorrect: false,
-                              textInputAction: widget.textInputAction ?? TextInputAction.done,
-                              onFieldSubmitted: (value) {
-                                widget.onSubmitted?.call(value);
-                              },
-                              inputFormatters: isPhoneField ? [mask] : null,
-                              onChanged: (value) {
-                                if (!widget.isPasswordField) {
-                                  _showSuffixIcon.value = value.isNotEmpty;
-                                }
-                                widget.onChanged?.call(value);
-                              },
-                              maxLines: widget.maxLines ?? 1,
-                              autofocus: widget.autoFocus,
-                              obscureText: widget.isPasswordField && value,
-                              controller: textEditingController,
-                              style: getMainAppTheme(context)
-                                  .textStyles
-                                  .body
-                                  .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-                              focusNode: focusNode,
-                              cursorColor: getMainAppTheme(context).colors.mainTextColor,
-                              decoration: InputDecoration(
-                                isDense: true,
-                                labelText: widget.title,
-                                labelStyle: getMainAppTheme(context)
-                                    .textStyles
-                                    .subBody
-                                    .copyWith()
-                                    .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-                                contentPadding: EdgeInsets.zero,
-                                border: borderStyle,
-                                disabledBorder: borderStyle,
-                                enabledBorder: borderStyle,
-                                focusedBorder: borderStyle,
-                                errorBorder: borderStyle,
-                                focusedErrorBorder: borderStyle,
-                              ),
-                            );
-                          }),
-                    ],
-                  ),
-                ),
-                if (widget.suffixIcon == null)
-                  ValueListenableBuilder<bool>(
-                      valueListenable: _showSuffixIcon,
-                      builder: (context, value, child) {
-                        if (widget.isPasswordField) {
-                          return IconButton(
-                            constraints: const BoxConstraints(maxWidth: 24, maxHeight: 24),
-                            padding: EdgeInsets.zero,
-                            icon: SvgPicture.asset(
-                                value
-                                    ? getMainAppTheme(context).icons.eyeOpen
-                                    : getMainAppTheme(context).icons.eyeClose,
-                                color: ColorPalette.blue500,
-                                width: 24,
-                                height: 24),
-                            onPressed: () {
-                              _showSuffixIcon.value = !_showSuffixIcon.value;
-                            },
-                          );
-                        }
-                        if (value && widget.clearAvailable) {
-                          return IconButton(
-                            constraints: const BoxConstraints(maxWidth: 24, maxHeight: 24),
-                            padding: EdgeInsets.zero,
-                            icon: SvgPicture.asset(getMainAppTheme(context).icons.close,
-                                color: getMainAppTheme(context).colors.borderColors, width: 24, height: 24),
-                            onPressed: () {
-                              textEditingController.clear();
-                              widget.onChanged?.call('');
-                              _showSuffixIcon.value = false;
-                            },
-                          );
-                        }
-                        return const SizedBox.shrink();
-                      }),
-                if (widget.suffixIcon != null) SvgPicture.asset(widget.suffixIcon!, width: 24, height: 24),
-              ],
-            ),
-          ),
-          if (widget.errorText != null && textEditingController.text.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 6.0),
-              child: Text(
-                widget.errorText!,
-                style: getMainAppTheme(context).textStyles.subBody.copyWith(color: ColorPalette.red500),
-                textAlign: TextAlign.start,
+                : showSuffixIcon && widget.clearAvailable
+                    ? IconButton(
+                        constraints: const BoxConstraints(maxWidth: 24, maxHeight: 24),
+                        padding: EdgeInsets.zero,
+                        icon: SvgPicture.asset(getMainAppTheme(context).icons.close,
+                            color: getMainAppTheme(context).colors.borderColors, width: 24, height: 24),
+                        onPressed: () {
+                          widget.textController.clear();
+                          widget.onChanged?.call('');
+                          showSuffixIcon = false;
+                        },
+                      )
+                    : null,
+            labelStyle: getMainAppTheme(context)
+                .textStyles
+                .subBody
+                .copyWith()
+                .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+            contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: BorderSide(
+                color: widget.errorText != null && isValidate ? ColorPalette.green500 : ColorPalette.grey600,
+                width: 1,
               ),
             ),
-        ],
-      ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: const BorderSide(
+                color: ColorPalette.blue500,
+                width: 1,
+              ),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: const BorderSide(
+                color: ColorPalette.red500,
+                width: 1,
+              ),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(15),
+              borderSide: const BorderSide(
+                color: ColorPalette.red500,
+                width: 1,
+              ),
+            ),
+          ),
+        )
+      ],
     );
+  }
+
+  String? _validateFunc(String? value) {
+    if (value != null && value.isNotEmpty) {
+      if (widget.regExpToValidate != null && !value.contains(widget.regExpToValidate!)) {
+        return widget.errorText;
+      }
+      if (widget.stringToValidate != null && value != widget.stringToValidate!) {
+        return widget.errorText;
+      }
+    }
+    return null;
   }
 }

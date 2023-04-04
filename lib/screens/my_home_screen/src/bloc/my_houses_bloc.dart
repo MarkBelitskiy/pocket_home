@@ -1,15 +1,17 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pocket_home/common/utils/preferences_utils.dart';
+import 'package:pocket_home/common/repository/repository.dart';
+import 'package:pocket_home/common/utils/formatter_utils.dart';
 import 'package:pocket_home/screens/my_home_screen/my_home_model.dart';
 import 'package:pocket_home/screens/registration_screen/src/profile_model.dart';
-
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'my_houses_event.dart';
 part 'my_houses_state.dart';
 
 class MyHousesBloc extends Bloc<MyHousesEvent, MyHousesState> {
-  MyHousesBloc() : super(MyHousesInitial()) {
+  final Repository repository;
+  UserModel? currentUser;
+  MyHousesBloc({required this.repository}) : super(MyHousesInitial()) {
     on<InitHousesEvent>(_onInit);
     on<GetHousesToModalEvent>(_onGetHousese);
     on<FilteredHousesToModalEvent>(_onFiltered);
@@ -18,84 +20,37 @@ class MyHousesBloc extends Bloc<MyHousesEvent, MyHousesState> {
     on<ChangeCurrentHomeEvent>(_onChangeCurrentActiveHouse);
     on<SaveHouseToPrefs>(_onSaveHouseToPrefs);
     on<ClearDataEvent>(_onClear);
+    on<ActivateIntroEvent>(_onAnimated);
+    on<AddPaymentToBudget>(_paymentToBudget);
+    on<UpdateIsManagerValueToFloatingButtonEvent>(_onUpdateIsManagerValue);
   }
-
-  List<HouseModel> _housesList = [
-    HouseModel(
-        houseNumber: '25',
-        houseAddress: '7й микрорайон',
-        budget: 700000,
-        manager: Manager(name: 'Марк Белицкий', phone: '+7 700 726 4066')),
-    HouseModel(
-        houseNumber: '12',
-        budget: 700000,
-        houseAddress: '8й микрорайон',
-        manager: Manager(name: 'Екатерина', phone: '+7 771 280 4163')),
-    HouseModel(
-        houseNumber: '230',
-        budget: 700000,
-        houseAddress: 'пр-кт. Абая',
-        manager: Manager(name: 'Ольга Майер', phone: '+7 705 109 2994'))
-  ];
-
-  List<HouseModel> userHousesList = [];
+  List<HouseModel> housesList = [];
   HouseModel? currentHouse;
-  UserModel? currentUser;
-
+  bool isManager = false;
   Future _onInit(InitHousesEvent event, Emitter<MyHousesState> emit) async {
-    final prefs = await SharedPreferences.getInstance();
-
     try {
-      String? houses = prefs.getString(PreferencesUtils.housesKey);
-      if (houses != null && houses.isNotEmpty) {
-        _housesList = houseModelFromJson(houses);
-      } else {
-        prefs.setString(PreferencesUtils.housesKey, houseModelToJson(_housesList));
-      }
-
-      String? usersStringFromPrefs = prefs.getString(PreferencesUtils.usersKey);
-      String? login = prefs.getString(PreferencesUtils.loginKey);
-
-      List<UserModel> users = usersStringFromPrefs != null && usersStringFromPrefs.isNotEmpty
-          ? usersModelFromJson(usersStringFromPrefs)
-          : [];
-
-      UserModel? user;
-
-      for (var i = 0; i < users.length; i++) {
-        if (users[i].login == login) {
-          user = users[i];
-        }
-      }
-      currentUser = user;
-      userHousesList = user?.userHouses ?? [];
-      if (user?.userHouses?.isNotEmpty ?? false) {
-        for (var i = 0; i < user!.userHouses!.length; i++) {
-          for (var element in _housesList) {
-            if (element.houseAddress == user.userHouses![i].houseAddress &&
-                element.houseNumber == user.userHouses![i].houseNumber) {
-              user.userHouses![i] = element;
-            }
-          }
-        }
-      }
-
-      currentHouse = userHousesList.isEmpty ? null : userHousesList.first;
-
-      emit(MyHousesLoadedState(userHousesList, currentHouse));
+      housesList = await repository.housesRepo.getHousesList();
+      currentUser = await repository.userRepo.getUser();
+      currentHouse = currentUser!.userHouses != null && currentUser!.userHouses!.isNotEmpty
+          ? currentUser!.userHouses!.first
+          : null;
+      add(UpdateIsManagerValueToFloatingButtonEvent());
+      emit(MyHousesLoadedState(currentUser!.userHouses ?? [], currentHouse));
     } catch (e) {
-      print('MY_HOUSES_BLOC_ON_INIT_ERROR: $e');
+      if (kDebugMode) {
+        print('MY_HOUSES_BLOC_ON_INIT_ERROR: $e');
+      }
     }
   }
 
   Future _onGetHousese(GetHousesToModalEvent event, Emitter<MyHousesState> emit) async {
-    emit(ReturnedHouseseToAddHouseModal(_housesList));
+    emit(ReturnedHouseseToAddHouseModal(housesList));
   }
 
   Future _onFiltered(FilteredHousesToModalEvent event, Emitter<MyHousesState> emit) async {
     List<HouseModel> filteredList = [];
-
-    for (var element in _housesList) {
+//TODO abstract filter
+    for (var element in housesList) {
       if (element.houseAddress.contains(event.value.trim()) || element.houseNumber.contains(event.value.trim())) {
         filteredList.add(element);
       }
@@ -105,41 +60,31 @@ class MyHousesBloc extends Bloc<MyHousesEvent, MyHousesState> {
   }
 
   Future _onAddHouse(AddHouseToMyHouseseEvent event, Emitter<MyHousesState> emit) async {
+    List<HouseModel> userHouses = currentUser!.userHouses ?? [];
     try {
-      if (userHousesList.any((element) =>
+      if (userHouses.any((element) =>
           element.houseAddress == event.house.houseAddress && element.houseNumber == event.house.houseNumber)) {
+        //TODO add Locale
         throw 'У вас уже добавлен этот дом';
       }
-      final prefs = await SharedPreferences.getInstance();
-      userHousesList.add(event.house);
 
-      String? usersStringFromPrefs = prefs.getString(PreferencesUtils.usersKey);
-      String? login = prefs.getString(PreferencesUtils.loginKey);
-
-      List<UserModel> users = usersStringFromPrefs != null && usersStringFromPrefs.isNotEmpty
-          ? usersModelFromJson(usersStringFromPrefs)
-          : [];
-
-      for (var i = 0; i < users.length; i++) {
-        if (users[i].login == login) {
-          if (users[i].userHouses != null) {
-            users[i].userHouses!.add(event.house);
-          } else {
-            users[i].userHouses = [event.house];
-          }
-        }
-      }
-
-      prefs.setString(PreferencesUtils.usersKey, usersModelToJson(users));
+      userHouses.add(event.house);
+      currentUser!.userHouses = userHouses;
       currentHouse = event.house;
-      emit(MyHousesLoadedState(userHousesList, currentHouse!));
-    } catch (e) {}
+      add(UpdateIsManagerValueToFloatingButtonEvent());
+      await repository.userRepo.updateUser(user: currentUser!);
+      emit(MyHousesLoadedState(userHouses, currentHouse!));
+    } catch (e) {
+      if (kDebugMode) {
+        print('MY_HOUSES_BLOC_ON_ADD_ERROR: $e');
+      }
+    }
   }
 
   Future _onFilteredToChange(FilteredHousesToChangeHouseModalEvent event, Emitter<MyHousesState> emit) async {
     List<HouseModel> filteredList = [];
-
-    for (var element in userHousesList) {
+    List<HouseModel> userHouses = currentUser!.userHouses ?? [];
+    for (var element in userHouses) {
       if (element.houseAddress.contains(event.value.trim()) || element.houseNumber.contains(event.value.trim())) {
         filteredList.add(element);
       }
@@ -150,31 +95,52 @@ class MyHousesBloc extends Bloc<MyHousesEvent, MyHousesState> {
 
   Future _onChangeCurrentActiveHouse(ChangeCurrentHomeEvent event, Emitter<MyHousesState> emit) async {
     currentHouse = event.house;
-    emit(MyHousesLoadedState(userHousesList, currentHouse!));
+    add(UpdateIsManagerValueToFloatingButtonEvent());
+    emit(MyHousesLoadedState(currentUser!.userHouses ?? [], currentHouse!));
   }
 
   Future _onSaveHouseToPrefs(SaveHouseToPrefs event, Emitter<MyHousesState> emit) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
+      List<HouseModel> userHouses = currentUser!.userHouses ?? [];
 
-      for (var i = 0; i < _housesList.length; i++) {
-        if (_housesList[i].houseAddress == currentHouse!.houseAddress ||
-            _housesList[i].houseNumber == currentHouse!.houseNumber) {
-          _housesList[i].workers = currentHouse!.workers;
-        }
+      int houseIndex = userHouses.indexWhere((element) =>
+          element.houseAddress == currentHouse!.houseAddress && element.houseNumber == currentHouse!.houseNumber);
+
+      if (houseIndex >= 0) {
+        userHouses[houseIndex] = currentHouse!;
+        currentUser!.userHouses = userHouses;
       }
-      prefs.setString(PreferencesUtils.housesKey, houseModelToJson(_housesList));
+      await repository.userRepo.updateUser(user: currentUser!);
 
-      emit(MyHousesLoadedState(userHousesList, currentHouse!));
+      housesList = await repository.housesRepo.updateHouses(houseToUpdate: currentHouse!);
+
+      emit(MyHousesLoadedState(currentUser!.userHouses ?? [], currentHouse!));
     } catch (e) {
-      print('ON_SAVE_HOUSE_TO_PREFS_ERROR $e');
+      if (kDebugMode) {
+        print('ON_SAVE_HOUSE_TO_PREFS_ERROR $e');
+      }
     }
   }
 
   Future _onClear(ClearDataEvent event, Emitter<MyHousesState> emit) async {
     currentHouse = null;
     currentUser = null;
-    userHousesList.clear();
-    emit(MyHousesLoadedState(userHousesList, currentHouse));
+
+    emit(MyHousesLoadedState(currentUser!.userHouses ?? [], currentHouse));
+  }
+
+  Future _onAnimated(ActivateIntroEvent event, Emitter<MyHousesState> emit) async {
+    emit(MyHousesLoadedState(currentUser!.userHouses ?? [], currentHouse, activateAnimation: true));
+  }
+
+  Future _paymentToBudget(AddPaymentToBudget event, Emitter<MyHousesState> emit) async {}
+
+  Future _onUpdateIsManagerValue(UpdateIsManagerValueToFloatingButtonEvent event, Emitter<MyHousesState> emit) async {
+    if (currentHouse != null && currentUser != null) {
+      isManager = FormatterUtils.preparePhoneToMask(currentHouse!.manager.phone) ==
+          FormatterUtils.preparePhoneToMask(currentUser!.phone);
+
+      emit(UpdateIsManagerState(isManager));
+    }
   }
 }

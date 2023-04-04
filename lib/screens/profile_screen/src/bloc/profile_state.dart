@@ -13,3 +13,5 @@ class ProfileLoadedState extends ProfileState {
 class ProfileSuccessDeletedState extends ProfileState {}
 
 class LogoutState extends ProfileState {}
+
+class ProfileLoadedErrorState extends ProfileState {}

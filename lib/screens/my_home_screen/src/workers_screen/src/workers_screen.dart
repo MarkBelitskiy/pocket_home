@@ -1,22 +1,24 @@
 part of '../feature.dart';
 
 class _WorkersScreen extends StatelessWidget {
-  const _WorkersScreen({super.key});
+  const _WorkersScreen();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: getMainAppTheme(context).colors.bgColor,
-      floatingActionButton: MainAppFloatingButton(onTap: () {
-        Navigator.of(context).push(addNewWorkersScreenFeature()).then((value) {
-          if (value is WorkerModel) {
-            context.read<WorkersBloc>().add(AddWorkerToHouseEvent(value));
-          }
-        });
-      }),
+      floatingActionButton: MainAppFloatingButton(
+          enumValue: MainFloatingActionButton.workers,
+          onTap: () {
+            Navigator.of(context).push(addNewWorkersScreenFeature()).then((value) {
+              if (value is WorkerModel) {
+                context.read<WorkersBloc>().add(AddWorkerToHouseEvent(value));
+              }
+            });
+          }),
       resizeToAvoidBottomInset: false,
       appBar: const MainAppBar(
-        title: 'Сотрудники',
+        title: 'employees',
         isRoot: true,
       ),
       body: BlocBuilder<WorkersBloc, WorkersState>(
@@ -93,7 +95,7 @@ class _WorkersScreen extends StatelessWidget {
 }
 
 class _EmptyBodyState extends StatelessWidget {
-  const _EmptyBodyState({super.key});
+  const _EmptyBodyState();
 
   @override
   Widget build(BuildContext context) {

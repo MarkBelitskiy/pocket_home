@@ -30,6 +30,18 @@ class FilteredHousesToChangeHouseModalEvent extends MyHousesEvent {
   FilteredHousesToChangeHouseModalEvent(this.value);
 }
 
-class SaveHouseToPrefs extends MyHousesEvent {}
+class SaveHouseToPrefs extends MyHousesEvent {
+  SaveHouseToPrefs();
+}
 
 class ClearDataEvent extends MyHousesEvent {}
+
+class ActivateIntroEvent extends MyHousesEvent {}
+
+class AddPaymentToBudget extends MyHousesEvent {
+  final int paymentValue;
+
+  AddPaymentToBudget(this.paymentValue);
+}
+
+class UpdateIsManagerValueToFloatingButtonEvent extends MyHousesEvent {}

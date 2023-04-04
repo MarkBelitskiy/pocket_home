@@ -15,7 +15,7 @@ class _ServicesDetailedScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: getMainAppTheme(context).colors.bgColor,
-      appBar: MainAppBar(title: 'Заявка № ${numberOfService + 1}', subTitle: model.name, isRoot: true),
+      appBar: MainAppBar(title: 'serviceRequestView', subTitle: model.name, isRoot: true),
       body: _Body(
         model: model,
         servicesBloc: servicesBloc,
@@ -73,33 +73,34 @@ class _Body extends StatelessWidget {
               model.status != 2 &&
               model.status != 3) ...[
             Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                child: GestureDetector(
-                  onTap: () {
-                    showModalBottomSheet(
-                        isScrollControlled: true,
-                        shape:
-                            const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
-                        backgroundColor: getMainAppTheme(context).colors.bgColor,
-                        context: context,
-                        builder: (context) => _SetSpecialystBody(
-                              itemIndex: index,
-                              servicesBloc: servicesBloc,
-                            )).then((value) {
-                      if (value is Map) {
-                        servicesBloc.add(SetWorkerEvent(value[0], value[1]));
-                        Navigator.of(context, rootNavigator: true).pop();
-                      }
-                    });
-                  },
-                  child: Text(
-                    "Назначить специалиста",
-                    style: getMainAppTheme(context)
-                        .textStyles
-                        .title
-                        .copyWith(color: getMainAppTheme(context).colors.activeText),
-                  ),
-                )),
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              child: GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                      isScrollControlled: true,
+                      shape:
+                          const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
+                      backgroundColor: getMainAppTheme(context).colors.bgColor,
+                      context: context,
+                      builder: (context) => _SetSpecialystBody(
+                            itemIndex: index,
+                            servicesBloc: servicesBloc,
+                          )).then((value) {
+                    if (value is Map) {
+                      servicesBloc.add(SetWorkerEvent(value[0], value[1]));
+                      Navigator.of(context, rootNavigator: true).pop();
+                    }
+                  });
+                },
+                child: Text(
+                  "setEmployee",
+                  style: getMainAppTheme(context)
+                      .textStyles
+                      .title
+                      .copyWith(color: getMainAppTheme(context).colors.activeText),
+                ).tr(),
+              ),
+            ),
             const SizedBox(
               height: 12,
             ),
@@ -121,12 +122,13 @@ class _Body extends StatelessWidget {
                   });
                 },
                 child: Text(
-                  "Отклонить",
+                  "cancel",
                   style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.red500),
-                ),
+                ).tr(),
               ),
             ),
           ],
+          //TODO добавть буль через event
           if (FormatterUtils.preparePhoneToMask(context.read<MyHousesBloc>().currentUser?.phone ?? '') ==
                   FormatterUtils.preparePhoneToMask(model.choosePerson?.phone ?? '') &&
               model.status != 1 &&
@@ -140,8 +142,7 @@ class _Body extends StatelessWidget {
                   context.read<ServicesBloc>().add(ChangeServiceValue(1, index));
                   Navigator.of(context).pop();
                 },
-                title: 'Закончить работу',
-                assetIcon: '')
+                title: 'finishTheWork')
           ]
         ],
       ),
@@ -158,10 +159,10 @@ class _ContactPerson extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Контактные данные',
+          'contactData',
           style:
               getMainAppTheme(context).textStyles.title.copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-        ),
+        ).tr(),
         const SizedBox(
           height: 4,
         ),
@@ -176,13 +177,14 @@ class _ContactPerson extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                      child: Text(
-                    'ФИО',
-                    style: getMainAppTheme(context)
-                        .textStyles
-                        .body
-                        .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-                  )),
+                    child: Text(
+                      'fullName',
+                      style: getMainAppTheme(context)
+                          .textStyles
+                          .body
+                          .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+                    ).tr(),
+                  ),
                   Expanded(
                       child: Text(
                     model.name,
@@ -200,13 +202,14 @@ class _ContactPerson extends StatelessWidget {
               Row(
                 children: [
                   Expanded(
-                      child: Text(
-                    'Телефон',
-                    style: getMainAppTheme(context)
-                        .textStyles
-                        .body
-                        .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-                  )),
+                    child: Text(
+                      'phone',
+                      style: getMainAppTheme(context)
+                          .textStyles
+                          .body
+                          .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+                    ).tr(),
+                  ),
                   Expanded(
                       child: Text(
                     model.phone,
@@ -239,10 +242,10 @@ class _Files extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Файлы',
+          'files',
           style:
               getMainAppTheme(context).textStyles.title.copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-        ),
+        ).tr(),
         const SizedBox(
           height: 4,
         ),
@@ -276,7 +279,7 @@ class _Files extends StatelessWidget {
 }
 
 class _Commentary extends StatelessWidget {
-  const _Commentary({super.key, required this.commentary});
+  const _Commentary({required this.commentary});
   final String commentary;
   @override
   Widget build(BuildContext context) {
@@ -284,10 +287,10 @@ class _Commentary extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Комментарий',
+          'comment',
           style:
               getMainAppTheme(context).textStyles.title.copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-        ),
+        ).tr(),
         const SizedBox(
           height: 4,
         ),
@@ -312,9 +315,7 @@ class _Commentary extends StatelessWidget {
 }
 
 class _ModalBody extends StatelessWidget {
-  const _ModalBody({
-    super.key,
-  });
+  const _ModalBody();
 
   @override
   Widget build(BuildContext context) {
@@ -332,13 +333,13 @@ class _ModalBody extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  'Причина отклонения',
+                  'cancelReason',
                   textAlign: TextAlign.center,
                   style: getMainAppTheme(context)
                       .textStyles
                       .body
                       .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-                ),
+                ).tr(),
               ),
               IconButton(
                   onPressed: () {
@@ -356,18 +357,13 @@ class _ModalBody extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: MainTextField(
-                textController: controller,
-                focusNode: FocusNode(),
-                bgColor: getMainAppTheme(context).colors.buttonsColor,
-                isPasswordField: false,
-                maxLines: 1,
-                title: 'Комментарий',
-                readOnly: false,
-                onChanged: (value) {
-                  controller.text = value;
-                },
-                clearAvailable: true,
-                autoFocus: false),
+              textController: controller,
+              focusNode: FocusNode(),
+              title: 'comment',
+              onChanged: (value) {
+                controller.text = value;
+              },
+            ),
           ),
           const SizedBox(
             height: 12,
@@ -378,7 +374,7 @@ class _ModalBody extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context, rootNavigator: true).pop(controller.text);
                 },
-                title: 'Сохранить',
+                title: 'save',
                 assetIcon: ''),
           )
         ],
@@ -389,7 +385,6 @@ class _ModalBody extends StatelessWidget {
 
 class _SetSpecialystBody extends StatelessWidget {
   const _SetSpecialystBody({
-    super.key,
     required this.servicesBloc,
     required this.itemIndex,
   });
@@ -397,7 +392,6 @@ class _SetSpecialystBody extends StatelessWidget {
   final ServicesBloc servicesBloc;
   @override
   Widget build(BuildContext context) {
-    TextEditingController controller = TextEditingController();
     return BlocProvider<ChoseServicePersonBloc>(
       create: (context) => ChoseServicePersonBloc(context.read<MyHousesBloc>())..add(InitPersonsDataEvent()),
       child: Padding(
@@ -413,13 +407,13 @@ class _SetSpecialystBody extends StatelessWidget {
                 ),
                 Expanded(
                   child: Text(
-                    'Выбор специалиста',
+                    'employeeChoose',
                     textAlign: TextAlign.center,
                     style: getMainAppTheme(context)
                         .textStyles
                         .body
                         .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-                  ),
+                  ).tr(),
                 ),
                 IconButton(
                     onPressed: () {
@@ -446,19 +440,15 @@ class _SetSpecialystBody extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 50),
                             child: MainTextField(
-                                prefixIcon: getMainAppTheme(context).icons.search,
-                                textController: TextEditingController(),
-                                focusNode: FocusNode(),
-                                bgColor: getMainAppTheme(context).colors.buttonsColor,
-                                isPasswordField: false,
-                                maxLines: 1,
-                                title: 'Поиск',
-                                readOnly: false,
-                                onChanged: (value) {
-                                  context.read<ChoseServicePersonBloc>().add(SearchPersonsEvent(value));
-                                },
-                                clearAvailable: true,
-                                autoFocus: false),
+                              prefixIcon: getMainAppTheme(context).icons.search,
+                              textController: TextEditingController(),
+                              focusNode: FocusNode(),
+                              title: 'search',
+                              onChanged: (value) {
+                                context.read<ChoseServicePersonBloc>().add(SearchPersonsEvent(value));
+                              },
+                              clearAvailable: true,
+                            ),
                           ),
                           Flexible(
                             fit: FlexFit.loose,
@@ -501,94 +491,95 @@ class _SetSpecialystBody extends StatelessWidget {
 }
 
 class _PersonCard extends StatelessWidget {
-  const _PersonCard({super.key, required this.person, this.isBordered = false});
+  const _PersonCard({required this.person, this.isBordered = false});
   final WorkerModel person;
   final bool isBordered;
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-            color: getMainAppTheme(context).colors.cardColor,
-            borderRadius: isBordered ? BorderRadius.circular(12) : null),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'ФИО',
-                    style: getMainAppTheme(context)
-                        .textStyles
-                        .body
-                        .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-                  ),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+          color: getMainAppTheme(context).colors.cardColor,
+          borderRadius: isBordered ? BorderRadius.circular(12) : null),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'fullName',
+                  style: getMainAppTheme(context)
+                      .textStyles
+                      .body
+                      .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+                ).tr(),
+              ),
+              Expanded(
+                child: Text(
+                  person.fullName,
+                  textAlign: TextAlign.right,
+                  style: getMainAppTheme(context)
+                      .textStyles
+                      .body
+                      .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
                 ),
-                Expanded(
-                  child: Text(
-                    person.fullName,
-                    textAlign: TextAlign.right,
-                    style: getMainAppTheme(context)
-                        .textStyles
-                        .body
-                        .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-                  ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'employeeJobTitle',
+                  style: getMainAppTheme(context)
+                      .textStyles
+                      .body
+                      .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+                ).tr(),
+              ),
+              Expanded(
+                child: Text(
+                  person.jobTitle,
+                  textAlign: TextAlign.right,
+                  style: getMainAppTheme(context)
+                      .textStyles
+                      .body
+                      .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
                 ),
-              ],
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Должность',
-                    style: getMainAppTheme(context)
-                        .textStyles
-                        .body
-                        .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-                  ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'phone',
+                  style: getMainAppTheme(context)
+                      .textStyles
+                      .body
+                      .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+                ).tr(),
+              ),
+              Expanded(
+                child: Text(
+                  person.phone,
+                  textAlign: TextAlign.right,
+                  style: getMainAppTheme(context)
+                      .textStyles
+                      .body
+                      .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
                 ),
-                Expanded(
-                  child: Text(
-                    person.jobTitle,
-                    textAlign: TextAlign.right,
-                    style: getMainAppTheme(context)
-                        .textStyles
-                        .body
-                        .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'Телефон',
-                    style: getMainAppTheme(context)
-                        .textStyles
-                        .body
-                        .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    person.phone,
-                    textAlign: TextAlign.right,
-                    style: getMainAppTheme(context)
-                        .textStyles
-                        .body
-                        .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ));
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

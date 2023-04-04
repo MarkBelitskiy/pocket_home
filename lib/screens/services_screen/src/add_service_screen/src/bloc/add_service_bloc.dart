@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pocket_home/screens/my_home_screen/src/bloc/my_houses_bloc.dart';
 import 'package:pocket_home/screens/services_screen/src/bloc/services_bloc.dart';
@@ -21,10 +22,12 @@ class AddServiceBloc extends Bloc<AddServiceEvent, AddServiceState> {
       }
 
       servicesBloc.add(InitEvent());
-      myHousesBloc.add(SaveHouseToPrefs());
+      // myHousesBloc.add(SaveHouseToPrefs());
       emit(ServicesAddedState());
     } catch (e) {
-      print('CREATE_SERVICE_EVENT_ERROR: $e');
+      if (kDebugMode) {
+        print('CREATE_SERVICE_EVENT_ERROR: $e');
+      }
     }
   }
 }

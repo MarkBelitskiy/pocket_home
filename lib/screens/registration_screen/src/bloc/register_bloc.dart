@@ -1,5 +1,6 @@
-import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
+import 'dart:convert';
+
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pocket_home/common/utils/preferences_utils.dart';
 import 'package:pocket_home/screens/registration_screen/src/profile_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,7 +45,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       prefs.setString(PreferencesUtils.usersKey, usersModelToJson(users));
 
       prefs.setBool(PreferencesUtils.authorizedKey, true);
-
+      prefs.setString(PreferencesUtils.authenticatedUser, jsonEncode(event.profile.toJson()));
       emit(RegisterSuccesfullState());
     } catch (e) {
       emit(

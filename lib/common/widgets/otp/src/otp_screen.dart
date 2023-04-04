@@ -6,45 +6,43 @@ class OtpScreen extends StatelessWidget {
   final Function(OtpReturnDataModel) continueButtonCallBack;
   @override
   Widget build(BuildContext context) {
-    NotificationService service = NotificationService();
-    service.showNotificationWithoutSound();
-    TextEditingController _controller = TextEditingController();
-    FocusNode _focus = FocusNode();
-    ValueNotifier<bool> _notifier = ValueNotifier<bool>(false);
-    _controller.addListener(() {
-      _notifier.value = _controller.text.length == 4;
+    //TODO ADD SMS CODE GENERATE
+    context
+        .read<NotificationService>()
+        .showNotificationWithoutSound(id: 0, title: 'passwordReset'.tr(), msg: 'pinToReset'.tr(args: ['9555']));
+    TextEditingController controller = TextEditingController();
+    FocusNode focus = FocusNode();
+    ValueNotifier<bool> notifier = ValueNotifier<bool>(false);
+    controller.addListener(() {
+      notifier.value = controller.text.length == 4;
     });
     String messageId = '';
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: getMainAppTheme(context).colors.bgColor,
-        appBar: const MainAppBar(title: 'Восстановление пароля'),
-        body: MainAppBody(
-          children: [
-            Column(
-              children: [
-                OtpWidget(maskedPhone: phone, textEditingController: _controller, focusNode: _focus),
-                const SizedBox(
-                  height: 80,
-                ),
-                ValueListenableBuilder<bool>(
-                    valueListenable: _notifier,
-                    builder: (context, value, child) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 32),
-                        child: MainAppButton(
-                          title: 'Продолжить',
-                          onPressed: () {
-                            continueButtonCallBack.call(OtpReturnDataModel(phone, messageId, _controller.text));
-                          },
-                          assetIcon: '',
-                        ),
-                      );
-                    })
-              ],
-            )
-          ],
-        ));
+      resizeToAvoidBottomInset: false,
+      backgroundColor: getMainAppTheme(context).colors.bgColor,
+      appBar: const MainAppBar(title: 'passwordReset'),
+      body: MainAppBody(
+        children: [
+          OtpWidget(maskedPhone: phone, textEditingController: controller, focusNode: focus),
+          const SizedBox(
+            height: 80,
+          ),
+          ValueListenableBuilder<bool>(
+              valueListenable: notifier,
+              builder: (context, value, child) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: MainAppButton(
+                    title: 'continue',
+                    onPressed: () {
+                      continueButtonCallBack.call(OtpReturnDataModel(phone, messageId, controller.text));
+                    },
+                  ),
+                );
+              })
+        ],
+      ),
+    );
   }
 }
 
@@ -53,7 +51,7 @@ class OtpWidget extends StatefulWidget {
   final FocusNode focusNode;
   final bool autoFocus;
   final String maskedPhone;
-  OtpWidget(
+  const OtpWidget(
       {Key? key,
       required this.textEditingController,
       required this.focusNode,
@@ -99,14 +97,14 @@ class OtpWidgetState extends State<OtpWidget> {
 
   @override
   Widget build(BuildContext context) {
-    String _phone = FormatterUtils.preparePhoneToMask(widget.maskedPhone);
+    String phone = FormatterUtils.preparePhoneToMask(widget.maskedPhone);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         children: [
           const SizedBox(height: 24),
           _InfoText(
-            maskedPhone: _phone,
+            maskedPhone: phone,
           ),
           const SizedBox(height: 16),
           _PinCodeField(
@@ -137,10 +135,10 @@ class _InfoText extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(top: 8),
         child: Text(
-          'На номер, $maskedPhone был отправлен SMS код',
+          'smsWasSendTo',
           style:
               getMainAppTheme(context).textStyles.body.copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-        ),
+        ).tr(args: [maskedPhone]),
       ),
     );
   }
@@ -166,7 +164,7 @@ class _PinCodeField extends StatelessWidget {
         appContext: context,
         validator: (value) {
           if ((value ?? '').length < fieldsCount) {
-            return "Заполните код полностью";
+            return "smsCodeFillError".tr();
           } else {
             return null;
           }
@@ -219,24 +217,23 @@ class _ResendSMS extends StatelessWidget {
       builder: (context, snapshot) {
         return (snapshot.data ?? 0) > 0
             ? Text(
-                'Прислать код повторно через: ${snapshot.data}',
-                // style: ProjectTextStyle.black15W400LetterNeg17Opacity5,
+                'resentSmsCodeIn',
                 style: getMainAppTheme(context)
                     .textStyles
                     .body
                     .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-              )
+              ).tr(args: [snapshot.data.toString()])
             : InkWell(
                 onTap: () {
                   sendOtpEvent?.call();
                 },
                 child: Text(
-                  'Прислать код повторно',
+                  'resentSmsCode',
                   style: getMainAppTheme(context)
                       .textStyles
                       .body
                       .copyWith(color: getMainAppTheme(context).colors.activeColor),
-                ),
+                ).tr(),
               );
       },
     );

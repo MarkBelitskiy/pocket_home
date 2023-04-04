@@ -5,79 +5,66 @@ class _NewsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-          backgroundColor: getMainAppTheme(context).colors.bgColor,
-          floatingActionButton: BlocBuilder<MyHousesBloc, MyHousesState>(
-            builder: (context, state) {
-              if (state is MyHousesLoadedState) {
-                return FormatterUtils.preparePhoneToMask(
-                            context.read<MyHousesBloc>().currentHouse?.manager.phone ?? '') ==
-                        FormatterUtils.preparePhoneToMask(context.read<MyHousesBloc>().currentUser?.phone ?? '')
-                    ? MainAppFloatingButton(onTap: () {
-                        Navigator.of(context, rootNavigator: true).push(addNewsScreenFeature()).then((value) {
-                          if (value is bool && value) {
-                            context.read<NewsBloc>().add(OnNewsTabInit());
-                          }
-                        });
-                      })
-                    : const SizedBox.shrink();
-              }
-              return const SizedBox.shrink();
-            },
-          ),
-          body: const _Body()),
-    );
+    return BlocBuilder<NewsBloc, NewsState>(
+        buildWhen: (previous, current) => current is NewsLoadedState || current is NewsLoadingState,
+        builder: (context, state) {
+          if (state is NewsLoadedState) {
+            return Scaffold(
+                backgroundColor: getMainAppTheme(context).colors.bgColor,
+                floatingActionButton: state.currentHouse != null
+                    ? MainAppFloatingButton(
+                        enumValue: MainFloatingActionButton.news,
+                        onTap: () {
+                          Navigator.of(context, rootNavigator: true)
+                              .push(addNewsScreenFeature(state.currentHouse!, context.read<NewsBloc>()));
+                        },
+                      )
+                    : const SizedBox.shrink(),
+                body: _Body(
+                  state: state,
+                ));
+          }
+          return const Center(child: CircularProgressIndicator());
+        });
   }
 }
 
 class _Body extends StatelessWidget {
-  const _Body({Key? key}) : super(key: key);
-
+  const _Body({Key? key, required this.state}) : super(key: key);
+  final NewsLoadedState state;
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<NewsBloc, NewsState>(
-      listener: (context, state) {},
-      buildWhen: (previous, current) => current is NewsLoadedState || current is NewsLoadingState,
-      builder: (context, state) {
-        if (state is NewsLoadedState) {
-          if (state.newsModel.isEmpty) {
-            return SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: EmptyPlaceholderWithLottie(
-                      lottiePath: getMainAppTheme(context).icons.lottieNews,
-                      margin: const EdgeInsets.only(bottom: 110, left: 20),
-                      title: 'haveNotNews',
-                    ),
+    return state.newsModel.isEmpty
+        ? SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: EmptyPlaceholderWithLottie(
+                    lottiePath: getMainAppTheme(context).icons.lottieNews,
+                    margin: const EdgeInsets.only(bottom: 110, left: 20),
+                    title: 'haveNotNews',
                   ),
-                ],
-              ),
-            );
-          } else {
-            return _NewsBody(
-              news: state.newsModel,
-            );
-          }
-        }
-
-        return const Center(child: CircularProgressIndicator());
-      },
-    );
+                ),
+              ],
+            ),
+          )
+        : _NewsBody(
+            news: state.newsModel,
+          );
   }
 }
 
 class _NewsBody extends StatelessWidget {
-  const _NewsBody({super.key, required this.news});
+  const _NewsBody({required this.news});
   final List<NewsModel> news;
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-        padding: const EdgeInsets.only(bottom: 80),
+        padding: const EdgeInsets.only(bottom: 150, top: 30),
         itemCount: news.length,
         separatorBuilder: (context, index) => const SizedBox(
               height: 8,
@@ -110,10 +97,10 @@ class _News extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                'Новости',
+                'news',
                 textAlign: TextAlign.left,
                 style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
-              ),
+              ).tr(),
             ),
             Expanded(
               child: Text(
@@ -152,12 +139,12 @@ class _News extends StatelessWidget {
                       Navigator.of(context, rootNavigator: true).push(viewNewsScreenFeature(news));
                     },
                     child: Text(
-                      'Просмотреть полностью...',
+                      'viewAll',
                       style: getMainAppTheme(context)
                           .textStyles
                           .body
                           .copyWith(color: getMainAppTheme(context).colors.activeText),
-                    ),
+                    ).tr(),
                   ),
                 )
             ],
@@ -180,7 +167,7 @@ class _News extends StatelessWidget {
 }
 
 class _Poll extends StatelessWidget {
-  const _Poll({super.key, required this.news, required this.id});
+  const _Poll({required this.news, required this.id});
   final NewsModel news;
   final int id;
   @override
@@ -196,10 +183,10 @@ class _Poll extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                'Опросы',
+                'polls',
                 textAlign: TextAlign.left,
                 style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
-              ),
+              ).tr(),
             ),
             Expanded(
               child: Text(
@@ -221,26 +208,22 @@ class _Poll extends StatelessWidget {
         const SizedBox(
           height: 12,
         ),
-        ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemBuilder: (count, index) {
-            return ValueListenableBuilder<int?>(
-              valueListenable: choosenValue,
-              builder: (context, value, child) {
-                return _PollAnswer(
-                  answer: news.pollAnswers![index],
-                  isSavedAnswer: news.choosenPollValue == index,
-                  tapCallBack: (value) {
-                    choosenValue.value = index;
+        ...news.pollAnswers!
+            .map((e) => ValueListenableBuilder<int?>(
+                  valueListenable: choosenValue,
+                  builder: (context, value, child) {
+                    int index = news.pollAnswers!.indexOf(e);
+                    return _PollAnswer(
+                      answer: e,
+                      isSavedAnswer: news.choosenPollValue == index,
+                      tapCallBack: (value) {
+                        choosenValue.value = index;
+                      },
+                      isActive: news.choosenPollValue == null ? value == index : news.choosenPollValue == index,
+                    );
                   },
-                  isActive: news.choosenPollValue == null ? value == index : news.choosenPollValue == index,
-                );
-              },
-            );
-          },
-          itemCount: news.pollAnswers?.length,
-        ),
+                ))
+            .toList(),
         if (news.choosenPollValue == null) ...[
           const SizedBox(height: 12),
           GestureDetector(
@@ -251,11 +234,12 @@ class _Poll extends StatelessWidget {
             },
             child: Align(
               alignment: Alignment.center,
-              child: Text('Сохранить',
-                  style: getMainAppTheme(context)
-                      .textStyles
-                      .title
-                      .copyWith(color: getMainAppTheme(context).colors.activeColor)),
+              child: Text('save',
+                      style: getMainAppTheme(context)
+                          .textStyles
+                          .title
+                          .copyWith(color: getMainAppTheme(context).colors.activeColor))
+                  .tr(),
             ),
           ),
           const SizedBox(height: 12),
@@ -266,8 +250,7 @@ class _Poll extends StatelessWidget {
 }
 
 class _PollAnswer extends StatelessWidget {
-  const _PollAnswer(
-      {super.key, required this.answer, required this.tapCallBack, this.isSavedAnswer, this.isActive = false});
+  const _PollAnswer({required this.answer, required this.tapCallBack, this.isSavedAnswer, this.isActive = false});
   final String answer;
   final Function(String) tapCallBack;
   final bool isActive;
@@ -283,23 +266,15 @@ class _PollAnswer extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 4.0),
         child: Row(
           children: [
-            if (isSavedAnswer == null) ...[
-              Transform.scale(
-                scale: 1.3,
-                child: Checkbox(
-                  value: isActive,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                  onChanged: (value) {
-                    tapCallBack.call(answer);
-                  },
-                  checkColor: getMainAppTheme(context).colors.activeColor,
-                  fillColor: MaterialStatePropertyAll(getMainAppTheme(context).colors.bgColor),
-                ),
-              ),
-              const SizedBox(
-                width: 12,
-              ),
-            ],
+            Checkbox(
+              value: isActive,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+              onChanged: (value) {
+                tapCallBack.call(answer);
+              },
+              checkColor: getMainAppTheme(context).colors.activeColor,
+              fillColor: MaterialStatePropertyAll(getMainAppTheme(context).colors.bgColor),
+            ),
             Expanded(
                 child: Text(
               answer,
@@ -307,13 +282,11 @@ class _PollAnswer extends StatelessWidget {
               style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
             )),
             if (isSavedAnswer != null && isSavedAnswer!) ...[
-              Transform.scale(
-                  scale: 1.3,
-                  child: Text(
-                    'Ваш ответ',
-                    textAlign: TextAlign.left,
-                    style: getMainAppTheme(context).textStyles.caption.copyWith(color: ColorPalette.blue500),
-                  )),
+              Text(
+                'yourAnswer',
+                textAlign: TextAlign.left,
+                style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.blue500),
+              ).tr(),
               const SizedBox(
                 width: 12,
               ),

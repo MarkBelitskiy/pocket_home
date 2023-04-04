@@ -6,47 +6,13 @@ class _ViewNewsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: getMainAppTheme(context).colors.bgColor,
-        appBar: const MainAppBar(
-          title: 'Просмотр новости',
-        ),
-        body: _Body(
-          news: news,
-        ));
-  }
-}
-
-class _Body extends StatelessWidget {
-  const _Body({Key? key, required this.news}) : super(key: key);
-  final NewsModel news;
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
-      child: MainAppBody(
-        needPadding: false,
-        children: [
-          _NewsBody(
-            news: news,
-          ),
-        ],
+      resizeToAvoidBottomInset: false,
+      backgroundColor: getMainAppTheme(context).colors.bgColor,
+      appBar: const MainAppBar(
+        title: 'newsView',
       ),
-    );
-  }
-}
-
-class _NewsBody extends StatelessWidget {
-  const _NewsBody({super.key, required this.news});
-  final NewsModel news;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      color: getMainAppTheme(context).colors.cardColor,
-      child: Column(
+      body: MainAppBody(
+        needPadding: false,
         children: [
           Row(
             children: [

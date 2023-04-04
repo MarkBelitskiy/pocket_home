@@ -20,39 +20,38 @@ class _FilePickerWidget extends StatelessWidget {
       },
       builder: (context, state) {
         if (state is FileAddedSuccessState) {
-          return GridView.builder(
-              shrinkWrap: true,
-              itemCount: maxFiles == 1
-                  ? 1
-                  : state.paths.length == maxFiles
-                      ? maxFiles
-                      : state.paths.length + 1,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: state.paths.isEmpty || maxFiles == 1 ? 1 : 3,
-                  mainAxisSpacing: 8,
-                  mainAxisExtent: isProfilePhotoWidget ? 170 : 109,
-                  crossAxisSpacing: 8),
-              itemBuilder: (context, index) {
-                if (index != state.paths.length && !isProfilePhotoWidget) {
-                  return _PreviewFileWidget(
-                    path: state.paths[index],
-                    index: index,
-                  );
-                }
-                if (maxFiles > state.paths.length) {
-                  return _AddButton(
-                      onlyOneFileCanAdded: maxFiles == 1,
-                      isProfilePhoto: isProfilePhotoWidget,
-                      profilePhoto: state.paths.isNotEmpty ? state.paths[0] : null);
-                }
-                if (isProfilePhotoWidget && state.paths.isNotEmpty) {
-                  return _ProfilePhotoBody(
-                    photopath: state.paths[0],
-                  );
-                }
-                return const SizedBox.shrink();
-              });
+          return isProfilePhotoWidget
+              ? _ProfilePhotoBody(
+                  photopath: state.paths.isNotEmpty ? state.paths.first : null,
+                )
+              : GridView.builder(
+                  shrinkWrap: true,
+                  itemCount: maxFiles == 1
+                      ? 1
+                      : state.paths.length == maxFiles
+                          ? maxFiles
+                          : state.paths.length + 1,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: state.paths.isEmpty || maxFiles == 1 ? 1 : 3,
+                      mainAxisSpacing: 8,
+                      mainAxisExtent: 109,
+                      crossAxisSpacing: 8),
+                  itemBuilder: (context, index) {
+                    if (index != state.paths.length) {
+                      return _PreviewFileWidget(
+                        path: state.paths[index],
+                        index: index,
+                      );
+                    }
+                    if (maxFiles > state.paths.length) {
+                      return _AddButton(
+                        onlyOneFileCanAdded: maxFiles == 1,
+                      );
+                    }
+
+                    return const SizedBox.shrink();
+                  });
         }
         return const SizedBox.shrink();
       },
@@ -61,89 +60,69 @@ class _FilePickerWidget extends StatelessWidget {
 }
 
 class _AddButton extends StatelessWidget {
-  const _AddButton({super.key, required this.onlyOneFileCanAdded, this.profilePhoto, required this.isProfilePhoto});
+  const _AddButton({
+    required this.onlyOneFileCanAdded,
+  });
   final bool onlyOneFileCanAdded;
-  final String? profilePhoto;
-  final bool isProfilePhoto;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        showMainAppBottomSheet(context, title: 'Добавить файл', items: ['Сделать фото', 'Из галереи'])
-            .then((value) async {
+        showMainAppBottomSheet(context, title: 'addFile', items: ['takePhoto', 'fromGallery']).then((value) {
           if (value is int) {
-            List<String> pickedFiles = [];
-            if (value == 0) {
-              final pickedFile = await ImagePicker.platform.pickImage(source: ImageSource.camera);
-              if (pickedFile != null) pickedFiles.add(pickedFile.path);
-            }
-            if (value == 1) {
-              final files = await FilePicker.platform.pickFiles(
-                  allowCompression: true,
-                  allowMultiple: true,
-                  type: FileType.custom,
-                  allowedExtensions: ['png', 'jpg']);
-              if (files != null) {
-                for (var element in files.paths) {
-                  if (element?.isNotEmpty ?? false) {
-                    pickedFiles.add(element!);
-                  }
-                }
-              }
-            }
-            if (pickedFiles.isNotEmpty) {
-              context.read<FilePickerBloc>().add(PickedFilesEvent(filePickerPaths: pickedFiles));
-            }
+            _pickImages(value).then((value) {
+              context.read<FilePickerBloc>().add(PickedFilesEvent(filePickerPaths: value));
+            });
           }
         });
       },
-      child: isProfilePhoto
-          ? _ProfilePhotoBody(
-              photopath: profilePhoto,
-            )
-          : Container(
-              decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(12),
-                  ),
-                  border: Border.all(width: 3, color: getMainAppTheme(context).colors.buttonsColor)),
-              child: SvgPicture.asset(
-                getMainAppTheme(context).icons.add,
-                color: getMainAppTheme(context).colors.buttonsColor,
-              ),
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(
+              Radius.circular(12),
             ),
+            border: Border.all(width: 3, color: getMainAppTheme(context).colors.buttonsColor)),
+        child: SvgPicture.asset(
+          getMainAppTheme(context).icons.add,
+          color: getMainAppTheme(context).colors.buttonsColor,
+        ),
+      ),
     );
   }
 }
 
 class _PreviewFileWidget extends StatelessWidget {
-  const _PreviewFileWidget({super.key, required this.path, required this.index});
+  const _PreviewFileWidget({required this.path, required this.index});
   final String path;
   final int index;
   @override
   Widget build(BuildContext context) {
     File file = File(path);
     return Stack(
-      fit: StackFit.loose,
       children: [
         Container(
           decoration: BoxDecoration(
-              image: DecorationImage(
-                  fit: BoxFit.fill,
-                  image: FileImage(
-                    file,
-                  )),
-              borderRadius: const BorderRadius.all(
-                Radius.circular(12),
+            image: DecorationImage(
+              fit: BoxFit.fill,
+              image: FileImage(
+                file,
               ),
-              border: Border.all(width: 3, color: getMainAppTheme(context).colors.buttonsColor)),
+            ),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(12),
+            ),
+            border: Border.all(width: 3, color: getMainAppTheme(context).colors.buttonsColor),
+          ),
         ),
         Positioned(
           top: 10,
           right: 10,
           child: GestureDetector(
             onTap: () {
-              context.read<FilePickerBloc>().add(RemoveFileEvent(fileIndex: index));
+              context.read<FilePickerBloc>().add(
+                    RemoveFileEvent(fileIndex: index),
+                  );
             },
             child: Container(
               padding: const EdgeInsets.all(2),
@@ -162,39 +141,71 @@ class _PreviewFileWidget extends StatelessWidget {
 }
 
 class _ProfilePhotoBody extends StatelessWidget {
-  const _ProfilePhotoBody({super.key, required this.photopath});
+  const _ProfilePhotoBody({required this.photopath});
   final String? photopath;
 
   @override
   Widget build(BuildContext context) {
     File file = File(photopath ?? "");
-    return Stack(
-      alignment: Alignment.topCenter,
-      children: [
-        Container(
-          width: 150,
-          height: 150,
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                  fit: BoxFit.fill,
-                  image: FileImage(
-                    file,
-                  )),
-              shape: BoxShape.circle,
-              border: Border.all(width: 3, color: getMainAppTheme(context).colors.buttonsColor)),
+    return GestureDetector(
+      onTap: () {
+        showMainAppBottomSheet(context, title: 'addFile', items: ['takePhoto', 'fromGallery']).then((value) {
+          if (value is int) {
+            _pickImages(value).then((value) {
+              context.read<FilePickerBloc>().add(PickedFilesEvent(filePickerPaths: value));
+            });
+          }
+        });
+      },
+      child: SizedBox(
+        height: 165,
+        child: Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              width: 150,
+              height: 150,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      fit: BoxFit.fill,
+                      image: FileImage(
+                        file,
+                      )),
+                  shape: BoxShape.circle,
+                  border: Border.all(width: 3, color: getMainAppTheme(context).colors.buttonsColor)),
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(color: getMainAppTheme(context).colors.buttonsColor, shape: BoxShape.circle),
+                child: SvgPicture.asset(getMainAppTheme(context).icons.camera,
+                    width: 32, height: 32, color: ColorPalette.grey100),
+              ),
+            )
+          ],
         ),
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(color: getMainAppTheme(context).colors.buttonsColor, shape: BoxShape.circle),
-            child: SvgPicture.asset(getMainAppTheme(context).icons.camera,
-                width: 32, height: 32, color: ColorPalette.grey100),
-          ),
-        )
-      ],
+      ),
     );
   }
+}
+
+Future<List<String>> _pickImages(int index) async {
+  List<String> files = [];
+  if (index == 0) {
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
+    if (pickedFile != null) {
+      files.add(pickedFile.path);
+    }
+  }
+  if (index == 1) {
+    final pickedFiles = await ImagePicker().pickMultiImage();
+
+    for (var element in pickedFiles) {
+      files.add(element.path);
+    }
+  }
+  return files;
 }

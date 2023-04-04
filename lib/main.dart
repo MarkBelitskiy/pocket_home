@@ -1,31 +1,29 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pocket_home/common/repository/repository.dart';
 import 'package:pocket_home/common/theme/main_app_theme/main_app_theme_view_model.dart';
 import 'package:pocket_home/common/utils/locale_view_model.dart';
+import 'package:pocket_home/notification_service.dart';
+import 'package:pocket_home/screens/login_screen/src/bloc/auth_bloc.dart';
 import 'package:pocket_home/screens/main_screen/feature.dart';
 import 'package:pocket_home/screens/my_home_screen/src/bloc/my_houses_bloc.dart';
-import 'package:pocket_home/screens/news_screen/src/bloc/news_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'notification_service.dart';
-import 'screens/services_screen/src/bloc/services_bloc.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await NotificationService().init(); //
-  SharedPreferences preferences = await SharedPreferences.getInstance();
-  // preferences.clear();
+  final preferences = await SharedPreferences.getInstance();
 
   await EasyLocalization.ensureInitialized();
-
   runApp(
     EasyLocalization(
         supportedLocales: const [Locale('ru', 'RU'), Locale('kk', 'KZ')],
         path: 'assets/languages',
         child: MultiProvider(
           providers: [
+            RepositoryProvider(create: (context) => Repository()..init(preferences)),
+            RepositoryProvider(create: (context) => NotificationService()..init()),
             ChangeNotifierProvider<MainAppThemeViewModel>(
               create: (context) => MainAppThemeViewModel()..init(preferences),
             ),
@@ -33,32 +31,36 @@ void main() async {
               create: (context) => MainAppLocaleViewModel(),
             ),
             BlocProvider(
-              create: (context) => MyHousesBloc()..add(InitHousesEvent()),
+              create: (context) => AuthBloc(repository: context.read<Repository>())..add(InitAuthEvent()),
             ),
             BlocProvider(
-              create: (context) => ServicesBloc(context.read<MyHousesBloc>()),
+              create: (context) => MyHousesBloc(
+                repository: context.read<Repository>(),
+              )..add(InitHousesEvent()),
             ),
-            BlocProvider(
-              create: (context) => NewsBloc(context.read<MyHousesBloc>())..add(OnNewsTabInit()),
-            )
           ],
-          child: MyApp(preferences: preferences),
+          child: const MyApp(),
         )),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key, required this.preferences}) : super(key: key);
-  final SharedPreferences preferences;
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
-      locale: context.locale,
-      title: 'Pocket Home',
-      home: const MainScreenFeature(),
+    return GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
+        title: 'Pocket Home',
+        home: const MainScreenFeature(),
+      ),
     );
   }
 }

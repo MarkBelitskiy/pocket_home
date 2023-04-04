@@ -9,33 +9,30 @@ class MainAppBody extends StatelessWidget {
   final bool needPadding;
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          Positioned(
-              bottom: -1,
-              right: 0,
-              child: SvgPicture.asset(
-                getMainAppTheme(context).icons.emptySingleBlob,
-                width: MediaQuery.of(context).size.width,
-              )),
-          Positioned(
-            bottom: 0,
-            top: 0,
-            left: 0,
-            right: 0,
-            child: SingleChildScrollView(
-                padding: EdgeInsets.all(needPadding ? 50 : 0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: children,
-                )),
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Positioned(
+          bottom: 0,
+          right: 0,
+          left: 0,
+          child: SvgPicture.asset(
+            getMainAppTheme(context).icons.emptyDoubleBlob,
+            color: getMainAppTheme(context).colors.cardColor,
+            width: MediaQuery.of(context).size.width,
           ),
-        ],
-      ),
+        ),
+        Positioned.fill(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.all(needPadding ? 50 : 0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: children,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -6,16 +6,19 @@ class _MyHousesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: MainAppFloatingButton(onTap: () {
-          showModalBottomSheet(
-              isScrollControlled: true,
-              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
-              backgroundColor: getMainAppTheme(context).colors.bgColor,
-              context: context,
-              builder: (modalContext) => _AddHousesModalBody(
-                    housesBloc: context.read<MyHousesBloc>(),
-                  ));
-        }),
+        floatingActionButton: MainAppFloatingButton(
+            enumValue: MainFloatingActionButton.myHome,
+            onTap: () {
+              showModalBottomSheet(
+                  isScrollControlled: true,
+                  useRootNavigator: true,
+                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
+                  backgroundColor: getMainAppTheme(context).colors.bgColor,
+                  context: context,
+                  builder: (modalContext) => _AddHousesModalBody(
+                        housesBloc: context.read<MyHousesBloc>(),
+                      ));
+            }),
         backgroundColor: getMainAppTheme(context).colors.bgColor,
         body: const _Body());
   }
@@ -35,6 +38,7 @@ class _Body extends StatelessWidget {
           } else {
             return _MyHousesLoaded(
               houses: state.houses,
+              activateAnimation: state.activateAnimation,
               currentHouse: state.currentHouse!,
             );
           }
@@ -46,7 +50,7 @@ class _Body extends StatelessWidget {
 }
 
 class _EmptyBodyState extends StatelessWidget {
-  const _EmptyBodyState({super.key});
+  const _EmptyBodyState();
 
   @override
   Widget build(BuildContext context) {
@@ -70,47 +74,61 @@ class _EmptyBodyState extends StatelessWidget {
 }
 
 class _MyHousesLoaded extends StatelessWidget {
-  const _MyHousesLoaded({super.key, required this.houses, required this.currentHouse});
+  const _MyHousesLoaded({required this.houses, required this.currentHouse, required this.activateAnimation});
   final List<HouseModel> houses;
   final HouseModel currentHouse;
+  final bool activateAnimation;
+
   @override
   Widget build(BuildContext context) {
+    final globalKeys = [GlobalKey(), GlobalKey()];
+    final LayerLink layerLink = LayerLink();
+
     return SingleChildScrollView(
-      padding: const EdgeInsets.only(left: 12, right: 12, top: 16, bottom: 60),
-      child: Column(children: [
-        const SizedBox(
-          height: 64,
-        ),
-        _ChooseHomeWidget(
-          housesModel: houses,
-          currentHouse: currentHouse,
-        ),
-        const SizedBox(
-          height: 16,
-        ),
-        _ManagerWidget(
-          manager: currentHouse.manager,
-        ),
-        const SizedBox(
-          height: 16,
-        ),
-        const _WorkersWidget(),
-        const SizedBox(
-          height: 16,
-        ),
-        _BudgetWidget(
-          budget: currentHouse.budget,
-        ),
-        const SizedBox(
-          height: 16,
-        ),
-        const _TelegramWidget(),
-        const SizedBox(
-          height: 16,
-        ),
-        const _PartnersGrid()
-      ]),
-    );
+        padding: const EdgeInsets.only(left: 12, right: 12, top: 16, bottom: 100),
+        child: AnimatedOverlayWidget(
+          activateAnimation: activateAnimation,
+          childKeys: globalKeys,
+          layerLink: layerLink,
+          child: CompositedTransformTarget(
+            link: layerLink,
+            child: Column(children: [
+              const SizedBox(
+                height: 64,
+              ),
+              _ChooseHomeWidget(
+                key: globalKeys[0],
+                housesModel: houses,
+                currentHouse: currentHouse,
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              _ManagerWidget(
+                key: globalKeys[1],
+                manager: currentHouse.manager,
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              const _WorkersWidget(),
+              const SizedBox(
+                height: 16,
+              ),
+              _BudgetWidget(
+                budget: currentHouse.budget.budgetTotalSum,
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              const _TelegramWidget(),
+              const SizedBox(
+                height: 16,
+              ),
+              const _PartnersGrid()
+            ]),
+          ),
+        ));
   }
 }
 
@@ -173,12 +191,12 @@ class _ChooseHomeWidget extends StatelessWidget {
                 height: 4,
               ),
               Text(
-                '120 жильцов',
+                'tenants',
                 style: getMainAppTheme(context)
                     .textStyles
                     .subBody
                     .copyWith(color: getMainAppTheme(context).colors.inactiveText),
-              ),
+              ).plural(120),
             ]),
           ),
           if (housesModel.length > 1) ...[
@@ -197,7 +215,7 @@ class _ChooseHomeWidget extends StatelessWidget {
 }
 
 class _TelegramWidget extends StatelessWidget {
-  const _TelegramWidget({super.key});
+  const _TelegramWidget();
 
   @override
   Widget build(BuildContext context) {
@@ -226,25 +244,25 @@ class _TelegramWidget extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                'Чат дома',
+                'houseChat',
                 style: getMainAppTheme(context)
                     .textStyles
                     .body
                     .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-              ),
+              ).tr(),
             ),
             const SizedBox(
               width: 16,
             ),
             Expanded(
               child: Text(
-                'Перейти',
+                'followTheLink',
                 style: getMainAppTheme(context)
                     .textStyles
                     .body
                     .copyWith(color: getMainAppTheme(context).colors.activeText),
                 textAlign: TextAlign.right,
-              ),
+              ).tr(),
             ),
             const SizedBox(
               width: 4,
@@ -273,10 +291,11 @@ class _ManagerWidget extends StatelessWidget {
         );
       },
       child: Container(
-          padding: const EdgeInsets.all(12),
-          decoration:
-              BoxDecoration(color: getMainAppTheme(context).colors.cardColor, borderRadius: BorderRadius.circular(12)),
-          child: Row(children: [
+        padding: const EdgeInsets.all(12),
+        decoration:
+            BoxDecoration(color: getMainAppTheme(context).colors.cardColor, borderRadius: BorderRadius.circular(12)),
+        child: Row(
+          children: [
             SvgPicture.asset(
               getMainAppTheme(context).icons.profile,
               width: 32,
@@ -286,37 +305,38 @@ class _ManagerWidget extends StatelessWidget {
               width: 8,
             ),
             Expanded(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  manager.name,
-                  style: getMainAppTheme(context)
-                      .textStyles
-                      .body
-                      .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-                ),
-                const SizedBox(
-                  height: 4,
-                ),
-                Text(
-                  'Управляющий домом',
-                  style: getMainAppTheme(context)
-                      .textStyles
-                      .subBody
-                      .copyWith(color: getMainAppTheme(context).colors.inactiveText),
-                ),
-              ],
-            )),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    manager.name,
+                    style: getMainAppTheme(context)
+                        .textStyles
+                        .body
+                        .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+                  ),
+                  const SizedBox(
+                    height: 4,
+                  ),
+                  Text(
+                    'houseManager',
+                    style: getMainAppTheme(context)
+                        .textStyles
+                        .subBody
+                        .copyWith(color: getMainAppTheme(context).colors.inactiveText),
+                  ).tr(),
+                ],
+              ),
+            ),
             const SizedBox(
               width: 16,
             ),
             Text(
-              'Позвонить',
+              'call',
               style:
                   getMainAppTheme(context).textStyles.body.copyWith(color: getMainAppTheme(context).colors.activeText),
               textAlign: TextAlign.right,
-            ),
+            ).tr(),
             const SizedBox(
               width: 4,
             ),
@@ -324,13 +344,15 @@ class _ManagerWidget extends StatelessWidget {
               getMainAppTheme(context).icons.chevronRight,
               color: getMainAppTheme(context).colors.activeColor,
             )
-          ])),
+          ],
+        ),
+      ),
     );
   }
 }
 
 class _PartnersGrid extends StatelessWidget {
-  const _PartnersGrid({super.key});
+  const _PartnersGrid();
 
   @override
   Widget build(BuildContext context) {
@@ -380,12 +402,12 @@ class _PartnersGrid extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        index == 0 ? 'Заказать Клининг' : 'Заказать Мебель',
+                        index == 0 ? 'cleaningOrder' : 'furnitureOrder',
                         style: getMainAppTheme(context)
                             .textStyles
                             .body
                             .copyWith(color: getMainAppTheme(context).colors.activeText),
-                      ),
+                      ).tr(),
                     ),
                     const SizedBox(
                       width: 8,
@@ -404,7 +426,7 @@ class _PartnersGrid extends StatelessWidget {
 }
 
 class _WorkersWidget extends StatelessWidget {
-  const _WorkersWidget({super.key});
+  const _WorkersWidget();
 
   @override
   Widget build(BuildContext context) {
@@ -413,10 +435,11 @@ class _WorkersWidget extends StatelessWidget {
         Navigator.of(context, rootNavigator: true).push(workersScreenFeature());
       },
       child: Container(
-          padding: const EdgeInsets.all(12),
-          decoration:
-              BoxDecoration(color: getMainAppTheme(context).colors.cardColor, borderRadius: BorderRadius.circular(12)),
-          child: Row(children: [
+        padding: const EdgeInsets.all(12),
+        decoration:
+            BoxDecoration(color: getMainAppTheme(context).colors.cardColor, borderRadius: BorderRadius.circular(12)),
+        child: Row(
+          children: [
             SvgPicture.asset(
               getMainAppTheme(context).icons.workers,
               width: 32,
@@ -428,22 +451,22 @@ class _WorkersWidget extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                'Сотрудники',
+                'employees',
                 style: getMainAppTheme(context)
                     .textStyles
                     .body
                     .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-              ),
+              ).tr(),
             ),
             const SizedBox(
               width: 16,
             ),
             Text(
-              'Перейти',
+              'followTheLink',
               style:
                   getMainAppTheme(context).textStyles.body.copyWith(color: getMainAppTheme(context).colors.activeText),
               textAlign: TextAlign.right,
-            ),
+            ).tr(),
             const SizedBox(
               width: 4,
             ),
@@ -451,14 +474,15 @@ class _WorkersWidget extends StatelessWidget {
               getMainAppTheme(context).icons.chevronRight,
               color: getMainAppTheme(context).colors.activeColor,
             )
-          ])),
+          ],
+        ),
+      ),
     );
   }
 }
 
 class _AddHousesModalBody extends StatelessWidget {
   const _AddHousesModalBody({
-    super.key,
     required this.housesBloc,
   });
 
@@ -466,6 +490,7 @@ class _AddHousesModalBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextEditingController controller = TextEditingController();
+    FocusNode focus = FocusNode();
     return BlocProvider.value(
       value: housesBloc..add(GetHousesToModalEvent()),
       child: Padding(
@@ -481,13 +506,13 @@ class _AddHousesModalBody extends StatelessWidget {
                 ),
                 Expanded(
                   child: Text(
-                    'Добавление дома',
+                    'addHouse',
                     textAlign: TextAlign.center,
                     style: getMainAppTheme(context)
                         .textStyles
                         .body
                         .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-                  ),
+                  ).tr(),
                 ),
                 IconButton(
                     onPressed: () {
@@ -514,19 +539,14 @@ class _AddHousesModalBody extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 50),
                             child: MainTextField(
-                                prefixIcon: getMainAppTheme(context).icons.search,
-                                textController: controller,
-                                focusNode: FocusNode(),
-                                bgColor: getMainAppTheme(context).colors.buttonsColor,
-                                isPasswordField: false,
-                                maxLines: 1,
-                                title: 'Поиск',
-                                readOnly: false,
-                                onChanged: (value) {
-                                  housesBloc.add(FilteredHousesToModalEvent(value));
-                                },
-                                clearAvailable: true,
-                                autoFocus: false),
+                              prefixIcon: getMainAppTheme(context).icons.search,
+                              textController: controller,
+                              focusNode: focus,
+                              title: 'search',
+                              onChanged: (value) {
+                                housesBloc.add(FilteredHousesToModalEvent(value));
+                              },
+                            ),
                           ),
                           Flexible(
                             fit: FlexFit.loose,
@@ -566,7 +586,7 @@ class _AddHousesModalBody extends StatelessWidget {
 }
 
 class _HouseWidget extends StatelessWidget {
-  const _HouseWidget({super.key, required this.house});
+  const _HouseWidget({required this.house});
   final HouseModel house;
   @override
   Widget build(BuildContext context) {
@@ -613,12 +633,12 @@ class _HouseWidget extends StatelessWidget {
               height: 4,
             ),
             Text(
-              '120 жильцов',
+              'tenants',
               style: getMainAppTheme(context)
                   .textStyles
                   .subBody
                   .copyWith(color: getMainAppTheme(context).colors.inactiveText),
-            ),
+            ).plural(120),
           ]),
         ),
         const SizedBox(
@@ -634,11 +654,12 @@ class _HouseWidget extends StatelessWidget {
 }
 
 class _ChangeCurrentChoosenHouseModalBody extends StatelessWidget {
-  const _ChangeCurrentChoosenHouseModalBody({super.key, required this.housesBloc});
+  const _ChangeCurrentChoosenHouseModalBody({required this.housesBloc});
   final MyHousesBloc housesBloc;
   @override
   Widget build(BuildContext context) {
     TextEditingController controller = TextEditingController();
+    FocusNode focus = FocusNode();
     return BlocProvider.value(
       value: housesBloc..add(FilteredHousesToChangeHouseModalEvent('')),
       child: Padding(
@@ -654,7 +675,7 @@ class _ChangeCurrentChoosenHouseModalBody extends StatelessWidget {
                 ),
                 Expanded(
                   child: Text(
-                    'Сменить дом',
+                    'changeHouse',
                     textAlign: TextAlign.center,
                     style: getMainAppTheme(context)
                         .textStyles
@@ -687,19 +708,14 @@ class _ChangeCurrentChoosenHouseModalBody extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 50),
                             child: MainTextField(
-                                prefixIcon: getMainAppTheme(context).icons.search,
-                                textController: controller,
-                                focusNode: FocusNode(),
-                                bgColor: getMainAppTheme(context).colors.buttonsColor,
-                                isPasswordField: false,
-                                maxLines: 1,
-                                title: 'Поиск',
-                                readOnly: false,
-                                onChanged: (value) {
-                                  housesBloc.add(FilteredHousesToChangeHouseModalEvent(value));
-                                },
-                                clearAvailable: true,
-                                autoFocus: false),
+                              prefixIcon: getMainAppTheme(context).icons.search,
+                              textController: controller,
+                              focusNode: focus,
+                              title: 'search',
+                              onChanged: (value) {
+                                housesBloc.add(FilteredHousesToChangeHouseModalEvent(value));
+                              },
+                            ),
                           ),
                           Flexible(
                             fit: FlexFit.loose,
@@ -739,7 +755,7 @@ class _ChangeCurrentChoosenHouseModalBody extends StatelessWidget {
 }
 
 class _BudgetWidget extends StatelessWidget {
-  const _BudgetWidget({super.key, required this.budget});
+  const _BudgetWidget({required this.budget});
   final int budget;
   @override
   Widget build(BuildContext context) {
@@ -751,17 +767,17 @@ class _BudgetWidget extends StatelessWidget {
           ),
           mode: LaunchMode.externalApplication,
         ).then((value) {
-          Future.delayed(Duration(seconds: 2)).then((value) {
-            context.read<MyHousesBloc>().currentHouse?.budget += 2000;
-            context.read<MyHousesBloc>().add(SaveHouseToPrefs());
+          Future.delayed(const Duration(seconds: 2)).then((value) {
+            context.read<MyHousesBloc>().add(AddPaymentToBudget(20000));
           });
         });
       },
       child: Container(
-          padding: const EdgeInsets.all(12),
-          decoration:
-              BoxDecoration(color: getMainAppTheme(context).colors.cardColor, borderRadius: BorderRadius.circular(12)),
-          child: Row(children: [
+        padding: const EdgeInsets.all(12),
+        decoration:
+            BoxDecoration(color: getMainAppTheme(context).colors.cardColor, borderRadius: BorderRadius.circular(12)),
+        child: Row(
+          children: [
             SvgPicture.asset(
               getMainAppTheme(context).icons.money,
               width: 32,
@@ -772,34 +788,35 @@ class _BudgetWidget extends StatelessWidget {
               width: 8,
             ),
             Expanded(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '$budget ₸',
-                  style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.green500),
-                ),
-                Text(
-                  'Бюджет дома',
-                  style: getMainAppTheme(context)
-                      .textStyles
-                      .subBody
-                      .copyWith(color: getMainAppTheme(context).colors.inactiveText),
-                ),
-              ],
-            )),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '$budget ₸',
+                    style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.green500),
+                  ),
+                  Text(
+                    'houseBudget',
+                    style: getMainAppTheme(context)
+                        .textStyles
+                        .subBody
+                        .copyWith(color: getMainAppTheme(context).colors.inactiveText),
+                  ).tr(),
+                ],
+              ),
+            ),
             const SizedBox(
               width: 16,
             ),
             Expanded(
               child: Text(
-                'Пополнить',
+                'fillBalance',
                 style: getMainAppTheme(context)
                     .textStyles
                     .body
                     .copyWith(color: getMainAppTheme(context).colors.activeText),
                 textAlign: TextAlign.right,
-              ),
+              ).tr(),
             ),
             const SizedBox(
               width: 4,
@@ -808,7 +825,9 @@ class _BudgetWidget extends StatelessWidget {
               getMainAppTheme(context).icons.chevronRight,
               color: getMainAppTheme(context).colors.activeColor,
             )
-          ])),
+          ],
+        ),
+      ),
     );
   }
 }

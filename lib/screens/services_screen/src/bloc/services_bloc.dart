@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pocket_home/common/utils/preferences_utils.dart';
+import 'package:pocket_home/screens/login_screen/src/bloc/auth_bloc.dart';
 import 'package:pocket_home/screens/my_home_screen/src/bloc/my_houses_bloc.dart';
 import 'package:pocket_home/screens/my_home_screen/src/workers_screen/src/add_new_worker_screen.dart/src/worker_model.dart';
 import 'package:pocket_home/screens/registration_screen/src/profile_model.dart';
@@ -12,7 +14,22 @@ part 'services_state.dart';
 
 class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
   final MyHousesBloc myHousesBloc;
-  ServicesBloc(this.myHousesBloc) : super(ServicesInitial()) {
+  final AuthBloc authBloc;
+  UserModel? userModel;
+  ServicesBloc({required this.authBloc, required this.myHousesBloc}) : super(ServicesInitial()) {
+    // final authSubscription = authBloc.stream.listen((authState) {
+    //   if (authState is UpdateUserDataState) {
+    //     userModel = authState.user;
+    //     add(InitEvent());
+    //   }
+    // });
+
+    // @override
+    // Future<void> close() {
+    //   authSubscription.cancel();
+    //   return super.close();
+    // }
+
     on<InitEvent>(_onInit);
     on<ChangeServiceValue>(_onChangeStatusEvent);
     on<DeclineServiceEvent>(_onDeclineEvent);
@@ -46,7 +63,9 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
         }
       }
 
-      print('ERROR ${myHousesBloc.currentHouse?.services?.toString()}');
+      if (kDebugMode) {
+        print('ERROR ${myHousesBloc.currentHouse?.services?.toString()}');
+      }
       if (myHousesBloc.currentHouse?.services?.isNotEmpty ?? false) {
         for (var element in myHousesBloc.currentHouse!.services!) {
           if (element.contactPerson.phone == currentUser.phone ||
@@ -68,7 +87,9 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
         historyModels,
       ));
     } catch (e) {
-      print('SERVICES_BLOC_ON_INIT_ERROR:$e');
+      if (kDebugMode) {
+        print('SERVICES_BLOC_ON_INIT_ERROR:$e');
+      }
       emit(LoadingState(false));
       emit(ServicesLoaded(
         const [],
@@ -86,7 +107,7 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
 
       myHousesBloc.currentHouse!.services!.clear();
       myHousesBloc.currentHouse!.services!.addAll(model);
-      myHousesBloc.add(SaveHouseToPrefs());
+      // myHousesBloc.add(SaveHouseToPrefs());
       emit(LoadingState(false));
       emit(ServicesLoaded(
         activeModels,
@@ -112,13 +133,13 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
       activeModels.removeAt(event.index);
       myHousesBloc.currentHouse!.services!.clear();
       myHousesBloc.currentHouse!.services!.addAll(model);
-      myHousesBloc.add(SaveHouseToPrefs());
+      // myHousesBloc.add(SaveHouseToPrefs());
       emit(LoadingState(false));
-      // emit(ServicesLoaded(activeModels, historyModels));
     } catch (e) {
       emit(LoadingState(false));
-      print('SERVICES_BLOC_ON_DECLINE_ERROR:$e');
-      // emit(ServicesLoaded(const [], const []));
+      if (kDebugMode) {
+        print('SERVICES_BLOC_ON_DECLINE_ERROR:$e');
+      }
     }
   }
 
@@ -135,7 +156,7 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
       activeModels.removeAt(event.item);
       myHousesBloc.currentHouse!.services!.clear();
       myHousesBloc.currentHouse!.services!.addAll(model);
-      myHousesBloc.add(SaveHouseToPrefs());
+      // myHousesBloc.add(SaveHouseToPrefs());
       emit(RatingSetToServiceState());
       emit(LoadingState(false));
       emit(ServicesLoaded(
@@ -161,7 +182,6 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
 
       myHousesBloc.currentHouse!.services!.clear();
       myHousesBloc.currentHouse!.services!.addAll(model);
-      myHousesBloc.add(SaveHouseToPrefs());
 
       emit(LoadingState(false));
       emit(ServicesLoaded(

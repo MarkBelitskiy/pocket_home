@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -10,7 +11,7 @@ class MainAppButton extends StatelessWidget {
       required this.title,
       this.suffixWidget,
       this.titleColor,
-      required this.assetIcon});
+      this.assetIcon = ''});
   final Function onPressed;
   final String title;
   final String assetIcon;
@@ -38,10 +39,11 @@ class MainAppButton extends StatelessWidget {
           child: Text(
             title,
             textAlign: TextAlign.center,
-            style: getMainAppTheme(context).textStyles.title.copyWith(
-                color: titleColor ??
-                    getMainAppTheme(context).colors.mainTextColor),
-          ),
+            style: getMainAppTheme(context)
+                .textStyles
+                .title
+                .copyWith(color: titleColor ?? getMainAppTheme(context).colors.mainTextColor),
+          ).tr(),
         ),
         const SizedBox(
           width: 12,

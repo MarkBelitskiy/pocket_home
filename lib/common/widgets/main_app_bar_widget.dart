@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pocket_home/common/theme/theme_getter.dart';
@@ -6,7 +7,7 @@ import 'package:pocket_home/common/utils/colors_palette.dart';
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   const MainAppBar(
       {super.key,
-      required this.title,
+      this.title = '',
       this.actions,
       this.customOnTap,
       this.tabNames,
@@ -24,19 +25,20 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       actions: actions,
-      backgroundColor: getMainAppTheme(context).colors.buttonsColor,
+      backgroundColor: getMainAppTheme(context).colors.navBarColor,
       elevation: 1,
       shadowColor: ColorPalette.grey900.withOpacity(0.3),
       centerTitle: true,
       title: Column(
         children: [
-          Text(
-            title,
-            style: getMainAppTheme(context)
-                .textStyles
-                .title
-                .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-          ),
+          if (title.isNotEmpty)
+            Text(
+              title,
+              style: getMainAppTheme(context)
+                  .textStyles
+                  .title
+                  .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+            ).tr(),
           if (subTitle != null) ...[
             const SizedBox(
               height: 4,
@@ -47,7 +49,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                   .textStyles
                   .subBody
                   .copyWith(color: getMainAppTheme(context).colors.inactiveText),
-            ),
+            ).tr(),
           ]
         ],
       ),
@@ -83,8 +85,11 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
 
 class _BottomTabBar extends StatelessWidget {
   final List<String> tabNames;
-  final List<Function>? tabsLogs;
-  const _BottomTabBar({Key? key, required this.tabNames, this.tabsLogs}) : super(key: key);
+
+  const _BottomTabBar({
+    Key? key,
+    required this.tabNames,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -96,17 +101,17 @@ class _BottomTabBar extends StatelessWidget {
           height: 34,
           margin: const EdgeInsets.only(left: 16, right: 16, bottom: 12),
           padding: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            color: getMainAppTheme(context).colors.cardColor,
-            borderRadius: const BorderRadius.all(Radius.circular(8)),
+          decoration: const BoxDecoration(
+            color: ColorPalette.grey700,
+            borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
           child: TabBar(
-              labelColor: Colors.white,
+              labelColor: ColorPalette.grey50,
               unselectedLabelStyle: getMainAppTheme(context).textStyles.body,
               unselectedLabelColor: getMainAppTheme(context).colors.inactiveText,
               labelStyle: getMainAppTheme(context).textStyles.body,
               indicatorSize: TabBarIndicatorSize.tab,
-              indicator: BoxDecoration(color: ColorPalette.grey700, borderRadius: BorderRadius.circular(6), boxShadow: [
+              indicator: BoxDecoration(color: ColorPalette.grey600, borderRadius: BorderRadius.circular(6), boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.15),
                   offset: const Offset(0, 1),
@@ -116,12 +121,9 @@ class _BottomTabBar extends StatelessWidget {
               tabs: tabNames
                   .map((name) => GestureDetector(
                       onTap: () {
-                        if (tabsLogs != null) {
-                          tabsLogs![tabNames.indexOf(name)].call();
-                        }
                         DefaultTabController.of(context)!.animateTo(tabNames.indexOf(name));
                       },
-                      child: Tab(text: name)))
+                      child: Tab(text: name.tr())))
                   .toList()),
         ),
       ],

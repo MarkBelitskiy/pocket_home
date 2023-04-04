@@ -10,14 +10,14 @@ class MainAppBottomSheetBloc extends Bloc<MainAppBottomSheetEvent, MainAppBottom
   }
 
   Future<void> _searchItemsEvent(SearchItemsEvent event, Emitter<MainAppBottomSheetState> emit) async {
-    List<String> _itemsFromSearch = [];
+    List<String> itemsFromSearch = [];
 
     for (var element in items) {
       if (event.value.isNotEmpty) {
         if (element.toLowerCase().trim().contains(event.value.toLowerCase().trim())) {
-          _itemsFromSearch.add(element);
+          itemsFromSearch.add(element);
         }
-        emit(ElementsLoadedState(_itemsFromSearch));
+        emit(ElementsLoadedState(itemsFromSearch));
       } else {
         emit(ElementsLoadedState(items));
       }

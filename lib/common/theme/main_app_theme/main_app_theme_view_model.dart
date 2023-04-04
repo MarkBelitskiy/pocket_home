@@ -10,8 +10,7 @@ class MainAppThemeViewModel extends ChangeNotifier {
   MainAppTheme? _theme;
   Brightness? _themeBrightness;
 
-  MainAppTheme get theme =>
-      _theme ?? (throw 'Getter "theme" was called on null');
+  MainAppTheme get theme => _theme ?? (throw 'Getter "theme" was called on null');
 
   void init(SharedPreferences preferences) {
     _preferences = preferences;
@@ -33,8 +32,7 @@ class MainAppThemeViewModel extends ChangeNotifier {
   void changeTheme(Brightness brightness) async {
     if (_themeBrightness != brightness) {
       _themeBrightness = brightness;
-      await _preferences?.setString(
-          PreferencesUtils.brightnessKey, brightness.toString());
+      await _preferences?.setString(PreferencesUtils.brightnessKey, brightness.toString());
       _theme = MainAppTheme(_themeBrightness == Brightness.dark);
       notifyListeners();
     }
@@ -45,7 +43,6 @@ class MainAppThemeViewModel extends ChangeNotifier {
 
     _theme = MainAppTheme(_themeBrightness == Brightness.dark);
     if (_themeBrightness == Brightness.dark) notifyListeners();
-    await _preferences?.setString(
-        PreferencesUtils.brightnessKey, _themeBrightness.toString());
+    await _preferences?.setString(PreferencesUtils.brightnessKey, _themeBrightness.toString());
   }
 }

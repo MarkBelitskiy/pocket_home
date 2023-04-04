@@ -6,8 +6,8 @@ class NewsInitial extends NewsState {}
 
 class NewsLoadedState extends NewsState {
   final List<NewsModel> newsModel;
-
-  NewsLoadedState(this.newsModel);
+  final HouseModel? currentHouse;
+  NewsLoadedState(this.newsModel, this.currentHouse);
 }
 
 class NewsLoadingState extends NewsState {

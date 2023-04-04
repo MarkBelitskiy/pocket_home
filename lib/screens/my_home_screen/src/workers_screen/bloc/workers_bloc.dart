@@ -19,15 +19,12 @@ class WorkersBloc extends Bloc<WorkersEvent, WorkersState> {
   }
 
   Future _onAddWorker(AddWorkerToHouseEvent event, Emitter<WorkersState> emit) async {
-    print('testtt ${myHousesBloc.currentHouse?.workers}');
     if (myHousesBloc.currentHouse?.workers?.isNotEmpty ?? false) {
-      print('testtt1 ${myHousesBloc.currentHouse?.workers}');
       myHousesBloc.currentHouse?.workers?.add(event.worker);
     } else {
-      print('testtt2 ${myHousesBloc.currentHouse?.workers}');
       myHousesBloc.currentHouse?.workers = workers;
     }
-    myHousesBloc.add(SaveHouseToPrefs());
+    // myHousesBloc.add(SaveHouseToPrefs());
     workers.add(event.worker);
     emit(WorkersLoadedState(workers));
   }

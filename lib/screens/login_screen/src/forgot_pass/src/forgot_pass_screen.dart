@@ -1,44 +1,26 @@
 part of '../feature.dart';
 
 class _ForgotPassScreen extends StatelessWidget {
-  const _ForgotPassScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: getMainAppTheme(context).colors.bgColor,
-      appBar: const MainAppBar(title: 'Восстановление пароля'),
-      body: const MainAppBody(children: [_Body()]),
-    );
-  }
-}
-
-class _Body extends StatelessWidget {
-  const _Body({super.key});
+  const _ForgotPassScreen();
 
   @override
   Widget build(BuildContext context) {
     final controller = TextEditingController();
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
+    final focus = FocusNode();
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: getMainAppTheme(context).colors.bgColor,
+      appBar: const MainAppBar(title: 'passwordReset'),
+      body: MainAppBody(children: [
         SizedBox(
           height: MediaQuery.of(context).size.height / 6,
         ),
         MainTextField(
-            title: 'Телефон',
-            textController: controller,
-            focusNode: FocusNode(),
-            keyboardType: TextInputType.phone,
-            bgColor: getMainAppTheme(context).colors.cardColor,
-            isPasswordField: false,
-            maxLines: 1,
-            readOnly: false,
-            onChanged: (value) {},
-            clearAvailable: true,
-            autoFocus: false),
+          title: 'phone',
+          textController: controller,
+          focusNode: focus,
+          keyboardType: TextInputType.phone,
+        ),
         const SizedBox(
           height: 24,
         ),
@@ -48,22 +30,24 @@ class _Body extends StatelessWidget {
                 Navigator.of(context).push(resetPasswordScreenFeature());
               }));
             },
-            title: 'Продолжить',
+            title: 'continue',
             titleColor: ColorPalette.blue200,
             assetIcon: ''),
         const SizedBox(
           height: 32,
         ),
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+            //TODO ADD BOT OR REDIRECT LINK TO TELEGRAM
+          },
           child: Text(
-            'Написать в тех.поддержку',
+            'writeToTechPod',
             style: getMainAppTheme(context).textStyles.body.copyWith(
                   color: ColorPalette.red500,
                 ),
-          ),
+          ).tr(),
         ),
-      ],
+      ]),
     );
   }
 }
