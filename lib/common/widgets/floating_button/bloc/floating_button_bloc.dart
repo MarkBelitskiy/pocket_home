@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pocket_home/common/repository/repository.dart';
 import 'package:pocket_home/common/widgets/floating_button/floating_button_access_enums.dart';
@@ -20,16 +19,10 @@ class FloatingButtonBloc extends Bloc<FloatingButtonEvent, FloatingButtonState> 
   FloatingButtonBloc({required this.enumValue, required this.myHousesBloc, required this.repository})
       : super(FloatingButtonInitial()) {
     myHousesSubscription = myHousesBloc.stream.listen((myHousesBlocState) {
-      if (myHousesBlocState is MyHousesLoadedState) {
-        if (currentHouse != myHousesBlocState.currentHouse) {
-          currentHouse = myHousesBlocState.currentHouse;
-          add(OnFloatingButtonUpdateEvent());
-        }
-      }
       if (myHousesBlocState is UpdateIsManagerState) {
-        if (isManager != myHousesBlocState.isManager) {
+        if (isManager != myHousesBlocState.isManager || currentHouse != myHousesBlocState.currentHouse) {
           isManager = myHousesBlocState.isManager;
-
+          currentHouse = myHousesBlocState.currentHouse;
           add(OnFloatingButtonUpdateEvent());
         }
       }
@@ -40,6 +33,9 @@ class FloatingButtonBloc extends Bloc<FloatingButtonEvent, FloatingButtonState> 
         _onButtonUpdate(event, emit);
       }
       if (event is OnInitButtonEvent) {
+        if (enumValue == MainFloatingActionButton.myHome) {
+          emit(ShowButtonState(currentHouse));
+        }
         if (enumValue != MainFloatingActionButton.myHome && enumValue != MainFloatingActionButton.services) {
           myHousesBloc.add(UpdateIsManagerValueToFloatingButtonEvent());
         }
@@ -55,13 +51,14 @@ class FloatingButtonBloc extends Bloc<FloatingButtonEvent, FloatingButtonState> 
 
   Future<void> _onButtonUpdate(OnFloatingButtonUpdateEvent event, Emitter<FloatingButtonState> emit) async {
     if (enumValue == MainFloatingActionButton.myHome) {
-      emit(ShowButtonState());
+      emit(ShowButtonState(currentHouse));
     }
     if (enumValue == MainFloatingActionButton.services && currentHouse != null) {
-      emit(ShowButtonState());
+      emit(ShowButtonState(currentHouse));
     }
-    if (enumValue == MainFloatingActionButton.news || enumValue == MainFloatingActionButton.workers) {
-      emit(ShowButtonState());
+    if ((enumValue == MainFloatingActionButton.news || enumValue == MainFloatingActionButton.workers) &&
+        currentHouse != null) {
+      emit(ShowButtonState(currentHouse));
     }
   }
 }

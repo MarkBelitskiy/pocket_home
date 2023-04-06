@@ -6,7 +6,6 @@ class _ViewNewsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       backgroundColor: getMainAppTheme(context).colors.bgColor,
       appBar: const MainAppBar(
         title: 'newsView',

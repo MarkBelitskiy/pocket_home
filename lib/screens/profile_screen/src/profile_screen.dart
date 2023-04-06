@@ -5,8 +5,7 @@ class _ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        resizeToAvoidBottomInset: false, backgroundColor: getMainAppTheme(context).colors.bgColor, body: const _Body());
+    return Scaffold(backgroundColor: getMainAppTheme(context).colors.bgColor, body: const _Body());
   }
 }
 
@@ -15,12 +14,7 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ProfileBloc, ProfileState>(
-      listener: (context, state) {
-        if (state is ProfileSuccessDeletedState || state is LogoutState) {
-          context.read<MyHousesBloc>().add(ClearDataEvent());
-        }
-      },
+    return BlocBuilder<ProfileBloc, ProfileState>(
       buildWhen: (previous, current) => current is ProfileLoadedState,
       builder: (context, state) {
         if (state is ProfileLoadedState) {
@@ -55,7 +49,7 @@ class _Body extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  context.read<ProfileBloc>().add(OnDeleteAccountEvent());
+                  // context.read<ProfileBloc>().add(OnDeleteAccountEvent());
                 },
                 child: Text(
                   'deleteAccount'.tr(),
@@ -71,7 +65,7 @@ class _Body extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  context.read<ProfileBloc>().add(OnLogoutEvent());
+                  context.read<AuthBloc>().add(LogOutEvent());
                 },
                 child: Text(
                   'logout'.tr(),

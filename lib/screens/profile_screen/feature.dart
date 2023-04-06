@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:pocket_home/common/widgets/button_widget.dart';
 import 'package:pocket_home/common/widgets/file_picker_widget/feature.dart';
 import 'package:pocket_home/common/widgets/main_body_widget.dart';
-import 'package:pocket_home/screens/my_home_screen/src/bloc/my_houses_bloc.dart';
+import 'package:pocket_home/screens/login_screen/src/bloc/auth_bloc.dart';
 import 'package:pocket_home/screens/registration_screen/src/profile_model.dart';
 
 import 'src/bloc/profile_bloc.dart';

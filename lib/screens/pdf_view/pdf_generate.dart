@@ -1,36 +1,41 @@
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
+import 'package:pocket_home/common/utils/formatter_utils.dart';
 import 'dart:io';
+import 'package:pocket_home/screens/pdf_view/pdf_reports_models.dart';
 
-Future<File?> monthBudgetPdfGenerate() async {
-  // создаем PDF-документ
+Future<File?> monthBudgetPdfGenerate(BudgetOnMothReportModel model) async {
   final pdf = Document(
     version: PdfVersion.pdf_1_5,
     compress: true,
   );
   final font = Font.ttf(await rootBundle.load("assets/fonts/roboto.ttf"));
 
-  final budgetOnStartHeader = ['Бюджет на начало месяца', '700000 тг'];
+  final budgetOnStartHeader = ['Бюджет до вычета платежей', '${model.budgetOnStart} тг'];
 
   final workersPayoutHeader = [
     'Выплаты сотрудникам',
     'Сумма',
   ];
 
-  final payoutData = [
-    ['ФИО1', '10000 тг'],
-    ['ФИО2', '15000 тг'],
-    ['ФИО3', '8000 тг'],
-  ];
+  final payoutData = model.paymentToWorkers
+      .map(
+        (e) => [e.name, '${e.value} тг'],
+      )
+      .toList();
 
-  final homeServiceData = [
-    ['Побелка бордюров', '25000 тг'],
-  ];
+  final homeServiceData = model.homeServicePayments
+      .map(
+        (e) => [e.name, '${e.value} тг'],
+      )
+      .toList();
 
-  final otherExpensesData = [
-    ['Краска для побелки', '20000 тг'],
-  ];
+  final otherExpensesData = model.otherPayments
+      .map(
+        (e) => [e.name, '${e.value} тг'],
+      )
+      .toList();
 
   final tableRows = <TableRow>[
     TableRow(
@@ -63,7 +68,7 @@ Future<File?> monthBudgetPdfGenerate() async {
           style: TextStyle(fontWeight: FontWeight.bold, font: font),
         ),
         Text(
-          '30500 тг',
+          '${model.getPayoutDataTotal()} тг',
           style: TextStyle(fontWeight: FontWeight.bold, font: font),
         ),
       ],
@@ -90,7 +95,7 @@ Future<File?> monthBudgetPdfGenerate() async {
           style: TextStyle(fontWeight: FontWeight.bold, font: font),
         ),
         Text(
-          '30500 тг',
+          '${model.getServicesPaymentsTotal()} тг',
           style: TextStyle(fontWeight: FontWeight.bold, font: font),
         ),
       ],
@@ -117,7 +122,7 @@ Future<File?> monthBudgetPdfGenerate() async {
           style: TextStyle(fontWeight: FontWeight.bold, font: font),
         ),
         Text(
-          '30500 тг',
+          '${model.getOtherPaymentsTotal()} тг',
           style: TextStyle(fontWeight: FontWeight.bold, font: font),
         ),
       ],
@@ -132,7 +137,7 @@ Future<File?> monthBudgetPdfGenerate() async {
           style: TextStyle(fontWeight: FontWeight.bold, font: font),
         ),
         Text(
-          '30500 тг',
+          '${model.getBalanceAtTheEnd()} тг',
           style: TextStyle(fontWeight: FontWeight.bold, font: font),
         ),
       ],
@@ -144,9 +149,168 @@ Future<File?> monthBudgetPdfGenerate() async {
       pageFormat: PdfPageFormat.a4,
       build: (Context context) => [
         Header(
-          level: 0,
-          child: Text('Отчет по бюджету за месяц', style: TextStyle(font: font)),
+            level: 0,
+            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Text('Отчет по расходам бюджета', style: TextStyle(font: font)),
+              Text(FormatterUtils.formattedDate(DateTime.now(), 'ru-RU'), style: TextStyle(font: font))
+            ])),
+        Table(
+          children: tableRows,
         ),
+      ],
+    ),
+  );
+  Directory? directory = Directory.systemTemp;
+
+  final file = File('${directory.path}/example.pdf');
+  file.writeAsBytesSync(await pdf.save());
+  return file;
+}
+
+Future<File?> monthIncomeToBudgetPdfGenerate(
+  BudgetIncomeReport model,
+) async {
+  final pdf = Document(
+    version: PdfVersion.pdf_1_5,
+    compress: true,
+  );
+  final font = Font.ttf(await rootBundle.load("assets/fonts/roboto.ttf"));
+
+  final workersPayoutHeader = [
+    'ФИО совершившего платеж',
+    'Дата платежа',
+    'Сумма',
+  ];
+
+  final payoutData = model.paymentsToBudget
+      .map(
+        (e) => [e.name, FormatterUtils.formattedDate(e.paymentDate, 'ru-RU'), '${e.value} тг'],
+      )
+      .toList();
+
+  final tableRows = <TableRow>[
+    TableRow(
+      decoration: const BoxDecoration(
+        color: PdfColors.grey400,
+      ),
+      children: workersPayoutHeader.map((header) {
+        return Text(header, style: TextStyle(fontWeight: FontWeight.bold, font: font));
+      }).toList(),
+    ),
+    ...payoutData.map((data) {
+      return TableRow(
+        children: data.map((value) {
+          return (Text(value, style: TextStyle(font: font)));
+        }).toList(),
+      );
+    }),
+    TableRow(
+      decoration: const BoxDecoration(
+        color: PdfColors.green400,
+      ),
+      children: [
+        Text(
+          'Итого',
+          style: TextStyle(fontWeight: FontWeight.bold, font: font),
+        ),
+        Text(
+          ' ',
+          style: TextStyle(fontWeight: FontWeight.bold, font: font),
+        ),
+        Text(
+          '${model.budgetFinish} тг',
+          style: TextStyle(fontWeight: FontWeight.bold, font: font),
+        ),
+      ],
+    ),
+  ];
+
+  pdf.addPage(
+    MultiPage(
+      pageFormat: PdfPageFormat.a4,
+      build: (Context context) => [
+        Header(
+            level: 0,
+            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Text('Отчет по пополнению в бюджет', style: TextStyle(font: font)),
+              Text(
+                FormatterUtils.formattedDate(DateTime.now(), 'ru-RU'),
+                style: TextStyle(font: font),
+              )
+            ])),
+        Table(
+          children: tableRows,
+        ),
+      ],
+    ),
+  );
+  Directory? directory = Directory.systemTemp;
+
+  final file = File('${directory.path}/example.pdf');
+  file.writeAsBytesSync(await pdf.save());
+  return file;
+}
+
+Future<File?> ratingPdfGenerate(
+  List<ServicesRatingReport> model,
+) async {
+  final pdf = Document(
+    version: PdfVersion.pdf_1_5,
+    compress: true,
+  );
+  final font = Font.ttf(await rootBundle.load("assets/fonts/roboto.ttf"));
+
+  final workersPayoutHeader = [
+    'Наименование услуги',
+    'Дата',
+    'Имя заказавшего услугу',
+    'Имя сотрудника',
+    'Проставленный рейтинг'
+  ];
+
+  final payoutData = model
+      .map(
+        (e) => [
+          e.serviceName,
+          FormatterUtils.formattedDate(e.servicesDate, 'ru-RU'),
+          e.userName,
+          e.workerName,
+          e.ratingValue.toString()
+        ],
+      )
+      .toList();
+
+  final tableRows = <TableRow>[
+    TableRow(
+      decoration: const BoxDecoration(
+        color: PdfColors.grey400,
+      ),
+      children: workersPayoutHeader.map((header) {
+        return Text(header, style: TextStyle(fontWeight: FontWeight.bold, font: font));
+      }).toList(),
+    ),
+    ...payoutData.map((data) {
+      return TableRow(
+        children: data.map((value) {
+          return (Text(value, style: TextStyle(font: font)));
+        }).toList(),
+      );
+    }),
+  ];
+
+  pdf.addPage(
+    MultiPage(
+      pageFormat: PdfPageFormat.a4,
+      build: (Context context) => [
+        Header(
+            level: 0,
+            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Text('Отчет по оказанным услугам', style: TextStyle(font: font)),
+              Text(
+                FormatterUtils.formattedDate(DateTime.now(), 'ru-RU'),
+                style: TextStyle(font: font),
+              )
+            ])),
         Table(
           children: tableRows,
         ),

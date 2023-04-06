@@ -10,6 +10,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({required this.repository}) : super(LoginScreenInitial()) {
     on<LoginEvent>(_loginEvent);
     on<InitAuthEvent>(_onInitAuth);
+    on<LogOutEvent>(_onlogOut);
+  }
+
+  Future<void> _onlogOut(LogOutEvent event, Emitter<AuthState> emit) async {
+    emit(UserIsNotAuthorizedState());
   }
 
   Future<void> _onInitAuth(InitAuthEvent event, Emitter<AuthState> emit) async {

@@ -4,20 +4,10 @@ abstract class ReportsState {}
 
 class PollsInitial extends ReportsState {}
 
-class OpenPdfState extends ReportsState {
-  final Uint8List pdfData;
+class OnInitReportsState extends ReportsState {}
 
-  OpenPdfState(this.pdfData);
-}
+class ShowGeneratedReportState extends ReportsState {
+  final String path;
 
-class OnRatingGettedState extends ReportsState {
-  final List<RatingReportModel> list;
-
-  OnRatingGettedState(this.list);
-}
-
-class OnBudgetGeneratedState extends ReportsState {
-  final BudgetReportModel model;
-
-  OnBudgetGeneratedState(this.model);
+  ShowGeneratedReportState(this.path);
 }

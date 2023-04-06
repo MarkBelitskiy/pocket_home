@@ -103,15 +103,15 @@ class BudgetPayDataModel {
       required this.paymentUserFullName,
       required this.paymentUserPhone});
   factory BudgetPayDataModel.fromJson(Map<String, dynamic> json) => BudgetPayDataModel(
-      paymentDate: DateTime.parse(json["budgetPaymentData"]),
-      paymentValue: json["budgetTotalSum"],
-      paymentUserFullName: json["paymentUserFullName"],
-      paymentUserPhone: json["paymentUserPhone"]);
+      paymentDate: DateTime.parse(json["paymentDate"] ?? DateTime.now().toString()),
+      paymentValue: json["budgetTotalSum"] ?? 0,
+      paymentUserFullName: json["paymentUserFullName"] ?? '',
+      paymentUserPhone: json["paymentUserPhone"] ?? "");
 
   Map<String, dynamic> toJson() => {
         "paymentDate": paymentDate.toIso8601String(),
         "paymentValue": paymentValue,
-        paymentUserFullName: paymentUserFullName,
-        paymentUserPhone: paymentUserPhone
+        "paymentUserFullName": paymentUserFullName,
+        "paymentUserPhone": paymentUserPhone
       };
 }

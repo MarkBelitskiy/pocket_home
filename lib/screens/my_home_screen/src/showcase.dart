@@ -25,6 +25,7 @@ class _AnimatedOverlayWidgetState extends State<AnimatedOverlayWidget> {
   OverlayEntry? _overlayEntry;
   @override
   void dispose() {
+    _overlayEntry?.remove();
     _overlayEntry?.dispose();
     super.dispose();
   }

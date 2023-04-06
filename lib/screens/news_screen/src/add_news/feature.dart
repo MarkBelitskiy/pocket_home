@@ -25,6 +25,6 @@ CupertinoPageRoute addNewsScreenFeature(HouseModel currentHouse, NewsBloc newsBl
       builder: (context) => BlocProvider(
             create: (context) =>
                 AddNewsBloc(repository: context.read<Repository>(), currentHouse: currentHouse, newsBloc: newsBloc),
-            child: _AddNewsScreen(),
+            child: const _AddNewsScreen(),
           ));
 }

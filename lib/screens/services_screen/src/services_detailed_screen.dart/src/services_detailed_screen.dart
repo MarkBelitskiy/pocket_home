@@ -6,11 +6,12 @@ class _ServicesDetailedScreen extends StatelessWidget {
     required this.model,
     required this.numberOfService,
     required this.servicesBloc,
+    required this.currentHouse,
   }) : super(key: key);
   final ServiceDetailedModel model;
   final int numberOfService;
   final ServicesBloc servicesBloc;
-
+  final HouseModel currentHouse;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,6 +21,7 @@ class _ServicesDetailedScreen extends StatelessWidget {
         model: model,
         servicesBloc: servicesBloc,
         index: numberOfService,
+        currentHouse: currentHouse,
       ),
     );
   }
@@ -31,11 +33,12 @@ class _Body extends StatelessWidget {
     required this.model,
     required this.servicesBloc,
     required this.index,
+    required this.currentHouse,
   }) : super(key: key);
   final ServiceDetailedModel model;
   final ServicesBloc servicesBloc;
   final int index;
-
+  final HouseModel currentHouse;
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -67,49 +70,55 @@ class _Body extends StatelessWidget {
           const SizedBox(
             height: 12,
           ),
+          //TODO ПЕРЕДЕЛАТЬ
           if (FormatterUtils.preparePhoneToMask(context.read<MyHousesBloc>().currentUser?.phone ?? '') ==
-                  FormatterUtils.preparePhoneToMask(context.read<MyHousesBloc>().currentHouse?.manager.phone ?? '') &&
+                  FormatterUtils.preparePhoneToMask(currentHouse.manager.phone) &&
               model.status != 1 &&
               model.status != 2 &&
               model.status != 3) ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-              child: GestureDetector(
-                onTap: () {
-                  showModalBottomSheet(
-                      isScrollControlled: true,
-                      shape:
-                          const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
-                      backgroundColor: getMainAppTheme(context).colors.bgColor,
-                      context: context,
-                      builder: (context) => _SetSpecialystBody(
-                            itemIndex: index,
-                            servicesBloc: servicesBloc,
-                          )).then((value) {
-                    if (value is Map) {
-                      servicesBloc.add(SetWorkerEvent(value[0], value[1]));
-                      Navigator.of(context, rootNavigator: true).pop();
-                    }
-                  });
-                },
-                child: Text(
-                  "setEmployee",
-                  style: getMainAppTheme(context)
-                      .textStyles
-                      .title
-                      .copyWith(color: getMainAppTheme(context).colors.activeText),
-                ).tr(),
+            if (model.choosePerson == null) ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                child: GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                        useRootNavigator: true,
+                        isScrollControlled: true,
+                        shape:
+                            const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
+                        backgroundColor: getMainAppTheme(context).colors.bgColor,
+                        context: context,
+                        builder: (context) => _SetSpecialystBody(
+                              itemIndex: index,
+                              servicesBloc: servicesBloc,
+                              currentHouse: currentHouse,
+                            )).then((value) {
+                      if (value is Map) {
+                        servicesBloc.add(SetWorkerEvent(value[0], value[1]));
+                        Navigator.of(context, rootNavigator: true).pop();
+                      }
+                    });
+                  },
+                  child: Text(
+                    "setEmployee",
+                    style: getMainAppTheme(context)
+                        .textStyles
+                        .title
+                        .copyWith(color: getMainAppTheme(context).colors.activeText),
+                  ).tr(),
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 12,
-            ),
+              const SizedBox(
+                height: 12,
+              ),
+            ],
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               child: GestureDetector(
                 onTap: () {
                   showModalBottomSheet(
                       isScrollControlled: true,
+                      useRootNavigator: true,
                       shape:
                           const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
                       backgroundColor: getMainAppTheme(context).colors.bgColor,
@@ -314,12 +323,18 @@ class _Commentary extends StatelessWidget {
   }
 }
 
-class _ModalBody extends StatelessWidget {
+class _ModalBody extends StatefulWidget {
   const _ModalBody();
 
   @override
+  State<_ModalBody> createState() => _ModalBodyState();
+}
+
+class _ModalBodyState extends State<_ModalBody> {
+  final controller = TextEditingController();
+  final focusNode = FocusNode();
+  @override
   Widget build(BuildContext context) {
-    TextEditingController controller = TextEditingController();
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Column(
@@ -358,11 +373,8 @@ class _ModalBody extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: MainTextField(
               textController: controller,
-              focusNode: FocusNode(),
+              focusNode: focusNode,
               title: 'comment',
-              onChanged: (value) {
-                controller.text = value;
-              },
             ),
           ),
           const SizedBox(
@@ -371,11 +383,11 @@ class _ModalBody extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(24),
             child: MainAppButton(
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true).pop(controller.text);
-                },
-                title: 'save',
-                assetIcon: ''),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop(controller.text);
+              },
+              title: 'save',
+            ),
           )
         ],
       ),
@@ -384,16 +396,14 @@ class _ModalBody extends StatelessWidget {
 }
 
 class _SetSpecialystBody extends StatelessWidget {
-  const _SetSpecialystBody({
-    required this.servicesBloc,
-    required this.itemIndex,
-  });
+  const _SetSpecialystBody({required this.servicesBloc, required this.itemIndex, required this.currentHouse});
   final int itemIndex;
   final ServicesBloc servicesBloc;
+  final HouseModel currentHouse;
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ChoseServicePersonBloc>(
-      create: (context) => ChoseServicePersonBloc(context.read<MyHousesBloc>())..add(InitPersonsDataEvent()),
+      create: (context) => ChoseServicePersonBloc(currentHouse)..add(InitPersonsDataEvent()),
       child: Padding(
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: Column(

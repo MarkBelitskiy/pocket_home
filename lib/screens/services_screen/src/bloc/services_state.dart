@@ -7,9 +7,11 @@ class ServicesInitial extends ServicesState {}
 class ServicesLoaded extends ServicesState {
   final List<ServiceDetailedModel> activeModels;
   final List<ServiceDetailedModel> historyModels;
+  final HouseModel currentHouse;
   ServicesLoaded(
     this.activeModels,
     this.historyModels,
+    this.currentHouse,
   );
 }
 

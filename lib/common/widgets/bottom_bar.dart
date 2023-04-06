@@ -5,9 +5,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:pocket_home/common/theme/theme_getter.dart';
 import 'package:pocket_home/common/utils/locale_view_model.dart';
 import 'package:pocket_home/screens/main_screen/feature.dart';
-import 'package:pocket_home/screens/my_home_screen/src/bloc/my_houses_bloc.dart';
-import 'package:pocket_home/screens/news_screen/src/bloc/news_bloc.dart';
-import 'package:pocket_home/screens/services_screen/src/bloc/services_bloc.dart';
 import 'package:provider/provider.dart';
 
 class CustomNavBar extends StatefulWidget {
@@ -123,13 +120,13 @@ class CustomNavBarState extends State<CustomNavBar> with SingleTickerProviderSta
 
 class _NavBarPainter extends CustomPainter {
   late double loc;
-  late double s;
+  late double koef;
   final Color navBarColor;
   final Color borderColor;
   _NavBarPainter(double startingLoc, int itemsLength, {required this.navBarColor, required this.borderColor}) {
     final span = 1.0 / itemsLength;
-    s = 0.2;
-    loc = startingLoc + (span - s) / 2;
+    koef = 0.2;
+    loc = startingLoc + (span - koef) / 2;
   }
   @override
   void paint(Canvas canvas, Size size) {
@@ -144,19 +141,19 @@ class _NavBarPainter extends CustomPainter {
       ..moveTo(0, 0)
       ..lineTo((loc - 0.1) * size.width, 0)
       ..cubicTo(
-        (loc + s * 0.20) * size.width,
+        (loc + koef * 0.20) * size.width,
         size.height * 0.05,
         loc * size.width,
         size.height * 0.60,
-        (loc + s * 0.50) * size.width,
+        (loc + koef * 0.50) * size.width,
         size.height * 0.60,
       )
       ..cubicTo(
-        (loc + s) * size.width,
+        (loc + koef) * size.width,
         size.height * 0.60,
-        (loc + s - s * 0.20) * size.width,
+        (loc + koef - koef * 0.20) * size.width,
         size.height * 0.05,
-        (loc + s + 0.1) * size.width,
+        (loc + koef + 0.1) * size.width,
         0,
       )
       ..lineTo(size.width, 0)
@@ -194,15 +191,6 @@ class _NavBarItemState extends State<_NavBarItem> {
         onTap: () {
           widget.callback.call();
           context.read<MainScreenViewModel>().changeScreen(widget.index);
-          // if (widget.index == 1) {
-          //   context.read<ServicesBloc>().add(InitEvent());
-          // }
-          // if (widget.index == 0) {
-          //   context.read<NewsBloc>().add(OnNewsTabInit());
-          // }
-          if (widget.index == 2) {
-            context.read<MyHousesBloc>().add(ActivateIntroEvent());
-          }
         },
         child: Consumer<MainScreenViewModel>(builder: (context, value, child) {
           bool isActive = value.activeIndex == widget.index;
@@ -242,20 +230,3 @@ class _NavBarItemState extends State<_NavBarItem> {
     );
   }
 }
-
-//для статичного боттом бара с вырезом по центру 
-// final paint = Paint()
-//   ..color = Colors.white
-//   ..style = PaintingStyle.fill;
-// final path = Path()
-//   ..moveTo(0, 20)
-//   ..quadraticBezierTo(size.width * 0.2, 0, size.width * 0.35, 0)
-//   ..quadraticBezierTo(size.width * 0.4, 0, size.width * 0.4, 20)
-//   ..arcToPoint(Offset(size.width * 0.55, 20), radius: Radius.circular(20.0), clockwise: false)
-//   ..quadraticBezierTo(size.width * 0.55, 0, size.width * 0.6, 0)
-//   ..quadraticBezierTo(size.width * 0.75, 0, size.width, 20)
-//   ..lineTo(size.width, size.height)
-//   ..lineTo(0, size.height)
-//   ..lineTo(0, 20);
-// canvas.drawShadow(path, Colors.black, 5, true);
-// canvas.drawPath(path, paint);

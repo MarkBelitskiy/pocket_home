@@ -6,10 +6,9 @@ class _AddNewsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        resizeToAvoidBottomInset: true,
         backgroundColor: getMainAppTheme(context).colors.bgColor,
-        appBar: MainAppBar(
-          title: 'createNews'.tr(),
+        appBar: const MainAppBar(
+          title: 'createNews',
         ),
         body: const _Body());
   }
@@ -45,6 +44,7 @@ class _Body extends StatelessWidget {
                 }
                 if (state is NewsAddedSuccessState) {
                   showModalBottomSheet(
+                      useRootNavigator: true,
                       shape:
                           const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
                       backgroundColor: getMainAppTheme(context).colors.bgColor,
@@ -78,8 +78,8 @@ class _PickTypeWidget extends StatefulWidget {
 }
 
 class _PickTypeWidgetState extends State<_PickTypeWidget> {
-  String title = 'publishType'.tr();
-  final List<String> items = ['news'.tr(), 'polls'.tr()];
+  String title = 'publishType';
+  final List<String> items = ['news', 'polls'];
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -104,7 +104,7 @@ class _PickTypeWidgetState extends State<_PickTypeWidget> {
                   .textStyles
                   .body
                   .copyWith(color: getMainAppTheme(context).colors.inactiveText),
-            ),
+            ).tr(),
           ),
           const SizedBox(
             width: 12,
@@ -121,16 +121,21 @@ class _PickTypeWidgetState extends State<_PickTypeWidget> {
   }
 }
 
-class _NewsBody extends StatelessWidget {
+class _NewsBody extends StatefulWidget {
   const _NewsBody();
 
   @override
+  State<_NewsBody> createState() => _NewsBodyState();
+}
+
+class _NewsBodyState extends State<_NewsBody> {
+  String filePath = '';
+  final titleTextController = TextEditingController();
+  final titleFocusNode = FocusNode();
+  final newsTextTextController = TextEditingController();
+  final newsTextFocusNode = FocusNode();
+  @override
   Widget build(BuildContext context) {
-    String title = '';
-
-    String newsText = '';
-
-    String filePath = '';
     return Column(
       children: [
         MainAppFilePicker(
@@ -143,27 +148,18 @@ class _NewsBody extends StatelessWidget {
           height: 24,
         ),
         MainTextField(
-          textController: TextEditingController(),
-          focusNode: FocusNode(),
+          textController: titleTextController,
+          focusNode: titleFocusNode,
           title: 'header'.tr(),
-          onChanged: (value) {
-            title = value;
-          },
         ),
         const SizedBox(
           height: 24,
         ),
         MainTextField(
-          textController: TextEditingController(),
-          focusNode: FocusNode(),
-          isPasswordField: false,
+          textController: newsTextTextController,
+          focusNode: newsTextFocusNode,
           maxLines: 5,
           title: 'newsText'.tr(),
-          readOnly: false,
-          onChanged: (value) {
-            newsText = value;
-          },
-          clearAvailable: true,
         ),
         const SizedBox(
           height: 48,
@@ -174,9 +170,9 @@ class _NewsBody extends StatelessWidget {
               context.read<AddNewsBloc>().add(CreateNewsEvent(
                     model: NewsModel(
                         filePath: filePath,
-                        newsText: newsText,
+                        newsText: newsTextTextController.text,
                         choosenPollValue: null,
-                        newsTitle: title,
+                        newsTitle: titleTextController.text,
                         pollAnswers: null,
                         publishDate: DateTime.now()),
                   ));
@@ -266,7 +262,7 @@ class _ModalBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //TODO добавить вариант "Опрос успешно создан с апишками телеги"
+    //TODO pollAddedSuccess
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -278,13 +274,13 @@ class _ModalBody extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                'Новость успешно создана',
+                'newsAddedSuccess',
                 textAlign: TextAlign.center,
                 style: getMainAppTheme(context)
                     .textStyles
                     .body
                     .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-              ),
+              ).tr(),
             ),
             IconButton(
               onPressed: () {

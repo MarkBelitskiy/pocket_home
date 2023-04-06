@@ -7,7 +7,6 @@ class _RegisterScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final vm = Provider.of<CreatePasswordModel>(context);
     return Scaffold(
-        resizeToAvoidBottomInset: false,
         backgroundColor: getMainAppTheme(context).colors.bgColor,
         appBar: MainAppBar(
           title: 'registerTitle',

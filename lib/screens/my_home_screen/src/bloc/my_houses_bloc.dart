@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pocket_home/common/repository/repository.dart';
@@ -20,7 +21,7 @@ class MyHousesBloc extends Bloc<MyHousesEvent, MyHousesState> {
     on<ChangeCurrentHomeEvent>(_onChangeCurrentActiveHouse);
     on<SaveHouseToPrefs>(_onSaveHouseToPrefs);
     on<ClearDataEvent>(_onClear);
-    on<ActivateIntroEvent>(_onAnimated);
+
     on<AddPaymentToBudget>(_paymentToBudget);
     on<UpdateIsManagerValueToFloatingButtonEvent>(_onUpdateIsManagerValue);
   }
@@ -35,7 +36,7 @@ class MyHousesBloc extends Bloc<MyHousesEvent, MyHousesState> {
           ? currentUser!.userHouses!.first
           : null;
       add(UpdateIsManagerValueToFloatingButtonEvent());
-      emit(MyHousesLoadedState(currentUser!.userHouses ?? [], currentHouse));
+      emit(MyHousesLoadedState(currentUser!.userHouses ?? [], currentHouse, activateAnimation: true));
     } catch (e) {
       if (kDebugMode) {
         print('MY_HOUSES_BLOC_ON_INIT_ERROR: $e');
@@ -64,8 +65,7 @@ class MyHousesBloc extends Bloc<MyHousesEvent, MyHousesState> {
     try {
       if (userHouses.any((element) =>
           element.houseAddress == event.house.houseAddress && element.houseNumber == event.house.houseNumber)) {
-        //TODO add Locale
-        throw 'У вас уже добавлен этот дом';
+        throw 'youAlreadyAddThisHouse'.tr();
       }
 
       userHouses.add(event.house);
@@ -126,21 +126,25 @@ class MyHousesBloc extends Bloc<MyHousesEvent, MyHousesState> {
     currentHouse = null;
     currentUser = null;
 
-    emit(MyHousesLoadedState(currentUser!.userHouses ?? [], currentHouse));
+    emit(MyHousesLoadedState([], currentHouse));
   }
 
-  Future _onAnimated(ActivateIntroEvent event, Emitter<MyHousesState> emit) async {
-    emit(MyHousesLoadedState(currentUser!.userHouses ?? [], currentHouse, activateAnimation: true));
+  Future _paymentToBudget(AddPaymentToBudget event, Emitter<MyHousesState> emit) async {
+    currentHouse!.budget.budgetPaymentData.add(BudgetPayDataModel(
+        paymentDate: DateTime.now(),
+        paymentValue: event.paymentValue,
+        paymentUserFullName: currentUser!.name,
+        paymentUserPhone: currentUser!.phone));
+    currentHouse!.budget.budgetTotalSum += event.paymentValue;
+    add(SaveHouseToPrefs());
   }
-
-  Future _paymentToBudget(AddPaymentToBudget event, Emitter<MyHousesState> emit) async {}
 
   Future _onUpdateIsManagerValue(UpdateIsManagerValueToFloatingButtonEvent event, Emitter<MyHousesState> emit) async {
     if (currentHouse != null && currentUser != null) {
       isManager = FormatterUtils.preparePhoneToMask(currentHouse!.manager.phone) ==
           FormatterUtils.preparePhoneToMask(currentUser!.phone);
 
-      emit(UpdateIsManagerState(isManager));
+      emit(UpdateIsManagerState(isManager, currentHouse));
     }
   }
 }

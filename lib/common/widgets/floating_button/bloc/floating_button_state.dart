@@ -4,4 +4,8 @@ abstract class FloatingButtonState {}
 
 class FloatingButtonInitial extends FloatingButtonState {}
 
-class ShowButtonState extends FloatingButtonState {}
+class ShowButtonState extends FloatingButtonState {
+  final HouseModel? currentHouse;
+
+  ShowButtonState(this.currentHouse);
+}

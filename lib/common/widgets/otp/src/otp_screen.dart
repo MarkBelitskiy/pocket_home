@@ -18,7 +18,6 @@ class OtpScreen extends StatelessWidget {
     });
     String messageId = '';
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       backgroundColor: getMainAppTheme(context).colors.bgColor,
       appBar: const MainAppBar(title: 'passwordReset'),
       body: MainAppBody(

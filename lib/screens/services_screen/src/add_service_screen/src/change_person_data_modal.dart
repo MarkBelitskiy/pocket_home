@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,6 +12,7 @@ Future showChangePersonDataBottomSheet(
   BuildContext contextFromScreen,
 ) {
   return showModalBottomSheet(
+    useRootNavigator: true,
     isScrollControlled: true,
     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
     backgroundColor: getMainAppTheme(contextFromScreen).colors.bgColor,
@@ -40,13 +42,13 @@ class _ModalBody extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  'Изменение контактных данных',
+                  'contactDataChange',
                   textAlign: TextAlign.center,
                   style: getMainAppTheme(context)
                       .textStyles
                       .body
                       .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-                ),
+                ).tr(),
               ),
               IconButton(
                   onPressed: () {
@@ -63,12 +65,7 @@ class _ModalBody extends StatelessWidget {
             child: MainTextField(
               textController: vm.fullNameController,
               focusNode: vm.fullNameFocuseNode,
-              isPasswordField: false,
-              maxLines: 1,
-              title: 'ФИО',
-              readOnly: false,
-              onChanged: (value) {},
-              clearAvailable: true,
+              title: 'fullName',
             ),
           ),
           Padding(
@@ -76,23 +73,18 @@ class _ModalBody extends StatelessWidget {
             child: MainTextField(
               textController: vm.phoneController,
               focusNode: vm.phoneFocusNode,
-              isPasswordField: false,
-              maxLines: 1,
               keyboardType: TextInputType.phone,
-              title: 'Телефон',
-              readOnly: false,
-              onChanged: (value) {},
-              clearAvailable: true,
+              title: 'phone',
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16),
             child: MainAppButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                title: 'Сохранить',
-                assetIcon: ''),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              title: 'save',
+            ),
           )
         ],
       ),

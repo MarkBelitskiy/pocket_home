@@ -39,11 +39,6 @@ class _Body extends StatefulWidget {
 class _BodyState extends State<_Body> {
   @override
   Widget build(BuildContext context) {
-    // WidgetsBinding.instance.addPostFrameCallback(
-    //   (timeStamp) {
-    //     context.read<AuthBloc>().add(UpdateUserDataInOtherBlocksEvent());
-    //   },
-    // );
     return Consumer<MainScreenViewModel>(
       builder: (context, value, child) => Stack(
         children: [

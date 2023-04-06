@@ -1,7 +1,7 @@
 part of '../feature.dart';
 
 class _CreatePasswordBody extends StatelessWidget {
-  const _CreatePasswordBody({super.key});
+  const _CreatePasswordBody({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class _CreatePasswordBody extends StatelessWidget {
           isPasswordField: true,
           clearAvailable: false,
           errorText: 'passwordsIsNotMatch'.tr(),
-          stringToValidate: vm.passwordTextController.text,
+          otherControllerToValidate: vm.passwordTextController,
           title: 'repeatPass',
         ),
         const SizedBox(

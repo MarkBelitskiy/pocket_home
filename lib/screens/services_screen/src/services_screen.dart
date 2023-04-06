@@ -10,25 +10,18 @@ class _ServicesScreen extends StatelessWidget {
       child: Scaffold(
         extendBodyBehindAppBar: true,
         backgroundColor: getMainAppTheme(context).colors.bgColor,
-        resizeToAvoidBottomInset: false,
         floatingActionButton: MainAppFloatingButton(
           enumValue: MainFloatingActionButton.services,
-          onTap: () {
-            Navigator.of(context, rootNavigator: true).push(addServicesScreenFeature(context.read<ServicesBloc>()));
+          onTap: (currentHouse) {
+            Navigator.of(context, rootNavigator: true)
+                .push(addServicesScreenFeature(context.read<ServicesBloc>(), currentHouse!));
           },
         ),
         appBar: const MainAppBar(
           leadingEnable: false,
           tabNames: ['active', 'history'],
         ),
-        body: BlocConsumer<ServicesBloc, ServicesState>(
-          listener: (context, state) {
-            if (state is RatingSetToServiceState) {
-              Navigator.of(
-                context,
-              ).pop();
-            }
-          },
+        body: BlocBuilder<ServicesBloc, ServicesState>(
           buildWhen: (previous, current) => current is ServicesLoaded,
           builder: (context, state) {
             if (state is ServicesLoaded) {
@@ -42,10 +35,12 @@ class _ServicesScreen extends StatelessWidget {
                   _TabBody(
                     models: state.activeModels,
                     title: "haveNotActiveServices",
+                    currentHouse: state.currentHouse,
                   ),
                   _TabBody(
                     models: state.historyModels,
                     title: 'uHaveNotHistoryOfServicesRequests',
+                    currentHouse: state.currentHouse,
                   ),
                 ],
               );
@@ -89,10 +84,11 @@ class _TabBody extends StatelessWidget {
     Key? key,
     required this.models,
     required this.title,
+    required this.currentHouse,
   }) : super(key: key);
   final List<ServiceDetailedModel> models;
   final String title;
-
+  final HouseModel currentHouse;
   @override
   Widget build(BuildContext context) {
     if (models.isEmpty) {
@@ -107,6 +103,7 @@ class _TabBody extends StatelessWidget {
           return _CardItem(
             item: models[index],
             index: index,
+            currentHouse: currentHouse,
           );
         });
   }
@@ -116,10 +113,11 @@ class _CardItem extends StatelessWidget {
   const _CardItem({
     required this.item,
     required this.index,
+    required this.currentHouse,
   });
   final ServiceDetailedModel item;
   final int index;
-
+  final HouseModel currentHouse;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -129,6 +127,7 @@ class _CardItem extends StatelessWidget {
                 FormatterUtils.preparePhoneToMask(item.contactPerson.phone)) {
           showModalBottomSheet(
               isScrollControlled: true,
+              useRootNavigator: true,
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
               backgroundColor: getMainAppTheme(context).colors.bgColor,
               context: context,
@@ -139,13 +138,23 @@ class _CardItem extends StatelessWidget {
         } else {
           Navigator.of(context, rootNavigator: true)
               .push(
-                servicesDetailedScreenFeature(
-                  item,
-                  index,
-                  context.read<ServicesBloc>(),
-                ),
+                servicesDetailedScreenFeature(item, index, context.read<ServicesBloc>(), currentHouse),
               )
               .then((value) => context.read<ServicesBloc>().add(ScreenUpdateEvent()));
+        }
+      },
+      onLongPress: () {
+        if (item.choosePerson != null) {
+          showModalBottomSheet(
+              useRootNavigator: true,
+              isScrollControlled: true,
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
+              backgroundColor: getMainAppTheme(context).colors.bgColor,
+              context: context,
+              builder: (modelConttext) => _ModalBody(
+                    item: index,
+                    servicesBloc: context.read<ServicesBloc>(),
+                  ));
         }
       },
       child: Container(
@@ -203,7 +212,7 @@ class _CardItem extends StatelessWidget {
                   getStatusText(item.status),
                   textAlign: TextAlign.right,
                   style: getMainAppTheme(context).textStyles.body.copyWith(color: getItemColor(item.status)),
-                ),
+                ).tr(),
               ),
             ],
           ),
@@ -256,37 +265,44 @@ class _CardItem extends StatelessWidget {
   }
 
   String getStatusText(int status) {
-    String returned = 'В работе';
+    //TODO LOCALE
+    String returned = 'inWork';
     switch (status) {
       case 1:
-        returned = 'Выполнена ожидает оценки';
+        returned = 'completeNeedSetRatingStatus';
         break;
       case 2:
-        returned = 'Отклонена';
+        returned = 'declineStatus';
         break;
       case 3:
-        returned = 'Завершена';
+        returned = 'completeStatus';
         break;
 
       default:
-        returned = 'В работе';
+        returned = 'inWork';
     }
     return returned;
   }
 }
 
-class _ModalBody extends StatelessWidget {
+class _ModalBody extends StatefulWidget {
   const _ModalBody({
     required this.item,
     required this.servicesBloc,
   });
   final int item;
   final ServicesBloc servicesBloc;
+
+  @override
+  State<_ModalBody> createState() => _ModalBodyState();
+}
+
+class _ModalBodyState extends State<_ModalBody> {
+  TextEditingController controller = TextEditingController();
+  FocusNode focus = FocusNode();
+  int value = 0;
   @override
   Widget build(BuildContext context) {
-    TextEditingController controller = TextEditingController();
-    FocusNode focus = FocusNode();
-    int value = 0;
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Column(
@@ -345,7 +361,8 @@ class _ModalBody extends StatelessWidget {
             child: MainAppButton(
               onPressed: () {
                 if (value != 0) {
-                  servicesBloc.add(SetRatingValueEvent(value, item));
+                  Navigator.of(context, rootNavigator: true).pop();
+                  widget.servicesBloc.add(SetRatingValueEvent(value, widget.item));
                 }
               },
               title: 'save',

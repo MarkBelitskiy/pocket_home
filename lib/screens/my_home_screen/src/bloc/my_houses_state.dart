@@ -25,6 +25,6 @@ class ReturnedHouseseToChangeHouseModal extends MyHousesState {
 
 class UpdateIsManagerState extends MyHousesState {
   final bool isManager;
-
-  UpdateIsManagerState(this.isManager);
+  final HouseModel? currentHouse;
+  UpdateIsManagerState(this.isManager, this.currentHouse);
 }

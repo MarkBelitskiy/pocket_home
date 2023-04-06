@@ -105,5 +105,22 @@
 "contactData":"Контактные данные",
 "files":"Файлы",
 "cancelReason":"Причина отклонения",
-"employeeChoose":"Выбор специалиста"
+"employeeChoose":"Выбор специалиста",
+"youAlreadyAddThisHouse":"У вас уже добавлен этот дом",
+"newsAddedSuccess":"Новость успешно создана",
+"pollAddedSuccess":"Опрос успешно создан",
+"servicesRatingReport":"Рейтинг оказанных услуг",
+"budgetReport":"Отчет по расходам бюджета",
+"budgetIncomeReport":"Отчет по поступлениям в бюджет",
+"inWorkStatus":"В работе",
+"completeNeedSetRatingStatus":"Выполнена, ожидает оценки",
+"declineStatus":"Отклонена",
+"completeStatus":"Завершена",
+"serviceApplicationCreate":"Создание заявки",
+"create":"Создать",
+"choiceService":"Выбор услуги",
+"chooseService":"Выберите услугу",
+"edit":"Редактировать",
+"applicationRequestSuccess":"Заявка успешно подана!",
+"contactDataChange":"Изменение контактных данных"
 }

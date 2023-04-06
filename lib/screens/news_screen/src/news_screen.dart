@@ -11,15 +11,13 @@ class _NewsScreen extends StatelessWidget {
           if (state is NewsLoadedState) {
             return Scaffold(
                 backgroundColor: getMainAppTheme(context).colors.bgColor,
-                floatingActionButton: state.currentHouse != null
-                    ? MainAppFloatingButton(
-                        enumValue: MainFloatingActionButton.news,
-                        onTap: () {
-                          Navigator.of(context, rootNavigator: true)
-                              .push(addNewsScreenFeature(state.currentHouse!, context.read<NewsBloc>()));
-                        },
-                      )
-                    : const SizedBox.shrink(),
+                floatingActionButton: MainAppFloatingButton(
+                  enumValue: MainFloatingActionButton.news,
+                  onTap: (currentHouse) {
+                    Navigator.of(context, rootNavigator: true)
+                        .push(addNewsScreenFeature(currentHouse!, context.read<NewsBloc>()));
+                  },
+                ),
                 body: _Body(
                   state: state,
                 ));

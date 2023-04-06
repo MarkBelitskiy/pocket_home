@@ -36,8 +36,6 @@ class SaveHouseToPrefs extends MyHousesEvent {
 
 class ClearDataEvent extends MyHousesEvent {}
 
-class ActivateIntroEvent extends MyHousesEvent {}
-
 class AddPaymentToBudget extends MyHousesEvent {
   final int paymentValue;
 

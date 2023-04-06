@@ -8,7 +8,7 @@ class _MyHousesScreen extends StatelessWidget {
     return Scaffold(
         floatingActionButton: MainAppFloatingButton(
             enumValue: MainFloatingActionButton.myHome,
-            onTap: () {
+            onTap: (currentHouse) {
               showModalBottomSheet(
                   isScrollControlled: true,
                   useRootNavigator: true,
@@ -111,7 +111,7 @@ class _MyHousesLoaded extends StatelessWidget {
               const SizedBox(
                 height: 16,
               ),
-              const _WorkersWidget(),
+              _WorkersWidget(currentHouse: currentHouse),
               const SizedBox(
                 height: 16,
               ),
@@ -142,6 +142,7 @@ class _ChooseHomeWidget extends StatelessWidget {
       onTap: () {
         showModalBottomSheet(
             isScrollControlled: true,
+            useRootNavigator: true,
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
             backgroundColor: getMainAppTheme(context).colors.bgColor,
             context: context,
@@ -426,13 +427,13 @@ class _PartnersGrid extends StatelessWidget {
 }
 
 class _WorkersWidget extends StatelessWidget {
-  const _WorkersWidget();
-
+  const _WorkersWidget({Key? key, required this.currentHouse}) : super(key: key);
+  final HouseModel currentHouse;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context, rootNavigator: true).push(workersScreenFeature());
+        Navigator.of(context, rootNavigator: true).push(workersScreenFeature(currentHouse));
       },
       child: Container(
         padding: const EdgeInsets.all(12),

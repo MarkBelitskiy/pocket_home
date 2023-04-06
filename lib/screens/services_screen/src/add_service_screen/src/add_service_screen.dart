@@ -8,7 +8,7 @@ class _AddServiceScreen extends StatelessWidget {
     return Scaffold(
         backgroundColor: getMainAppTheme(context).colors.bgColor,
         appBar: const MainAppBar(
-          title: 'Создание заявки',
+          title: 'serviceApplicationCreate',
         ),
         body: const _Body());
   }
@@ -24,6 +24,7 @@ class _Body extends StatelessWidget {
       listener: (context, state) {
         if (state is ServicesAddedState) {
           showModalBottomSheet(
+              useRootNavigator: true,
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
               backgroundColor: getMainAppTheme(context).colors.bgColor,
               context: context,
@@ -69,8 +70,7 @@ class _Body extends StatelessWidget {
                           );
                     }
                   },
-                  title: 'Создать',
-                  assetIcon: '',
+                  title: 'create',
                   titleColor: ColorPalette.blue200,
                 ))
           ],
@@ -88,6 +88,7 @@ class _ChooseProblem extends StatefulWidget {
 }
 
 class _ChooseProblemState extends State<_ChooseProblem> {
+  //TODO вынести в префы
   List<String> modalTypes = ['Протечка крыши', 'Нет света на пролете', 'Не работает домофон'];
   @override
   Widget build(BuildContext context) {
@@ -96,10 +97,10 @@ class _ChooseProblemState extends State<_ChooseProblem> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Наименование',
+          'serviceName',
           style:
               getMainAppTheme(context).textStyles.title.copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-        ),
+        ).tr(),
         const SizedBox(
           height: 4,
         ),
@@ -107,7 +108,7 @@ class _ChooseProblemState extends State<_ChooseProblem> {
           onTap: () {
             showMainAppBottomSheet(
               context,
-              title: 'Выбор услуги',
+              title: 'choiceService',
               isNeedSearch: true,
               items: modalTypes,
             ).then((value) {
@@ -128,9 +129,9 @@ class _ChooseProblemState extends State<_ChooseProblem> {
               children: [
                 Expanded(
                     child: Text(
-                  vm.selectedProblem.isEmpty ? 'Выберите услугу' : vm.selectedProblem,
+                  vm.selectedProblem.isEmpty ? 'chooseService' : vm.selectedProblem,
                   style: getMainAppTheme(context).textStyles.subBody.copyWith(color: ColorPalette.grey300),
-                )),
+                ).tr()),
                 SvgPicture.asset(
                   getMainAppTheme(context).icons.chevronDown,
                   color: getMainAppTheme(context).colors.activeColor,
@@ -159,10 +160,10 @@ class _ContactPersonState extends State<_ContactPerson> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Контактные данные',
+          'contactData',
           style:
               getMainAppTheme(context).textStyles.title.copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-        ),
+        ).tr(),
         const SizedBox(
           height: 4,
         ),
@@ -178,9 +179,9 @@ class _ContactPersonState extends State<_ContactPerson> {
                 children: [
                   Expanded(
                       child: Text(
-                    'ФИО',
+                    'fullName',
                     style: getMainAppTheme(context).textStyles.subBody.copyWith(color: ColorPalette.grey300),
-                  )),
+                  ).tr()),
                   Expanded(
                       child: Text(
                     vm.fullNameController.text,
@@ -196,9 +197,9 @@ class _ContactPersonState extends State<_ContactPerson> {
                 children: [
                   Expanded(
                       child: Text(
-                    'Телефон',
+                    'phone',
                     style: getMainAppTheme(context).textStyles.subBody.copyWith(color: ColorPalette.grey300),
-                  )),
+                  ).tr()),
                   Expanded(
                       child: Text(
                     vm.phoneController.text,
@@ -218,9 +219,9 @@ class _ContactPersonState extends State<_ContactPerson> {
                   children: [
                     Expanded(
                         child: Text(
-                      'Редактировать',
+                      'edit',
                       style: getMainAppTheme(context).textStyles.subBody.copyWith(color: ColorPalette.blue500),
-                    )),
+                    ).tr()),
                     SvgPicture.asset(
                       getMainAppTheme(context).icons.chevronRight,
                       color: getMainAppTheme(context).colors.activeColor,
@@ -246,10 +247,10 @@ class _Files extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Файлы',
+          'files',
           style:
               getMainAppTheme(context).textStyles.title.copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-        ),
+        ).tr(),
         const SizedBox(
           height: 4,
         ),
@@ -275,10 +276,10 @@ class _Commentary extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Комментарий',
+          'comment',
           style:
               getMainAppTheme(context).textStyles.title.copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-        ),
+        ).tr(),
         const SizedBox(
           height: 4,
         ),
@@ -312,13 +313,13 @@ class _ModalBody extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                'Заявка успешно подана!',
+                'applicationRequestSuccess',
                 textAlign: TextAlign.center,
                 style: getMainAppTheme(context)
                     .textStyles
                     .body
                     .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-              ),
+              ).tr(),
             ),
             IconButton(
                 onPressed: () {
@@ -337,11 +338,11 @@ class _ModalBody extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(24),
           child: MainAppButton(
-              onPressed: () {
-                Navigator.of(context, rootNavigator: true).pop();
-              },
-              title: 'Закрыть',
-              assetIcon: ''),
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).pop();
+            },
+            title: 'close',
+          ),
         )
       ],
     );

@@ -17,16 +17,16 @@ class MainTextField extends StatefulWidget {
     this.onChanged,
     this.clearAvailable = true,
     this.prefixIcon,
-    this.stringToValidate,
+    this.otherControllerToValidate,
     this.regExpToValidate,
     this.textInputAction,
     this.keyboardType,
-  })  : assert(
-            !(regExpToValidate != null && stringToValidate != null), 'You can use only one of this fields to validate'),
+  })  : assert(!(regExpToValidate != null && otherControllerToValidate != null),
+            'You can use only one of this fields to validate'),
         assert(!(isPasswordField && clearAvailable), 'If you use isPasswordField set clearAvailable to false'),
-        assert(!(errorText == null && (regExpToValidate != null || stringToValidate != null)),
+        assert(!(errorText == null && (regExpToValidate != null || otherControllerToValidate != null)),
             'You need set errorText to show message on the screen'),
-        assert(!(errorText != null && (regExpToValidate == null && stringToValidate == null)),
+        assert(!(errorText != null && (regExpToValidate == null && otherControllerToValidate == null)),
             'If you want show error message use regExpToValidate or stringToValidate'),
         super(key: key);
   final TextEditingController textController;
@@ -39,7 +39,7 @@ class MainTextField extends StatefulWidget {
   final int? maxLines;
   final bool readOnly;
   final RegExp? regExpToValidate;
-  final String? stringToValidate;
+  final TextEditingController? otherControllerToValidate;
   final String? prefixIcon;
   final dynamic textInputAction;
 
@@ -62,6 +62,10 @@ class _MainTextFieldState extends State<MainTextField> {
     showSuffixIcon = widget.isPasswordField;
     isPhoneField = widget.keyboardType == TextInputType.phone;
 
+    widget.otherControllerToValidate?.addListener(() {
+      setState(() {});
+    });
+
     super.initState();
   }
 
@@ -77,7 +81,15 @@ class _MainTextFieldState extends State<MainTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        //TODO ADD TITLE
+        if (widget.title != null)
+          Text(
+            widget.title!,
+            style:
+                getMainAppTheme(context).textStyles.body.copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+          ),
+        const SizedBox(
+          height: 4,
+        ),
         TextFormField(
           keyboardType: widget.keyboardType,
           readOnly: widget.readOnly,
@@ -190,11 +202,13 @@ class _MainTextFieldState extends State<MainTextField> {
 
   String? _validateFunc(String? value) {
     if (value != null && value.isNotEmpty) {
-      if (widget.regExpToValidate != null && !value.contains(widget.regExpToValidate!)) {
+      if (widget.regExpToValidate != null && !widget.regExpToValidate!.hasMatch(value)) {
         return widget.errorText;
       }
-      if (widget.stringToValidate != null && value != widget.stringToValidate!) {
-        return widget.errorText;
+      if (widget.otherControllerToValidate != null) {
+        if (value != widget.otherControllerToValidate!.text) {
+          return widget.errorText;
+        }
       }
     }
     return null;

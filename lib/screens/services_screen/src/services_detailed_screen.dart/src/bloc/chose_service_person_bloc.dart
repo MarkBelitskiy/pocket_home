@@ -1,24 +1,21 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pocket_home/screens/my_home_screen/src/bloc/my_houses_bloc.dart';
+import 'package:pocket_home/screens/my_home_screen/my_home_model.dart';
 import 'package:pocket_home/screens/my_home_screen/src/workers_screen/src/add_new_worker_screen.dart/src/worker_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'chose_service_person_event.dart';
 part 'chose_service_person_state.dart';
 
 class ChoseServicePersonBloc extends Bloc<ChoseServicePersonEvent, ChoseServicePersonState> {
-  final MyHousesBloc myHousesBloc;
-  ChoseServicePersonBloc(this.myHousesBloc) : super(ChoseServicePersonInitial()) {
+  final HouseModel currentHouse;
+  ChoseServicePersonBloc(this.currentHouse) : super(ChoseServicePersonInitial()) {
     on<InitPersonsDataEvent>(_onInit);
     on<SearchPersonsEvent>(_onSearch);
   }
   List<WorkerModel> workers = [];
   Future _onInit(InitPersonsDataEvent event, Emitter<ChoseServicePersonState> emit) async {
     emit(LoadingPersonsDataState(true));
-    final prefs = await SharedPreferences.getInstance();
 
-    final modelFromPrefs = prefs.getString('servicesPersonsModels');
-    workers.addAll(myHousesBloc.currentHouse?.workers ?? []);
+    workers.addAll(currentHouse.workers ?? []);
 
     emit(LoadingPersonsDataState(false));
     emit(PersonsLoadedState(workers));
@@ -26,7 +23,7 @@ class ChoseServicePersonBloc extends Bloc<ChoseServicePersonEvent, ChoseServiceP
 
   Future _onSearch(SearchPersonsEvent event, Emitter<ChoseServicePersonState> emit) async {
     List<WorkerModel> searchableList = [];
-
+//TODO ADD SEARCH ABSTRACT
     for (var worker in workers) {
       if (event.searchableValue.contains(
         RegExp("[0-9]"),

@@ -2,7 +2,11 @@ part of 'services_bloc.dart';
 
 abstract class ServicesEvent {}
 
-class InitEvent extends ServicesEvent {}
+class InitEvent extends ServicesEvent {
+  final bool? needSaveToPrefs;
+
+  InitEvent({this.needSaveToPrefs});
+}
 
 class AddNewServiceEvent extends ServicesEvent {}
 

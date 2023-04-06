@@ -1,14 +1,18 @@
 part of '../feature.dart';
 
-class _ForgotPassScreen extends StatelessWidget {
+class _ForgotPassScreen extends StatefulWidget {
   const _ForgotPassScreen();
 
   @override
+  State<_ForgotPassScreen> createState() => _ForgotPassScreenState();
+}
+
+class _ForgotPassScreenState extends State<_ForgotPassScreen> {
+  final controller = TextEditingController();
+  final focus = FocusNode();
+  @override
   Widget build(BuildContext context) {
-    final controller = TextEditingController();
-    final focus = FocusNode();
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       backgroundColor: getMainAppTheme(context).colors.bgColor,
       appBar: const MainAppBar(title: 'passwordReset'),
       body: MainAppBody(children: [
@@ -38,7 +42,12 @@ class _ForgotPassScreen extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            //TODO ADD BOT OR REDIRECT LINK TO TELEGRAM
+            launchUrl(
+              Uri.parse(
+                'https://t.me/MRKBL',
+              ),
+              mode: LaunchMode.externalApplication,
+            );
           },
           child: Text(
             'writeToTechPod',

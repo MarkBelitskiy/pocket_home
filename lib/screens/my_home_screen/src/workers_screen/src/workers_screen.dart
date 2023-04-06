@@ -9,14 +9,13 @@ class _WorkersScreen extends StatelessWidget {
       backgroundColor: getMainAppTheme(context).colors.bgColor,
       floatingActionButton: MainAppFloatingButton(
           enumValue: MainFloatingActionButton.workers,
-          onTap: () {
+          onTap: (currentHouse) {
             Navigator.of(context).push(addNewWorkersScreenFeature()).then((value) {
               if (value is WorkerModel) {
                 context.read<WorkersBloc>().add(AddWorkerToHouseEvent(value));
               }
             });
           }),
-      resizeToAvoidBottomInset: false,
       appBar: const MainAppBar(
         title: 'employees',
         isRoot: true,

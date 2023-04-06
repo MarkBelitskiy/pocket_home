@@ -8,7 +8,6 @@ class _AddNewWorkersScreen extends StatelessWidget {
     final vm = context.read<AddNewWorkersViewModel>();
     return Scaffold(
       backgroundColor: getMainAppTheme(context).colors.bgColor,
-      resizeToAvoidBottomInset: false,
       appBar: const MainAppBar(
         title: 'addEmploye',
         isRoot: true,

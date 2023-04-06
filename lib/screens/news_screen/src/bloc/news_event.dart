@@ -13,3 +13,5 @@ class UpdatePollEvent extends NewsEvent {
 
   UpdatePollEvent(this.newsId, this.pollValue);
 }
+
+class LoadEmptyScreenEvent extends NewsEvent {}

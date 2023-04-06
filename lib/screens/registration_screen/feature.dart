@@ -25,6 +25,7 @@ CupertinoPageRoute registrationScreenFeature() {
   return CupertinoPageRoute(
       builder: (context) => BlocProvider(
             create: (context) => RegisterBloc(),
-            child: ChangeNotifierProvider(create: (context) => CreatePasswordModel()..init(), child: _RegisterScreen()),
+            child: ChangeNotifierProvider(
+                create: (context) => CreatePasswordModel()..init(), child: const _RegisterScreen()),
           ));
 }

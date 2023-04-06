@@ -7,7 +7,6 @@ class _ResetPasswordScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final vm = Provider.of<ResetPasswordModel>(context);
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       backgroundColor: getMainAppTheme(context).colors.bgColor,
       appBar: const MainAppBar(
         title: 'passwordReset',
