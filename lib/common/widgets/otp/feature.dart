@@ -1,12 +1,13 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:pocket_home/common/theme/theme_getter.dart';
 import 'package:pocket_home/common/utils/formatter_utils.dart';
 import 'package:pocket_home/common/widgets/button_widget.dart';
+import 'package:pocket_home/common/widgets/error_snack.dart';
 import 'package:pocket_home/common/widgets/main_app_bar_widget.dart';
 import 'package:pocket_home/common/widgets/main_body_widget.dart';
 import 'package:pocket_home/notification_service.dart';

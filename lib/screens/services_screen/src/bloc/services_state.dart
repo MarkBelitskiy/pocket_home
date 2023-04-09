@@ -8,11 +8,8 @@ class ServicesLoaded extends ServicesState {
   final List<ServiceDetailedModel> activeModels;
   final List<ServiceDetailedModel> historyModels;
   final HouseModel currentHouse;
-  ServicesLoaded(
-    this.activeModels,
-    this.historyModels,
-    this.currentHouse,
-  );
+  final UserModel user;
+  ServicesLoaded(this.activeModels, this.historyModels, this.currentHouse, this.user);
 }
 
 class LoadingState extends ServicesState {

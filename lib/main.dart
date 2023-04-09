@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pocket_home/common/repository/repository.dart';
 import 'package:pocket_home/common/theme/main_app_theme/main_app_theme_view_model.dart';
 import 'package:pocket_home/common/utils/locale_view_model.dart';
-import 'package:pocket_home/notification_service.dart';
 import 'package:pocket_home/screens/login_screen/src/bloc/auth_bloc.dart';
 import 'package:pocket_home/screens/main_screen/feature.dart';
 import 'package:pocket_home/screens/my_home_screen/src/bloc/my_houses_bloc.dart';
@@ -18,29 +17,29 @@ void main() async {
   await EasyLocalization.ensureInitialized();
   runApp(
     EasyLocalization(
-        supportedLocales: const [Locale('ru', 'RU'), Locale('kk', 'KZ')],
-        path: 'assets/languages',
-        child: MultiProvider(
-          providers: [
-            RepositoryProvider(create: (context) => Repository()..init(preferences)),
-            RepositoryProvider(create: (context) => NotificationService()..init()),
-            ChangeNotifierProvider<MainAppThemeViewModel>(
-              create: (context) => MainAppThemeViewModel()..init(preferences),
-            ),
-            ChangeNotifierProvider<MainAppLocaleViewModel>(
-              create: (context) => MainAppLocaleViewModel(),
-            ),
-            BlocProvider(
-              create: (context) => AuthBloc(repository: context.read<Repository>())..add(InitAuthEvent()),
-            ),
-            BlocProvider(
-              create: (context) => MyHousesBloc(
-                repository: context.read<Repository>(),
-              )..add(InitHousesEvent()),
-            ),
-          ],
-          child: const MyApp(),
-        )),
+      supportedLocales: const [Locale('ru', 'RU'), Locale('kk', 'KZ')],
+      path: 'assets/languages',
+      child: MultiProvider(
+        providers: [
+          RepositoryProvider(create: (context) => Repository()..init(preferences)),
+          ChangeNotifierProvider<MainAppThemeViewModel>(
+            create: (context) => MainAppThemeViewModel()..init(preferences),
+          ),
+          ChangeNotifierProvider<MainAppLocaleViewModel>(
+            create: (context) => MainAppLocaleViewModel(),
+          ),
+          BlocProvider(
+            create: (context) => AuthBloc(repository: context.read<Repository>())..add(InitAuthEvent()),
+          ),
+          BlocProvider(
+            create: (context) => MyHousesBloc(
+              repository: context.read<Repository>(),
+            )..add(InitHousesEvent()),
+          ),
+        ],
+        child: const MyApp(),
+      ),
+    ),
   );
 }
 

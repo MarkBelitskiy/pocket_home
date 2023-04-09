@@ -61,9 +61,9 @@ class _EmptyBodyState extends StatelessWidget {
         children: [
           SizedBox(
             height: MediaQuery.of(context).size.height,
-            child: const EmptyPlaceholderWithLottie(
-              lottiePath: 'assets/lottie/home.json',
-              margin: EdgeInsets.only(bottom: 110, left: 20),
+            child: EmptyPlaceholderWithLottie(
+              lottiePath: getMainAppTheme(context).icons.homeLottie,
+              margin: const EdgeInsets.only(bottom: 110, left: 20),
               title: 'haveNotHomes',
             ),
           ),

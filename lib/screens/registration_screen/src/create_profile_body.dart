@@ -45,9 +45,18 @@ class _CreateProfileBody extends StatelessWidget {
         ),
         MainAppButton(
           onPressed: () {
+            if (vm.loginTextController.text.isEmpty) {
+              return returnSnackBar(context, 'fillInLogginField');
+            }
+            if (vm.nameTextController.text.isEmpty) {
+              return returnSnackBar(context, 'fillInFullNameField');
+            }
+            if (vm.phoeTextController.text.isEmpty || vm.phoeTextController.text.replaceAll(' ', '').length < 14) {
+              return returnSnackBar(context, 'fillInPhoneField');
+            }
             context.read<RegisterBloc>().add(ChangeBodyEvent(RegisterScreenBodyEnums.password));
           },
-          titleColor: ColorPalette.blue200,
+          titleColor: getMainAppTheme(context).colors.accentTextColor,
           title: 'continue',
         )
       ],

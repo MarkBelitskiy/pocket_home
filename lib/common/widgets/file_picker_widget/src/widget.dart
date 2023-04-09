@@ -182,7 +182,7 @@ class _ProfilePhotoBody extends StatelessWidget {
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(color: getMainAppTheme(context).colors.buttonsColor, shape: BoxShape.circle),
                 child: SvgPicture.asset(getMainAppTheme(context).icons.camera,
-                    width: 32, height: 32, color: ColorPalette.grey100),
+                    width: 32, height: 32, color: getMainAppTheme(context).colors.iconOnButtonColor),
               ),
             )
           ],

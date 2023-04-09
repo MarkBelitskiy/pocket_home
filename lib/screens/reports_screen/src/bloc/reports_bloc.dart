@@ -55,6 +55,8 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
       if (file != null) {
         emit(ShowGeneratedReportState(file.path));
       }
+    } else {
+      emit(ReportsGenerateError());
     }
   }
 
@@ -66,6 +68,8 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
             .toList()));
     if (file != null) {
       emit(ShowGeneratedReportState(file.path));
+    } else {
+      emit(ReportsGenerateError());
     }
   }
 
@@ -78,6 +82,8 @@ class ReportsBloc extends Bloc<ReportsEvent, ReportsState> {
     ));
     if (file != null) {
       emit(ShowGeneratedReportState(file.path));
+    } else {
+      emit(ReportsGenerateError());
     }
   }
 }

@@ -5,7 +5,7 @@ import 'package:pocket_home/common/utils/preferences_utils.dart';
 import 'package:pocket_home/screens/registration_screen/src/profile_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class MainUserRepository extends BaseUserRepository {
+class MainUserRepository implements BaseUserRepository {
   final SharedPreferences preferences;
 
   MainUserRepository({required this.preferences});
@@ -35,14 +35,12 @@ class MainUserRepository extends BaseUserRepository {
     }
 
     if (user == null) {
-      return 'Аккаунт не зарегистрирован';
+      return 'accountNotRegistered';
     }
 
     if (user.password != password) {
-      return 'Пароль неверный';
+      return 'passwordIsWrong';
     }
-
-    preferences.setString(PreferencesUtils.loginKey, user.login);
 
     preferences.setBool(PreferencesUtils.authorizedKey, true);
 
@@ -65,5 +63,67 @@ class MainUserRepository extends BaseUserRepository {
     }
     preferences.setString(PreferencesUtils.authenticatedUser, jsonEncode(user.toJson()));
     preferences.setString(PreferencesUtils.usersKey, usersModelToJson(users));
+  }
+
+  @override
+  Future deleteUser({required UserModel user}) async {
+    String? usersStringFromPrefs = preferences.getString(PreferencesUtils.usersKey);
+    List<UserModel> users =
+        usersStringFromPrefs != null && usersStringFromPrefs.isNotEmpty ? usersModelFromJson(usersStringFromPrefs) : [];
+    users.removeWhere((element) => element.login == user.login);
+    preferences.setString(PreferencesUtils.usersKey, usersModelToJson(users));
+    preferences.setString(PreferencesUtils.authenticatedUser, '');
+    preferences.setBool(PreferencesUtils.authorizedKey, false);
+  }
+
+  @override
+  Future<String?> registerUser({required UserModel user}) async {
+    String? usersStringFromPrefs = preferences.getString(PreferencesUtils.usersKey);
+
+    List<UserModel> users =
+        usersStringFromPrefs != null && usersStringFromPrefs.isNotEmpty ? usersModelFromJson(usersStringFromPrefs) : [];
+
+    bool isALreadyRegistered = users.any((element) => element.login == user.login);
+
+    if (isALreadyRegistered) {
+      return 'accountAlreadyRegistered';
+    }
+
+    users.add(user);
+
+    preferences.setString(PreferencesUtils.usersKey, usersModelToJson(users));
+
+    preferences.setBool(PreferencesUtils.authorizedKey, true);
+    preferences.setString(PreferencesUtils.authenticatedUser, jsonEncode(user.toJson()));
+    return null;
+  }
+
+  @override
+  Future logOutUser() async {
+    preferences.setBool(PreferencesUtils.authorizedKey, false);
+
+    preferences.setString(PreferencesUtils.authenticatedUser, '');
+  }
+
+  @override
+  Future resetPassword({required String phone, required String password}) async {
+    String? usersStringFromPrefs = preferences.getString(PreferencesUtils.usersKey);
+
+    List<UserModel> users =
+        usersStringFromPrefs != null && usersStringFromPrefs.isNotEmpty ? usersModelFromJson(usersStringFromPrefs) : [];
+
+    UserModel? user;
+
+    for (var i = 0; i < users.length; i++) {
+      if (users[i].phone == phone) {
+        user = users[i];
+        user.password = password;
+      }
+    }
+
+    if (user != null) {
+      preferences.setString(PreferencesUtils.authenticatedUser, jsonEncode(user.toJson()));
+      preferences.setString(PreferencesUtils.usersKey, usersModelToJson(users));
+    }
   }
 }

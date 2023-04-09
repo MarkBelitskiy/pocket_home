@@ -49,7 +49,7 @@ class _Body extends StatelessWidget {
                           const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(10))),
                       backgroundColor: getMainAppTheme(context).colors.bgColor,
                       context: context,
-                      builder: (context) => const _ModalBody()).then((value) {
+                      builder: (context) => _ModalBody(state.isPoll)).then((value) {
                     Navigator.of(context).pop();
                   });
                 }
@@ -167,6 +167,9 @@ class _NewsBodyState extends State<_NewsBody> {
         MainAppButton(
             titleColor: getMainAppTheme(context).colors.activeText,
             onPressed: () {
+              if (titleTextController.text.isEmpty || newsTextTextController.text.isEmpty || filePath.isEmpty) {
+                return returnSnackBar(context, 'checkOutAllFields');
+              }
               context.read<AddNewsBloc>().add(CreateNewsEvent(
                     model: NewsModel(
                         filePath: filePath,
@@ -240,6 +243,12 @@ class _PollsBodyState extends State<_PollsBody> {
         MainAppButton(
             titleColor: getMainAppTheme(context).colors.activeText,
             onPressed: () {
+              if (titleController.text.isEmpty ||
+                  varianController1.text.isEmpty ||
+                  varianController2.text.isEmpty ||
+                  variantController3.text.isEmpty) {
+                return returnSnackBar(context, 'checkOutAllFields');
+              }
               context.read<AddNewsBloc>().add(CreateNewsEvent(
                     model: NewsModel(
                         filePath: '',
@@ -258,11 +267,10 @@ class _PollsBodyState extends State<_PollsBody> {
 }
 
 class _ModalBody extends StatelessWidget {
-  const _ModalBody();
-
+  const _ModalBody(this.isPoll);
+  final bool isPoll;
   @override
   Widget build(BuildContext context) {
-    //TODO pollAddedSuccess
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -274,7 +282,7 @@ class _ModalBody extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                'newsAddedSuccess',
+                isPoll ? 'pollAddedSuccess' : 'newsAddedSuccess',
                 textAlign: TextAlign.center,
                 style: getMainAppTheme(context)
                     .textStyles

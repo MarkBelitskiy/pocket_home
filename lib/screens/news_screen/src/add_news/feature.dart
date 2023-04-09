@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pocket_home/common/repository/repository.dart';
 import 'package:pocket_home/common/theme/theme_getter.dart';
 import 'package:pocket_home/common/widgets/button_widget.dart';
+import 'package:pocket_home/common/widgets/error_snack.dart';
 import 'package:pocket_home/common/widgets/file_picker_widget/feature.dart';
 
 import 'package:pocket_home/common/widgets/main_app_bar_widget.dart';

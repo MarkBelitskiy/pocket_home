@@ -63,6 +63,12 @@ class _AddNewWorkersScreen extends StatelessWidget {
           ),
           MainAppButton(
             onPressed: () async {
+              if (vm.currentJobTitle.isEmpty ||
+                  vm.fullNameController.text.isEmpty ||
+                  vm.phoneController.text.isEmpty ||
+                  vm.sallaryController.text.isEmpty) {
+                return returnSnackBar(context, 'checkOutAllFields');
+              }
               Navigator.of(context).pop(WorkerModel(
                   jobTitle: vm.currentJobTitle,
                   fullName: vm.fullNameController.text,

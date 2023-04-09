@@ -12,3 +12,16 @@ class LoginEvent extends AuthEvent {
 class InitAuthEvent extends AuthEvent {}
 
 class LogOutEvent extends AuthEvent {}
+
+class DeleteAccountEvent extends AuthEvent {
+  final UserModel user;
+
+  DeleteAccountEvent(this.user);
+}
+
+class ResetPasswordEvent extends AuthEvent {
+  final String newPass;
+  final String phone;
+
+  ResetPasswordEvent(this.newPass, this.phone);
+}

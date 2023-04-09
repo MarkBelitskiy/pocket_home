@@ -6,7 +6,7 @@ import 'package:pocket_home/common/repository/base_repository_models.dart/base_n
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path/path.dart' as path;
 
-class MainNewsRepository extends BaseNewsRepository {
+class MainNewsRepository implements BaseNewsRepository {
   final SharedPreferences preferences;
   final Dio dio;
   MainNewsRepository({required this.preferences, required this.dio});

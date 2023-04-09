@@ -1,9 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pocket_home/common/utils/preferences_utils.dart';
+import 'package:pocket_home/common/repository/repository.dart';
 import 'package:pocket_home/screens/registration_screen/src/profile_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../body_enums.dart';
 
@@ -11,7 +8,8 @@ part 'register_event.dart';
 part 'register_state.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
-  RegisterBloc() : super(RegisterInitial()) {
+  final Repository repository;
+  RegisterBloc(this.repository) : super(RegisterInitial()) {
     on<RegisterEvent>((event, emit) {
       if (event is ChangeBodyEvent) {
         emit(RegisterChangeBodyState(event.enumValue));
@@ -23,30 +21,13 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   }
 
   Future<void> _createProfileEvent(CreateProfileEvent event, Emitter<RegisterState> emit) async {
-    final prefs = await SharedPreferences.getInstance();
-
     try {
-      String? usersStringFromPrefs = prefs.getString(PreferencesUtils.usersKey);
-
-      List<UserModel> users = usersStringFromPrefs != null && usersStringFromPrefs.isNotEmpty
-          ? usersModelFromJson(usersStringFromPrefs)
-          : [];
-
-      bool isALreadyRegistered = users.any((element) => element.login == event.profile.login);
-
-      if (isALreadyRegistered) {
-        throw 'Аккаунт уже зарегистрирован';
+      String? response = await repository.userRepo.registerUser(user: event.profile);
+      if (response == null) {
+        emit(RegisterSuccesfullState());
+      } else {
+        throw response;
       }
-
-      prefs.setString(PreferencesUtils.loginKey, event.profile.login);
-
-      users.add(event.profile);
-
-      prefs.setString(PreferencesUtils.usersKey, usersModelToJson(users));
-
-      prefs.setBool(PreferencesUtils.authorizedKey, true);
-      prefs.setString(PreferencesUtils.authenticatedUser, jsonEncode(event.profile.toJson()));
-      emit(RegisterSuccesfullState());
     } catch (e) {
       emit(
         RegisterErrorState(

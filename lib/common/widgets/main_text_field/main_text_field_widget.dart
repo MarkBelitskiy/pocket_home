@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pocket_home/common/theme/theme_getter.dart';
@@ -70,13 +71,6 @@ class _MainTextFieldState extends State<MainTextField> {
   }
 
   @override
-  void dispose() {
-    widget.textController.dispose();
-    widget.focusNode.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,7 +80,7 @@ class _MainTextFieldState extends State<MainTextField> {
             widget.title!,
             style:
                 getMainAppTheme(context).textStyles.body.copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-          ),
+          ).tr(),
         const SizedBox(
           height: 4,
         ),
@@ -129,7 +123,10 @@ class _MainTextFieldState extends State<MainTextField> {
           decoration: InputDecoration(
             filled: true,
             fillColor: getMainAppTheme(context).colors.cardColor,
-            prefixIcon: widget.prefixIcon != null ? SvgPicture.asset(widget.prefixIcon!, width: 24, height: 24) : null,
+            prefixIcon: widget.prefixIcon != null
+                ? Padding(padding: const EdgeInsets.only(left: 8), child: SvgPicture.asset(widget.prefixIcon!))
+                : null,
+            prefixIconConstraints: const BoxConstraints(maxHeight: 24, maxWidth: 32),
             suffixIcon: widget.isPasswordField
                 ? IconButton(
                     constraints: const BoxConstraints(maxWidth: 24, maxHeight: 24),
@@ -138,7 +135,7 @@ class _MainTextFieldState extends State<MainTextField> {
                         showSuffixIcon
                             ? getMainAppTheme(context).icons.eyeOpen
                             : getMainAppTheme(context).icons.eyeClose,
-                        color: ColorPalette.blue500,
+                        color: getMainAppTheme(context).colors.activeText,
                         width: 24,
                         height: 24),
                     onPressed: () {
@@ -169,14 +166,16 @@ class _MainTextFieldState extends State<MainTextField> {
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15),
               borderSide: BorderSide(
-                color: widget.errorText != null && isValidate ? ColorPalette.green500 : ColorPalette.grey600,
+                color: widget.errorText != null && isValidate
+                    ? ColorPalette.green500
+                    : getMainAppTheme(context).colors.borderColors,
                 width: 1,
               ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(15),
-              borderSide: const BorderSide(
-                color: ColorPalette.blue500,
+              borderSide: BorderSide(
+                color: getMainAppTheme(context).colors.activeColor,
                 width: 1,
               ),
             ),

@@ -112,16 +112,20 @@ class _CreatePasswordBody extends StatelessWidget {
             initialData: false,
             builder: (context, snapshot) => MainAppButton(
                   onPressed: () {
-                    context.read<RegisterBloc>().add(
-                          CreateProfileEvent(
-                            UserModel(
-                                name: vm.nameTextController.text,
-                                password: vm.passwordTextController.text,
-                                phone: vm.phoeTextController.text,
-                                photoPath: vm.photoPath,
-                                login: vm.loginTextController.text),
-                          ),
-                        );
+                    if (snapshot.data ?? false) {
+                      context.read<RegisterBloc>().add(
+                            CreateProfileEvent(
+                              UserModel(
+                                  name: vm.nameTextController.text,
+                                  password: vm.passwordTextController.text,
+                                  phone: vm.phoeTextController.text,
+                                  photoPath: vm.photoPath,
+                                  login: vm.loginTextController.text),
+                            ),
+                          );
+                    } else {
+                      returnSnackBar(context, 'passwordsIsNotMatch');
+                    }
                   },
                   titleColor: ColorPalette.blue200,
                   title: 'continue',

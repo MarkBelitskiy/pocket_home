@@ -39,44 +39,17 @@ class CreatePasswordModel extends ChangeNotifier {
 
   Stream<bool> get getValidateAll => _validateAll.stream;
 
-  final _validateAllWithoutCheckForSame = BehaviorSubject<bool>.seeded(false);
-
-  Stream<bool> get getValidateAllWithoutCheckForSame => _validateAllWithoutCheckForSame.stream;
-
-  Stream<bool> get getPasswordsIsSame => _passwordsIsSame.stream;
-
-  final _passwordsIsSame = BehaviorSubject<bool>.seeded(true);
-
   void init() {
     passwordTextController.addListener(() {
       setLengthHigherValue();
       setContainsLettersAndNumValue();
       setHaveOneOrMoreCapitalLetter();
-      setValidateAllWithOutCheckForSame();
       setValidateAll();
-      setPasswordsIsSame();
-    });
-
-    passwordFocusNode.addListener(() {
-      setValidateAllWithOutCheckForSame();
     });
 
     passwordRepeatTextController.addListener(() {
       setValidateAll();
-      setPasswordsIsSame();
     });
-    // passwordFocusNode.addListener(() {
-    //   if (!passwordFocusNode.hasFocus &&
-    //       passwordTextController.text.isNotEmpty) {
-    //     _validateAllWithoutCheckForSame.add(passwordTextController.text
-    //         .contains(
-    //             RegExp(r'(?=.*[0-9])(?=\S+$)(?=.*[A-z])(?=.*[A-Z]).{8,}')));
-    //   }
-    // });
-  }
-
-  void setPasswordsIsSame() {
-    _passwordsIsSame.add(passwordRepeatTextController.text == passwordTextController.text);
   }
 
   void setLengthHigherValue() {
@@ -94,10 +67,5 @@ class CreatePasswordModel extends ChangeNotifier {
   void setValidateAll() {
     _validateAll.add(passwordTextController.text.contains(RegExp(r'(?=.*[0-9])(?=\S+$)(?=.*[A-z])(?=.*[A-Z]).{8,}')) &&
         passwordTextController.text == passwordRepeatTextController.text);
-  }
-
-  void setValidateAllWithOutCheckForSame() {
-    _validateAllWithoutCheckForSame
-        .add(passwordTextController.text.contains(RegExp(r'(?=.*[0-9])(?=\S+$)(?=.*[A-z])(?=.*[A-Z]).{8,}')));
   }
 }

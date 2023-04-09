@@ -73,13 +73,12 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
         myHousesBloc.add(SaveHouseToPrefs());
       }
       emit(LoadingState(false));
-      emit(ServicesLoaded(activeModels, historyModels, currentHouse!));
+      emit(ServicesLoaded(activeModels, historyModels, currentHouse!, userModel!));
     } catch (e) {
       if (kDebugMode) {
         print('SERVICES_BLOC_ON_INIT_ERROR:$e');
       }
       emit(LoadingState(false));
-      emit(ServicesLoaded(const [], const [], currentHouse!));
     }
   }
 
@@ -94,10 +93,10 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
       currentHouse!.services!.addAll(model);
       myHousesBloc.add(SaveHouseToPrefs());
       emit(LoadingState(false));
-      emit(ServicesLoaded(activeModels, historyModels, currentHouse!));
+      emit(ServicesLoaded(activeModels, historyModels, currentHouse!, userModel!));
     } catch (e) {
       emit(LoadingState(false));
-      emit(ServicesLoaded(activeModels, historyModels, currentHouse!));
+      emit(ServicesLoaded(activeModels, historyModels, currentHouse!, userModel!));
     }
   }
 
@@ -138,10 +137,10 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
       myHousesBloc.add(SaveHouseToPrefs());
       emit(RatingSetToServiceState());
       emit(LoadingState(false));
-      emit(ServicesLoaded(activeModels, historyModels, currentHouse!));
+      emit(ServicesLoaded(activeModels, historyModels, currentHouse!, userModel!));
     } catch (e) {
       emit(LoadingState(false));
-      emit(ServicesLoaded(activeModels, historyModels, currentHouse!));
+      emit(ServicesLoaded(activeModels, historyModels, currentHouse!, userModel!));
     }
   }
 
@@ -157,19 +156,19 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
       currentHouse!.services!.addAll(model);
 
       emit(LoadingState(false));
-      emit(ServicesLoaded(activeModels, historyModels, currentHouse!));
+      emit(ServicesLoaded(activeModels, historyModels, currentHouse!, userModel!));
     } catch (e) {
       emit(LoadingState(false));
-      emit(ServicesLoaded(activeModels, historyModels, currentHouse!));
+      emit(ServicesLoaded(activeModels, historyModels, currentHouse!, userModel!));
     }
   }
 
   Future<void> _updateScreenEvent(ScreenUpdateEvent event, Emitter<ServicesState> emit) async {
     try {
-      emit(ServicesLoaded(activeModels, historyModels, currentHouse!));
+      emit(ServicesLoaded(activeModels, historyModels, currentHouse!, userModel!));
     } catch (e) {
       emit(LoadingState(false));
-      emit(ServicesLoaded(activeModels, historyModels, currentHouse!));
+      emit(ServicesLoaded(activeModels, historyModels, currentHouse!, userModel!));
     }
   }
 }

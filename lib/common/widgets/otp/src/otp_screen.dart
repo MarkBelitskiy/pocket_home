@@ -6,10 +6,15 @@ class OtpScreen extends StatelessWidget {
   final Function(OtpReturnDataModel) continueButtonCallBack;
   @override
   Widget build(BuildContext context) {
-    //TODO ADD SMS CODE GENERATE
-    context
-        .read<NotificationService>()
-        .showNotificationWithoutSound(id: 0, title: 'passwordReset'.tr(), msg: 'pinToReset'.tr(args: ['9555']));
+    int generateFourDigitNumber() {
+      final random = Random();
+      return 1000 + random.nextInt(9000);
+    }
+
+    int smsCode = generateFourDigitNumber();
+
+    NotificationService()
+        .showNotification(title: 'passwordReset'.tr(), msg: 'pinToReset'.tr(args: [smsCode.toString()]));
     TextEditingController controller = TextEditingController();
     FocusNode focus = FocusNode();
     ValueNotifier<bool> notifier = ValueNotifier<bool>(false);
@@ -34,7 +39,12 @@ class OtpScreen extends StatelessWidget {
                   child: MainAppButton(
                     title: 'continue',
                     onPressed: () {
-                      continueButtonCallBack.call(OtpReturnDataModel(phone, messageId, controller.text));
+                      if (smsCode.toString() == controller.text) {
+                        Navigator.of(context).pop();
+                        continueButtonCallBack.call(OtpReturnDataModel(phone, messageId, controller.text));
+                      } else {
+                        returnSnackBar(context, 'smsCodeIsNotValid');
+                      }
                     },
                   ),
                 );
@@ -173,6 +183,8 @@ class _PinCodeField extends StatelessWidget {
         autoFocus: true,
         length: fieldsCount,
         autoDismissKeyboard: false,
+        textStyle:
+            getMainAppTheme(context).textStyles.body.copyWith(color: getMainAppTheme(context).colors.mainTextColor),
         keyboardType: TextInputType.number,
         animationType: AnimationType.fade,
         animationDuration: const Duration(milliseconds: 300),
@@ -221,6 +233,7 @@ class _ResendSMS extends StatelessWidget {
                     .textStyles
                     .body
                     .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+                textAlign: TextAlign.center,
               ).tr(args: [snapshot.data.toString()])
             : InkWell(
                 onTap: () {
@@ -232,6 +245,7 @@ class _ResendSMS extends StatelessWidget {
                       .textStyles
                       .body
                       .copyWith(color: getMainAppTheme(context).colors.activeColor),
+                  textAlign: TextAlign.center,
                 ).tr(),
               );
       },

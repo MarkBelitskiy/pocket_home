@@ -8,7 +8,11 @@ class NewsBodyState extends AddNewsState {}
 
 class PollsBodyState extends AddNewsState {}
 
-class NewsAddedSuccessState extends AddNewsState {}
+class NewsAddedSuccessState extends AddNewsState {
+  final bool isPoll;
+
+  NewsAddedSuccessState(this.isPoll);
+}
 
 class LoadingState extends AddNewsState {
   final bool isLaoding;

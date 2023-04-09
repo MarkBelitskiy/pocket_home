@@ -22,7 +22,9 @@ class _NewsScreen extends StatelessWidget {
                   state: state,
                 ));
           }
-          return const Center(child: CircularProgressIndicator());
+          return Scaffold(
+              backgroundColor: getMainAppTheme(context).colors.bgColor,
+              body: const Center(child: CircularProgressIndicator()));
         });
   }
 }
@@ -97,14 +99,20 @@ class _News extends StatelessWidget {
               child: Text(
                 'news',
                 textAlign: TextAlign.left,
-                style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
+                style: getMainAppTheme(context)
+                    .textStyles
+                    .body
+                    .copyWith(color: getMainAppTheme(context).colors.inactiveText),
               ).tr(),
             ),
             Expanded(
               child: Text(
                 FormatterUtils.formattedDate(news.publishDate, context.locale.languageCode),
                 textAlign: TextAlign.right,
-                style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
+                style: getMainAppTheme(context)
+                    .textStyles
+                    .body
+                    .copyWith(color: getMainAppTheme(context).colors.inactiveText),
               ),
             )
           ],
@@ -115,7 +123,8 @@ class _News extends StatelessWidget {
         Text(
           news.newsTitle,
           textAlign: TextAlign.left,
-          style: getMainAppTheme(context).textStyles.title.copyWith(color: ColorPalette.grey100),
+          style:
+              getMainAppTheme(context).textStyles.title.copyWith(color: getMainAppTheme(context).colors.mainTextColor),
         ),
         const SizedBox(
           height: 12,
@@ -128,7 +137,10 @@ class _News extends StatelessWidget {
             children: [
               TextSpan(
                 text: '$newsText ',
-                style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
+                style: getMainAppTheme(context)
+                    .textStyles
+                    .body
+                    .copyWith(color: getMainAppTheme(context).colors.inactiveText),
               ),
               if (newsText.length == 30)
                 WidgetSpan(
@@ -183,14 +195,20 @@ class _Poll extends StatelessWidget {
               child: Text(
                 'polls',
                 textAlign: TextAlign.left,
-                style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
+                style: getMainAppTheme(context)
+                    .textStyles
+                    .body
+                    .copyWith(color: getMainAppTheme(context).colors.inactiveText),
               ).tr(),
             ),
             Expanded(
               child: Text(
                 FormatterUtils.formattedDate(news.publishDate, context.locale.languageCode),
                 textAlign: TextAlign.right,
-                style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
+                style: getMainAppTheme(context)
+                    .textStyles
+                    .body
+                    .copyWith(color: getMainAppTheme(context).colors.inactiveText),
               ),
             )
           ],
@@ -201,7 +219,8 @@ class _Poll extends StatelessWidget {
         Text(
           news.newsTitle,
           textAlign: TextAlign.left,
-          style: getMainAppTheme(context).textStyles.title.copyWith(color: ColorPalette.grey100),
+          style:
+              getMainAppTheme(context).textStyles.title.copyWith(color: getMainAppTheme(context).colors.mainTextColor),
         ),
         const SizedBox(
           height: 12,
@@ -277,13 +296,19 @@ class _PollAnswer extends StatelessWidget {
                 child: Text(
               answer,
               textAlign: TextAlign.left,
-              style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
+              style: getMainAppTheme(context)
+                  .textStyles
+                  .body
+                  .copyWith(color: getMainAppTheme(context).colors.inactiveText),
             )),
             if (isSavedAnswer != null && isSavedAnswer!) ...[
               Text(
                 'yourAnswer',
                 textAlign: TextAlign.left,
-                style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.blue500),
+                style: getMainAppTheme(context)
+                    .textStyles
+                    .body
+                    .copyWith(color: getMainAppTheme(context).colors.activeText),
               ).tr(),
               const SizedBox(
                 width: 12,

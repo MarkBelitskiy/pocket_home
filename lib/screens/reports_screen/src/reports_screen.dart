@@ -10,6 +10,9 @@ class _ReportsScreen extends StatelessWidget {
         body: BlocConsumer<ReportsBloc, ReportsState>(
           buildWhen: (previous, current) => current is OnInitReportsState,
           listener: (context, state) {
+            if (state is ReportsGenerateError) {
+              returnSnackBar(context, 'cantGenerateReport');
+            }
             if (state is ShowGeneratedReportState) {
               Navigator.of(context, rootNavigator: true)
                   .push(CupertinoPageRoute(builder: (context) => PdfTitlesScreen(path: state.path)));
@@ -37,9 +40,9 @@ class _EmptyBody extends StatelessWidget {
         children: [
           SizedBox(
             height: MediaQuery.of(context).size.height,
-            child: const EmptyPlaceholderWithLottie(
-              lottiePath: 'assets/lottie/reports.json',
-              margin: EdgeInsets.only(bottom: 100),
+            child: EmptyPlaceholderWithLottie(
+              lottiePath: getMainAppTheme(context).icons.reportsLottie,
+              margin: const EdgeInsets.only(bottom: 100),
               title: 'haveNotReports',
             ),
           ),
@@ -54,7 +57,6 @@ class _Reports extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //TODO вынести в префы
     List<String> items = [
       "servicesRatingReport",
       "budgetReport",
@@ -78,14 +80,20 @@ class _Reports extends StatelessWidget {
                     child: Text(
                       'report',
                       textAlign: TextAlign.left,
-                      style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
+                      style: getMainAppTheme(context)
+                          .textStyles
+                          .body
+                          .copyWith(color: getMainAppTheme(context).colors.inactiveText),
                     ).tr(),
                   ),
                   Expanded(
                     child: Text(
                       items[index],
                       textAlign: TextAlign.right,
-                      style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
+                      style: getMainAppTheme(context)
+                          .textStyles
+                          .body
+                          .copyWith(color: getMainAppTheme(context).colors.inactiveText),
                     ).tr(),
                   )
                 ],

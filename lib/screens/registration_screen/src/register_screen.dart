@@ -20,8 +20,11 @@ class _RegisterScreen extends StatelessWidget {
               vm.enumValue = state.enumValue;
             }
             if (state is RegisterSuccesfullState) {
-              context.read<AuthBloc>().add(InitAuthEvent());
               Navigator.of(context).pop();
+              context.read<AuthBloc>().add(InitAuthEvent());
+            }
+            if (state is RegisterErrorState) {
+              returnSnackBar(context, state.error);
             }
           },
           builder: (contxt, state) {

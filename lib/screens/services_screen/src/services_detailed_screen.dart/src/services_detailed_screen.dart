@@ -1,17 +1,19 @@
 part of '../feature.dart';
 
 class _ServicesDetailedScreen extends StatelessWidget {
-  const _ServicesDetailedScreen({
-    Key? key,
-    required this.model,
-    required this.numberOfService,
-    required this.servicesBloc,
-    required this.currentHouse,
-  }) : super(key: key);
+  const _ServicesDetailedScreen(
+      {Key? key,
+      required this.model,
+      required this.numberOfService,
+      required this.servicesBloc,
+      required this.currentHouse,
+      required this.user})
+      : super(key: key);
   final ServiceDetailedModel model;
   final int numberOfService;
   final ServicesBloc servicesBloc;
   final HouseModel currentHouse;
+  final UserModel user;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,23 +24,26 @@ class _ServicesDetailedScreen extends StatelessWidget {
         servicesBloc: servicesBloc,
         index: numberOfService,
         currentHouse: currentHouse,
+        user: user,
       ),
     );
   }
 }
 
 class _Body extends StatelessWidget {
-  const _Body({
-    Key? key,
-    required this.model,
-    required this.servicesBloc,
-    required this.index,
-    required this.currentHouse,
-  }) : super(key: key);
+  const _Body(
+      {Key? key,
+      required this.model,
+      required this.servicesBloc,
+      required this.index,
+      required this.currentHouse,
+      required this.user})
+      : super(key: key);
   final ServiceDetailedModel model;
   final ServicesBloc servicesBloc;
   final int index;
   final HouseModel currentHouse;
+  final UserModel user;
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -70,8 +75,7 @@ class _Body extends StatelessWidget {
           const SizedBox(
             height: 12,
           ),
-          //TODO ПЕРЕДЕЛАТЬ
-          if (FormatterUtils.preparePhoneToMask(context.read<MyHousesBloc>().currentUser?.phone ?? '') ==
+          if (FormatterUtils.preparePhoneToMask(user.phone) ==
                   FormatterUtils.preparePhoneToMask(currentHouse.manager.phone) &&
               model.status != 1 &&
               model.status != 2 &&
@@ -137,8 +141,7 @@ class _Body extends StatelessWidget {
               ),
             ),
           ],
-          //TODO добавть буль через event
-          if (FormatterUtils.preparePhoneToMask(context.read<MyHousesBloc>().currentUser?.phone ?? '') ==
+          if (FormatterUtils.preparePhoneToMask(user.phone) ==
                   FormatterUtils.preparePhoneToMask(model.choosePerson?.phone ?? '') &&
               model.status != 1 &&
               model.status != 2 &&
@@ -265,21 +268,17 @@ class _Files extends StatelessWidget {
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3, mainAxisSpacing: 8, mainAxisExtent: 109, crossAxisSpacing: 8),
             itemBuilder: (context, index) {
-              return GestureDetector(
-                //TODO добавить просмотр файла
-                onTap: () {},
-                child: Container(
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          fit: BoxFit.fill,
-                          image: FileImage(
-                            File(files[index]),
-                          )),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(12),
-                      ),
-                      border: Border.all(width: 3, color: getMainAppTheme(context).colors.buttonsColor)),
-                ),
+              return Container(
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        fit: BoxFit.fill,
+                        image: FileImage(
+                          File(files[index]),
+                        )),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(12),
+                    ),
+                    border: Border.all(width: 3, color: getMainAppTheme(context).colors.buttonsColor)),
               );
             })
       ],

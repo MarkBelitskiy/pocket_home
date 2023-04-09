@@ -57,6 +57,6 @@ class AddNewsBloc extends Bloc<AddNewsEvent, AddNewsState> {
     }
     newsBloc.add(OnNewsTabInit(true));
     emit(LoadingState(false));
-    emit(NewsAddedSuccessState());
+    emit(NewsAddedSuccessState(event.model.pollAnswers != null));
   }
 }

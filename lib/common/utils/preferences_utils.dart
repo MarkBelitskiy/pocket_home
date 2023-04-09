@@ -4,6 +4,5 @@ class PreferencesUtils {
   static const String authorizedKey = 'authorized';
   static const String usersKey = 'users';
   static const String authenticatedUser = 'authenticatedUser';
-  static const String loginKey = 'loginKey';
   static const String newsModelKey = 'newsModelKey';
 }

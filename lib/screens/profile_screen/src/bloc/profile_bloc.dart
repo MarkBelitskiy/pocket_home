@@ -26,17 +26,4 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(ProfileLoadedState(profile!));
     }
   }
-
-  // Future _onDelete(OnDeleteAccountEvent event, Emitter<ProfileState> emit) async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   String? usersStringFromPrefs = prefs.getString(PreferencesUtils.usersKey);
-  //   String? login = prefs.getString(PreferencesUtils.loginKey);
-  //   List<UserModel> users =
-  //       usersStringFromPrefs != null && usersStringFromPrefs.isNotEmpty ? usersModelFromJson(usersStringFromPrefs) : [];
-  //   users.removeWhere((element) => element.login == login);
-  //   prefs.setString(PreferencesUtils.usersKey, usersModelToJson(users));
-  //   prefs.setString(PreferencesUtils.loginKey, '');
-  //   prefs.setBool(PreferencesUtils.authorizedKey, false);
-  //   emit(ProfileSuccessDeletedState());
-  // }
 }

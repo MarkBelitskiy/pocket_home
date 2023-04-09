@@ -23,7 +23,6 @@ class ChoseServicePersonBloc extends Bloc<ChoseServicePersonEvent, ChoseServiceP
 
   Future _onSearch(SearchPersonsEvent event, Emitter<ChoseServicePersonState> emit) async {
     List<WorkerModel> searchableList = [];
-//TODO ADD SEARCH ABSTRACT
     for (var worker in workers) {
       if (event.searchableValue.contains(
         RegExp("[0-9]"),

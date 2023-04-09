@@ -3,7 +3,7 @@ import 'package:pocket_home/common/utils/preferences_utils.dart';
 import 'package:pocket_home/screens/my_home_screen/my_home_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class MainHousesRepository extends BaseHousesRepository {
+class MainHousesRepository implements BaseHousesRepository {
   final SharedPreferences preferences;
 
   MainHousesRepository({required this.preferences});

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:pocket_home/common/repository/base_repository_models.dart/base_houses_repo.dart';
 import 'package:pocket_home/common/repository/base_repository_models.dart/base_news_repo.dart';
+import 'package:pocket_home/common/repository/base_repository_models.dart/base_user_repository.dart';
 import 'package:pocket_home/common/repository/main_repository_model.dart/main_houses_repo.dart';
 import 'package:pocket_home/common/repository/main_repository_model.dart/main_news_repo.dart';
 import 'package:pocket_home/common/repository/main_repository_model.dart/main_user_repository.dart';
@@ -21,6 +22,6 @@ class Repository {
   }
 
   late BaseNewsRepository newsRepo;
-  late MainUserRepository userRepo;
+  late BaseUserRepository userRepo;
   late BaseHousesRepository housesRepo;
 }

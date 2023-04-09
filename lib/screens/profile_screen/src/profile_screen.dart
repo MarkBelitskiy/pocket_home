@@ -49,16 +49,16 @@ class _Body extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  // context.read<ProfileBloc>().add(OnDeleteAccountEvent());
+                  context.read<AuthBloc>().add(DeleteAccountEvent(state.profile));
                 },
                 child: Text(
-                  'deleteAccount'.tr(),
+                  'deleteAccount',
                   textAlign: TextAlign.center,
                   style: getMainAppTheme(context)
                       .textStyles
                       .title
                       .copyWith(color: getMainAppTheme(context).colors.errorTextColor),
-                ),
+                ).tr(),
               ),
               const SizedBox(
                 height: 16,
@@ -68,15 +68,33 @@ class _Body extends StatelessWidget {
                   context.read<AuthBloc>().add(LogOutEvent());
                 },
                 child: Text(
-                  'logout'.tr(),
+                  'logout',
                   textAlign: TextAlign.center,
                   style: getMainAppTheme(context)
                       .textStyles
                       .title
                       .copyWith(color: getMainAppTheme(context).colors.activeText),
-                ),
+                ).tr(),
               ),
             ],
+          );
+        }
+        if (state is ProfileLoadedErrorState) {
+          return SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: EmptyPlaceholderWithLottie(
+                    lottiePath: getMainAppTheme(context).icons.profileLottie,
+                    margin: const EdgeInsets.only(bottom: 110, left: 20),
+                    title: 'cantLoadingProfile',
+                  ),
+                ),
+              ],
+            ),
           );
         }
         return const SizedBox.shrink();

@@ -29,9 +29,14 @@ class MainAppIcons {
   String get furniture => 'assets/icons/furniture.svg';
   String get workers => 'assets/icons/workers.svg';
   String get money => 'assets/icons/money.svg';
-
+  String get profileLottie => 'assets/lottie/profile.json';
+  String get homeLottie => 'assets/lottie/home.json';
+  String get workersLottie => 'assets/lottie/worker.json';
+  String get reportsLottie => 'assets/lottie/reports.json';
+  String get servicesLottie => 'assets/lottie/services.json';
   String get lottieBlob => 'assets/icons/blob_lottie.svg';
   String get splashBg => 'assets/icons/splash_bg.svg';
   String get splashLogo => 'assets/icons/splash_logo.svg';
   String get emptyDoubleBlob => 'assets/icons/empty_double_blob.svg';
+  String get error => 'assets/icons/error.svg';
 }

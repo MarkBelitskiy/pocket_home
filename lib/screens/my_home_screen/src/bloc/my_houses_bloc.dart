@@ -50,7 +50,6 @@ class MyHousesBloc extends Bloc<MyHousesEvent, MyHousesState> {
 
   Future _onFiltered(FilteredHousesToModalEvent event, Emitter<MyHousesState> emit) async {
     List<HouseModel> filteredList = [];
-//TODO abstract filter
     for (var element in housesList) {
       if (element.houseAddress.contains(event.value.trim()) || element.houseNumber.contains(event.value.trim())) {
         filteredList.add(element);

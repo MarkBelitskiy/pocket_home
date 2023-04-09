@@ -122,5 +122,16 @@
 "chooseService":"Выберите услугу",
 "edit":"Редактировать",
 "applicationRequestSuccess":"Заявка успешно подана!",
-"contactDataChange":"Изменение контактных данных"
+"contactDataChange":"Изменение контактных данных",
+"accountAlreadyRegistered":"Аккаунт уже зарегистрирован",
+"accountNotRegistered":"Аккаунт не зарегистрирован",
+"passwordIsWrong":"Пароль неверный",
+"cantLoadingProfile":"Неудалось загрузить профиль",
+"smsCodeIsNotValid":"СМС код не верный",
+"fillInLogginField":"Заполните поле логин",
+"fillInFullNameField":"Заполните поле ФИО",
+"fillInPhoneField":"Заполните поле телефон",
+"fillInPasswordField":"Заполните поле пароль",
+"checkOutAllFields":"Проверьте поля, некоторые из них не заполнены",
+"cantGenerateReport":"Невозможно сгенерировать отчет"
 }

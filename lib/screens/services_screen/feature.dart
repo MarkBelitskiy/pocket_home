@@ -16,6 +16,7 @@ import 'package:pocket_home/common/widgets/main_app_bar_widget.dart';
 import 'package:pocket_home/common/widgets/main_text_field/main_text_field_widget.dart';
 import 'package:pocket_home/screens/my_home_screen/my_home_model.dart';
 import 'package:pocket_home/screens/my_home_screen/src/bloc/my_houses_bloc.dart';
+import 'package:pocket_home/screens/registration_screen/src/profile_model.dart';
 import 'package:pocket_home/screens/services_screen/src/bloc/services_bloc.dart';
 
 import 'src/add_service_screen/feature.dart';

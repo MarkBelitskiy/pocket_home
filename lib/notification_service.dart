@@ -1,31 +1,16 @@
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
 class NotificationService {
-  static final NotificationService _notificationService = NotificationService._internal();
-  factory NotificationService() {
-    return _notificationService;
-  }
-  NotificationService._internal();
+  Future showNotification({required String title, required String msg}) async {
+    const MethodChannel channel = MethodChannel('pocket_home/notification');
 
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  Future<void> init() async {
-    InitializationSettings initializationSettings =
-        const InitializationSettings(android: AndroidInitializationSettings('@mipmap/launcher_icon'));
-    await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-    );
-  }
-
-  Future showNotificationWithoutSound({required int id, required String title, required String msg}) async {
-    const platformChannelSpecifics = NotificationDetails(
-      android: AndroidNotificationDetails('0', 'pocket_home',
-          autoCancel: false, playSound: false, importance: Importance.max, priority: Priority.high),
-    );
-    await flutterLocalNotificationsPlugin.show(
-      id,
-      title,
-      msg,
-      platformChannelSpecifics,
-    );
+    try {
+      await channel.invokeMethod('showNotification', {'title': title, 'message': msg});
+    } on PlatformException catch (exception) {
+      if (kDebugMode) {
+        print('EXCEPTION_ON_NOTIFICATION_SERVICE: $exception');
+      }
+    }
   }
 }

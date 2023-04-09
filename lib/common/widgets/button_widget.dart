@@ -23,7 +23,9 @@ class MainAppButton extends StatelessWidget {
       onPressed: () => onPressed.call(),
       color: getMainAppTheme(context).colors.cardColor,
       padding: const EdgeInsets.all(12),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          side: BorderSide(color: getMainAppTheme(context).colors.borderColors)),
       child: Row(children: [
         if (assetIcon.isNotEmpty)
           SvgPicture.asset(

@@ -16,4 +16,9 @@ class MainAppColors {
   Color get activeColor => ColorPalette.blue500;
   Color get errorTextColor => ColorPalette.red500;
   Color get navBarColor => ColorPalette.grey800;
+  Color get shadowColor => ColorPalette.grey900.withOpacity(0.3);
+  Color get tabBgColor => ColorPalette.grey600;
+  Color get tabActiveColor => ColorPalette.grey700;
+  Color get iconOnButtonColor => ColorPalette.grey100;
+  Color get accentTextColor => ColorPalette.blue200;
 }

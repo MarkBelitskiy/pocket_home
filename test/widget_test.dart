@@ -1,28 +1,76 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
+
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:pocket_home/common/theme/main_app_theme/main_app_theme_view_model.dart';
+
+import 'package:pocket_home/common/utils/formatter_utils.dart';
+
+import 'package:pocket_home/common/widgets/main_text_field/main_text_field_widget.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    // await tester.pumpWidget(const MyApp());
+  late TextEditingController textEditingController;
+  late FocusNode focusNode;
+  late SharedPreferences preferences;
+  setUp(() async {
+    preferences = await SharedPreferences.getInstance();
+    textEditingController = TextEditingController();
+    focusNode = FocusNode();
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  group('MainTextField', () {
+    testWidgets('text input can be validated', (tester) async {
+      const errorMessage = 'This is an error';
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+      await tester.pumpWidget(ChangeNotifierProvider<MainAppThemeViewModel>(
+        create: (context) => MainAppThemeViewModel()..init(preferences),
+        child: MaterialApp(
+          home: Scaffold(
+            body: MainTextField(
+              textController: textEditingController,
+              focusNode: focusNode,
+              errorText: errorMessage,
+              regExpToValidate: RegExp('^[0-9]*\$'),
+            ),
+          ),
+        ),
+      ));
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+      await tester.enterText(find.byType(TextFormField), '123');
+      await tester.pumpAndSettle();
+
+      expect(find.text(errorMessage), findsNothing);
+
+      await tester.enterText(find.byType(TextFormField), 'abc');
+      await tester.pumpAndSettle();
+
+      expect(find.text(errorMessage), findsOneWidget);
+    });
+
+    testWidgets('phone number input is formatted correctly', (tester) async {
+      final mask = FormatterUtils.phoneFormatter;
+      const phoneNumber = '1234567890';
+
+      await tester.pumpWidget(
+        ChangeNotifierProvider<MainAppThemeViewModel>(
+            create: (context) => MainAppThemeViewModel()..init(preferences),
+            child: MaterialApp(
+              home: Scaffold(
+                body: MainTextField(
+                  textController: textEditingController,
+                  focusNode: focusNode,
+                  keyboardType: TextInputType.phone,
+                ),
+              ),
+            )),
+      );
+
+      await tester.enterText(find.byType(TextFormField), phoneNumber);
+      await tester.pumpAndSettle();
+
+      expect(textEditingController.text, mask.maskText(phoneNumber));
+    });
   });
 }

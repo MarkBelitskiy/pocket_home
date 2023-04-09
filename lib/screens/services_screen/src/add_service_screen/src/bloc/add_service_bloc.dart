@@ -13,6 +13,7 @@ class AddServiceBloc extends Bloc<AddServiceEvent, AddServiceState> {
   }
   final ServicesBloc servicesBloc;
   final HouseModel currentHouse;
+
   Future<void> createServiceEvent(CreateServceEvent event, Emitter<AddServiceState> emit) async {
     try {
       if (currentHouse.services != null && (currentHouse.services!.isNotEmpty)) {

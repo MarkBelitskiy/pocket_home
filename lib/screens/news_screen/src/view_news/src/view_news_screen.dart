@@ -18,13 +18,19 @@ class _ViewNewsScreen extends StatelessWidget {
               Text(
                 news.newsTitle,
                 textAlign: TextAlign.left,
-                style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
+                style: getMainAppTheme(context)
+                    .textStyles
+                    .body
+                    .copyWith(color: getMainAppTheme(context).colors.inactiveText),
               ),
               Expanded(
                 child: Text(
                   FormatterUtils.formattedDate(news.publishDate, context.locale.languageCode),
                   textAlign: TextAlign.right,
-                  style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
+                  style: getMainAppTheme(context)
+                      .textStyles
+                      .body
+                      .copyWith(color: getMainAppTheme(context).colors.inactiveText),
                 ),
               )
             ],
@@ -44,7 +50,8 @@ class _ViewNewsScreen extends StatelessWidget {
           ],
           Text(
             news.newsText,
-            style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.grey300),
+            style:
+                getMainAppTheme(context).textStyles.body.copyWith(color: getMainAppTheme(context).colors.inactiveText),
           ),
         ],
       ),

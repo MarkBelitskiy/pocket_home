@@ -1,8 +1,8 @@
 part of '../feature.dart';
 
 class _ResetPasswordScreen extends StatelessWidget {
-  const _ResetPasswordScreen();
-
+  const _ResetPasswordScreen(this.phone);
+  final String phone;
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<ResetPasswordModel>(context);
@@ -12,34 +12,26 @@ class _ResetPasswordScreen extends StatelessWidget {
         title: 'passwordReset',
       ),
       body: MainAppBody(children: [
-        StreamBuilder<bool>(
-          stream: vm.getValidateAllWithoutCheckForSame,
-          initialData: false,
-          builder: (context, snapshot) => MainTextField(
-            textController: vm.passwordTextController,
-            focusNode: vm.passwordFocusNode,
-            isPasswordField: true,
-            clearAvailable: false,
-            title: 'pass',
-            errorText: 'passFieldError'.tr(),
-            regExpToValidate: RegExp(r'(?=.*[0-9])(?=\S+$)(?=.*[A-z])(?=.*[A-Z]).{8,}'),
-          ),
+        MainTextField(
+          textController: vm.passwordTextController,
+          focusNode: vm.passwordFocusNode,
+          isPasswordField: true,
+          clearAvailable: false,
+          title: 'pass',
+          errorText: 'passFieldError'.tr(),
+          regExpToValidate: RegExp(r'(?=.*[0-9])(?=\S+$)(?=.*[A-z])(?=.*[A-Z]).{8,}'),
         ),
         const SizedBox(
           height: 32,
         ),
-        StreamBuilder<bool>(
-          stream: vm.getPasswordsIsSame,
-          initialData: false,
-          builder: (context, snapshot) => MainTextField(
-            textController: vm.passwordRepeatTextController,
-            focusNode: vm.passwordRepeatFocusNode,
-            isPasswordField: true,
-            errorText: 'passwordsIsNotMatch'.tr(),
-            regExpToValidate: RegExp('r^${vm.passwordTextController.text}'),
-            clearAvailable: false,
-            title: 'repeatPass',
-          ),
+        MainTextField(
+          textController: vm.passwordRepeatTextController,
+          focusNode: vm.passwordRepeatFocusNode,
+          isPasswordField: true,
+          errorText: 'passwordsIsNotMatch'.tr(),
+          otherControllerToValidate: vm.passwordTextController,
+          clearAvailable: false,
+          title: 'repeatPass',
         ),
         const SizedBox(
           height: 32,
@@ -120,12 +112,17 @@ class _ResetPasswordScreen extends StatelessWidget {
             stream: vm.getValidateAll,
             initialData: false,
             builder: (context, snapshot) => MainAppButton(
-                onPressed: () {
-//TODO FUNC
-                },
-                titleColor: ColorPalette.blue200,
-                title: 'continue',
-                assetIcon: ''))
+                  onPressed: () {
+                    if (snapshot.data ?? false) {
+                      context.read<AuthBloc>().add(ResetPasswordEvent(vm.passwordTextController.text, phone));
+                      Navigator.of(context).pop();
+                    } else {
+                      returnSnackBar(context, 'passwordsIsNotMatch');
+                    }
+                  },
+                  titleColor: getMainAppTheme(context).colors.accentTextColor,
+                  title: 'continue',
+                ))
       ]),
     );
   }

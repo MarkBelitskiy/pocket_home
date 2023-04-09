@@ -36,11 +36,13 @@ class _ServicesScreen extends StatelessWidget {
                     models: state.activeModels,
                     title: "haveNotActiveServices",
                     currentHouse: state.currentHouse,
+                    user: state.user,
                   ),
                   _TabBody(
                     models: state.historyModels,
                     title: 'uHaveNotHistoryOfServicesRequests',
                     currentHouse: state.currentHouse,
+                    user: state.user,
                   ),
                 ],
               );
@@ -68,7 +70,7 @@ class _EpmtyBody extends StatelessWidget {
           SizedBox(
             height: MediaQuery.of(context).size.height,
             child: EmptyPlaceholderWithLottie(
-              lottiePath: 'assets/lottie/services.json',
+              lottiePath: getMainAppTheme(context).icons.servicesLottie,
               margin: const EdgeInsets.only(bottom: 70, left: 10),
               title: title,
             ),
@@ -80,15 +82,12 @@ class _EpmtyBody extends StatelessWidget {
 }
 
 class _TabBody extends StatelessWidget {
-  const _TabBody({
-    Key? key,
-    required this.models,
-    required this.title,
-    required this.currentHouse,
-  }) : super(key: key);
+  const _TabBody({Key? key, required this.models, required this.title, required this.currentHouse, required this.user})
+      : super(key: key);
   final List<ServiceDetailedModel> models;
   final String title;
   final HouseModel currentHouse;
+  final UserModel user;
   @override
   Widget build(BuildContext context) {
     if (models.isEmpty) {
@@ -103,6 +102,7 @@ class _TabBody extends StatelessWidget {
           return _CardItem(
             item: models[index],
             index: index,
+            user: user,
             currentHouse: currentHouse,
           );
         });
@@ -110,20 +110,17 @@ class _TabBody extends StatelessWidget {
 }
 
 class _CardItem extends StatelessWidget {
-  const _CardItem({
-    required this.item,
-    required this.index,
-    required this.currentHouse,
-  });
+  const _CardItem({required this.item, required this.index, required this.currentHouse, required this.user});
   final ServiceDetailedModel item;
   final int index;
   final HouseModel currentHouse;
+  final UserModel user;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         if (item.status == 1 &&
-            FormatterUtils.preparePhoneToMask(context.read<MyHousesBloc>().currentUser!.phone) ==
+            FormatterUtils.preparePhoneToMask(user.phone) ==
                 FormatterUtils.preparePhoneToMask(item.contactPerson.phone)) {
           showModalBottomSheet(
               isScrollControlled: true,
@@ -138,7 +135,7 @@ class _CardItem extends StatelessWidget {
         } else {
           Navigator.of(context, rootNavigator: true)
               .push(
-                servicesDetailedScreenFeature(item, index, context.read<ServicesBloc>(), currentHouse),
+                servicesDetailedScreenFeature(item, index, context.read<ServicesBloc>(), currentHouse, user),
               )
               .then((value) => context.read<ServicesBloc>().add(ScreenUpdateEvent()));
         }
@@ -265,7 +262,6 @@ class _CardItem extends StatelessWidget {
   }
 
   String getStatusText(int status) {
-    //TODO LOCALE
     String returned = 'inWork';
     switch (status) {
       case 1:

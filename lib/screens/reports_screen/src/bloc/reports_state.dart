@@ -11,3 +11,5 @@ class ShowGeneratedReportState extends ReportsState {
 
   ShowGeneratedReportState(this.path);
 }
+
+class ReportsGenerateError extends ReportsState {}

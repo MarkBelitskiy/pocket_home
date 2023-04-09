@@ -29,14 +29,17 @@ class _ForgotPassScreenState extends State<_ForgotPassScreen> {
           height: 24,
         ),
         MainAppButton(
-            onPressed: () {
-              Navigator.of(context).push(otpScreenRoute(controller.text, (callback) {
-                Navigator.of(context).push(resetPasswordScreenFeature());
-              }));
-            },
-            title: 'continue',
-            titleColor: ColorPalette.blue200,
-            assetIcon: ''),
+          onPressed: () {
+            if (controller.text.isEmpty || controller.text.replaceAll(' ', '').length < 14) {
+              return returnSnackBar(context, 'fillInPhoneField');
+            }
+            Navigator.of(context).push(otpScreenRoute(controller.text, (callback) {
+              Navigator.of(context).pushReplacement(resetPasswordScreenFeature(controller.text));
+            }));
+          },
+          title: 'continue',
+          titleColor: getMainAppTheme(context).colors.accentTextColor,
+        ),
         const SizedBox(
           height: 32,
         ),

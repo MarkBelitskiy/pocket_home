@@ -27,7 +27,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: actions,
       backgroundColor: getMainAppTheme(context).colors.navBarColor,
       elevation: 1,
-      shadowColor: ColorPalette.grey900.withOpacity(0.3),
+      shadowColor: getMainAppTheme(context).colors.shadowColor,
       centerTitle: true,
       title: Column(
         children: [
@@ -101,29 +101,37 @@ class _BottomTabBar extends StatelessWidget {
           height: 34,
           margin: const EdgeInsets.only(left: 16, right: 16, bottom: 12),
           padding: const EdgeInsets.all(4),
-          decoration: const BoxDecoration(
-            color: ColorPalette.grey700,
-            borderRadius: BorderRadius.all(Radius.circular(8)),
+          decoration: BoxDecoration(
+            color: getMainAppTheme(context).colors.tabActiveColor,
+            borderRadius: const BorderRadius.all(Radius.circular(8)),
           ),
           child: TabBar(
-              labelColor: ColorPalette.grey50,
+              labelColor: getMainAppTheme(context).colors.mainTextColor,
               unselectedLabelStyle: getMainAppTheme(context).textStyles.body,
               unselectedLabelColor: getMainAppTheme(context).colors.inactiveText,
               labelStyle: getMainAppTheme(context).textStyles.body,
               indicatorSize: TabBarIndicatorSize.tab,
-              indicator: BoxDecoration(color: ColorPalette.grey600, borderRadius: BorderRadius.circular(6), boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.15),
-                  offset: const Offset(0, 1),
-                  blurRadius: 4,
-                ),
-              ]),
+              indicator: BoxDecoration(
+                  color: getMainAppTheme(context).colors.tabBgColor,
+                  borderRadius: BorderRadius.circular(6),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.15),
+                      offset: const Offset(0, 1),
+                      blurRadius: 4,
+                    ),
+                  ]),
               tabs: tabNames
-                  .map((name) => GestureDetector(
+                  .map(
+                    (name) => GestureDetector(
                       onTap: () {
                         DefaultTabController.of(context)!.animateTo(tabNames.indexOf(name));
                       },
-                      child: Tab(text: name.tr())))
+                      child: Tab(
+                        text: name.tr(),
+                      ),
+                    ),
+                  )
                   .toList()),
         ),
       ],

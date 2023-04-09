@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pocket_home/common/theme/theme_getter.dart';
 import 'package:pocket_home/common/utils/colors_palette.dart';
 import 'package:pocket_home/common/widgets/button_widget.dart';
+import 'package:pocket_home/common/widgets/error_snack.dart';
 import 'package:pocket_home/common/widgets/main_app_bar_widget.dart';
 import 'package:pocket_home/common/widgets/main_body_widget.dart';
 import 'package:pocket_home/common/widgets/main_text_field/main_text_field_widget.dart';

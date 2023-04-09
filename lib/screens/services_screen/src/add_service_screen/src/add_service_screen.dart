@@ -68,10 +68,12 @@ class _Body extends StatelessWidget {
                               ),
                             ),
                           );
+                    } else {
+                      return returnSnackBar(context, 'checkOutAllFields');
                     }
                   },
                   title: 'create',
-                  titleColor: ColorPalette.blue200,
+                  titleColor: getMainAppTheme(context).colors.accentTextColor,
                 ))
           ],
         ),
@@ -88,8 +90,6 @@ class _ChooseProblem extends StatefulWidget {
 }
 
 class _ChooseProblemState extends State<_ChooseProblem> {
-  //TODO вынести в префы
-  List<String> modalTypes = ['Протечка крыши', 'Нет света на пролете', 'Не работает домофон'];
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<AddServicesScreenViewModel>(context);
@@ -110,11 +110,11 @@ class _ChooseProblemState extends State<_ChooseProblem> {
               context,
               title: 'choiceService',
               isNeedSearch: true,
-              items: modalTypes,
+              items: vm.modalTypes,
             ).then((value) {
               if (value is int) {
                 setState(() {
-                  vm.selectedProblem = modalTypes[value];
+                  vm.selectedProblem = vm.modalTypes[value];
                 });
               }
             });
@@ -130,7 +130,10 @@ class _ChooseProblemState extends State<_ChooseProblem> {
                 Expanded(
                     child: Text(
                   vm.selectedProblem.isEmpty ? 'chooseService' : vm.selectedProblem,
-                  style: getMainAppTheme(context).textStyles.subBody.copyWith(color: ColorPalette.grey300),
+                  style: getMainAppTheme(context)
+                      .textStyles
+                      .subBody
+                      .copyWith(color: getMainAppTheme(context).colors.inactiveText),
                 ).tr()),
                 SvgPicture.asset(
                   getMainAppTheme(context).icons.chevronDown,
@@ -180,13 +183,19 @@ class _ContactPersonState extends State<_ContactPerson> {
                   Expanded(
                       child: Text(
                     'fullName',
-                    style: getMainAppTheme(context).textStyles.subBody.copyWith(color: ColorPalette.grey300),
+                    style: getMainAppTheme(context)
+                        .textStyles
+                        .subBody
+                        .copyWith(color: getMainAppTheme(context).colors.inactiveText),
                   ).tr()),
                   Expanded(
                       child: Text(
                     vm.fullNameController.text,
                     textAlign: TextAlign.right,
-                    style: getMainAppTheme(context).textStyles.subBody.copyWith(color: ColorPalette.grey300),
+                    style: getMainAppTheme(context)
+                        .textStyles
+                        .subBody
+                        .copyWith(color: getMainAppTheme(context).colors.inactiveText),
                   )),
                 ],
               ),
@@ -198,13 +207,19 @@ class _ContactPersonState extends State<_ContactPerson> {
                   Expanded(
                       child: Text(
                     'phone',
-                    style: getMainAppTheme(context).textStyles.subBody.copyWith(color: ColorPalette.grey300),
+                    style: getMainAppTheme(context)
+                        .textStyles
+                        .subBody
+                        .copyWith(color: getMainAppTheme(context).colors.inactiveText),
                   ).tr()),
                   Expanded(
                       child: Text(
                     vm.phoneController.text,
                     textAlign: TextAlign.right,
-                    style: getMainAppTheme(context).textStyles.subBody.copyWith(color: ColorPalette.grey300),
+                    style: getMainAppTheme(context)
+                        .textStyles
+                        .subBody
+                        .copyWith(color: getMainAppTheme(context).colors.inactiveText),
                   )),
                 ],
               ),
@@ -220,7 +235,10 @@ class _ContactPersonState extends State<_ContactPerson> {
                     Expanded(
                         child: Text(
                       'edit',
-                      style: getMainAppTheme(context).textStyles.subBody.copyWith(color: ColorPalette.blue500),
+                      style: getMainAppTheme(context)
+                          .textStyles
+                          .subBody
+                          .copyWith(color: getMainAppTheme(context).colors.activeText),
                     ).tr()),
                     SvgPicture.asset(
                       getMainAppTheme(context).icons.chevronRight,

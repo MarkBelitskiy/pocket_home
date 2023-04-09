@@ -11,10 +11,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LoginEvent>(_loginEvent);
     on<InitAuthEvent>(_onInitAuth);
     on<LogOutEvent>(_onlogOut);
+    on<DeleteAccountEvent>(_onDelete);
+    on<ResetPasswordEvent>(_onReset);
   }
 
   Future<void> _onlogOut(LogOutEvent event, Emitter<AuthState> emit) async {
+    await repository.userRepo.logOutUser();
     emit(UserIsNotAuthorizedState());
+  }
+
+  Future<void> _onReset(ResetPasswordEvent event, Emitter<AuthState> emit) async {
+    await repository.userRepo.resetPassword(password: event.newPass, phone: event.phone);
   }
 
   Future<void> _onInitAuth(InitAuthEvent event, Emitter<AuthState> emit) async {
@@ -30,6 +37,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _loginEvent(LoginEvent event, Emitter<AuthState> emit) async {
     try {
       String? errorOnResponse = await repository.userRepo.authUser(login: event.login, password: event.password);
+
       if (errorOnResponse == null) {
         emit(AuthorizedSuccessState());
       } else {
@@ -38,5 +46,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } catch (e) {
       emit(AuthorizedErrorState(e.toString()));
     }
+  }
+
+  Future _onDelete(DeleteAccountEvent event, Emitter<AuthState> emit) async {
+    await repository.userRepo.deleteUser(user: event.user);
+    emit(UserIsNotAuthorizedState());
   }
 }
