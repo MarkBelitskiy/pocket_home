@@ -133,5 +133,6 @@
 "fillInPhoneField":"Заполните поле телефон",
 "fillInPasswordField":"Заполните поле пароль",
 "checkOutAllFields":"Проверьте поля, некоторые из них не заполнены",
-"cantGenerateReport":"Невозможно сгенерировать отчет"
+"cantGenerateReport":"Невозможно сгенерировать отчет",
+"share":"Поделиться"
 }

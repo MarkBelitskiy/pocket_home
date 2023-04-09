@@ -8,9 +8,8 @@ class _MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light.copyWith(statusBarColor: Colors.transparent),
-      child: Consumer<MainAppLocaleViewModel>(builder: (context, value, child) {
-        return BlocBuilder<AuthBloc, AuthState>(
+        value: SystemUiOverlayStyle.light.copyWith(statusBarColor: Colors.transparent),
+        child: BlocBuilder<AuthBloc, AuthState>(
           buildWhen: (previous, current) => current is AuthorizedSuccessState || current is UserIsNotAuthorizedState,
           builder: (context, state) {
             if (state is AuthorizedSuccessState) {
@@ -21,9 +20,7 @@ class _MainScreen extends StatelessWidget {
             }
             return const _SplashScreen();
           },
-        );
-      }),
-    );
+        ));
   }
 }
 

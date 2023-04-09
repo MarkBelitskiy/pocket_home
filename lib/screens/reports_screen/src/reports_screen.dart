@@ -62,77 +62,79 @@ class _Reports extends StatelessWidget {
       "budgetReport",
       "budgetIncomeReport",
     ];
-    return ListView.separated(
-        separatorBuilder: (context, index) => const SizedBox(
-              height: 8,
-            ),
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          return Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: getMainAppTheme(context).colors.cardColor,
-            ),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'report',
-                      textAlign: TextAlign.left,
-                      style: getMainAppTheme(context)
-                          .textStyles
-                          .body
-                          .copyWith(color: getMainAppTheme(context).colors.inactiveText),
-                    ).tr(),
-                  ),
-                  Expanded(
-                    child: Text(
-                      items[index],
-                      textAlign: TextAlign.right,
-                      style: getMainAppTheme(context)
-                          .textStyles
-                          .body
-                          .copyWith(color: getMainAppTheme(context).colors.inactiveText),
-                    ).tr(),
-                  )
-                ],
+    return Consumer<MainAppLocaleViewModel>(builder: (context, value, child) {
+      return ListView.separated(
+          separatorBuilder: (context, index) => const SizedBox(
+                height: 8,
               ),
-              const SizedBox(
-                height: 12,
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            return Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: getMainAppTheme(context).colors.cardColor,
               ),
-              GestureDetector(
-                  onTap: () {
-                    switch (index) {
-                      case 0:
-                        context.read<ReportsBloc>().add(GenerateRatingReportEvent());
-                        break;
-                      case 1:
-                        context.read<ReportsBloc>().add(GenerateBudgetReportEvent());
-                        break;
-                      case 2:
-                        context.read<ReportsBloc>().add(GenerateBudgetIncomeReportEvent());
-                        break;
-                    }
-                  },
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text('generate',
-                                style: getMainAppTheme(context)
-                                    .textStyles
-                                    .title
-                                    .copyWith(color: getMainAppTheme(context).colors.activeColor))
-                            .tr(),
-                      ),
-                      SvgPicture.asset(
-                        getMainAppTheme(context).icons.chevronRight,
-                        color: getMainAppTheme(context).colors.activeColor,
-                      )
-                    ],
-                  )),
-            ]),
-          );
-        });
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'report',
+                        textAlign: TextAlign.left,
+                        style: getMainAppTheme(context)
+                            .textStyles
+                            .body
+                            .copyWith(color: getMainAppTheme(context).colors.inactiveText),
+                      ).tr(),
+                    ),
+                    Expanded(
+                      child: Text(
+                        items[index],
+                        textAlign: TextAlign.right,
+                        style: getMainAppTheme(context)
+                            .textStyles
+                            .body
+                            .copyWith(color: getMainAppTheme(context).colors.inactiveText),
+                      ).tr(),
+                    )
+                  ],
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                GestureDetector(
+                    onTap: () {
+                      switch (index) {
+                        case 0:
+                          context.read<ReportsBloc>().add(GenerateRatingReportEvent());
+                          break;
+                        case 1:
+                          context.read<ReportsBloc>().add(GenerateBudgetReportEvent());
+                          break;
+                        case 2:
+                          context.read<ReportsBloc>().add(GenerateBudgetIncomeReportEvent());
+                          break;
+                      }
+                    },
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text('generate',
+                                  style: getMainAppTheme(context)
+                                      .textStyles
+                                      .title
+                                      .copyWith(color: getMainAppTheme(context).colors.activeColor))
+                              .tr(),
+                        ),
+                        SvgPicture.asset(
+                          getMainAppTheme(context).icons.chevronRight,
+                          color: getMainAppTheme(context).colors.activeColor,
+                        )
+                      ],
+                    )),
+              ]),
+            );
+          });
+    });
   }
 }
