@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pocket_home/common/theme/theme_getter.dart';
-import 'package:pocket_home/common/utils/colors_palette.dart';
 import 'package:pocket_home/common/widgets/file_picker_widget/src/bloc/file_picker_bloc.dart';
 import 'package:pocket_home/common/widgets/main_app_bottom_sheet/main_app_bottom_sheet.dart';
 

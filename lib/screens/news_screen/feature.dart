@@ -4,7 +4,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pocket_home/common/repository/repository.dart';
 import 'package:pocket_home/common/theme/theme_getter.dart';
-import 'package:pocket_home/common/utils/colors_palette.dart';
 import 'package:pocket_home/common/utils/formatter_utils.dart';
 import 'package:pocket_home/common/widgets/floating_button/floating_action_button_widget.dart';
 import 'package:pocket_home/common/widgets/floating_button/floating_button_access_enums.dart';
