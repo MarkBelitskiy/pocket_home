@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pocket_home/common/repository/repository.dart';
 import 'package:pocket_home/common/utils/formatter_utils.dart';
-import 'package:pocket_home/screens/my_home_screen/my_home_model.dart';
-import 'package:pocket_home/screens/registration_screen/src/profile_model.dart';
+import 'package:pocket_home/common/repository/models/my_home_model.dart';
+import 'package:pocket_home/common/repository/models/profile_model.dart';
 
 part 'my_houses_event.dart';
 part 'my_houses_state.dart';

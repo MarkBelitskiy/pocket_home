@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:pocket_home/common/repository/base_repository_models.dart/base_user_repository.dart';
 import 'package:pocket_home/common/utils/preferences_utils.dart';
-import 'package:pocket_home/screens/registration_screen/src/profile_model.dart';
+import 'package:pocket_home/common/repository/models/profile_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MainUserRepository implements BaseUserRepository {

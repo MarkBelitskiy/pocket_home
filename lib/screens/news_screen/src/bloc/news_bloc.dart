@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pocket_home/common/repository/repository.dart';
-import 'package:pocket_home/screens/my_home_screen/my_home_model.dart';
+import 'package:pocket_home/common/repository/models/my_home_model.dart';
 import 'package:pocket_home/screens/my_home_screen/src/bloc/my_houses_bloc.dart';
-import 'package:pocket_home/screens/news_screen/src/news_model.dart';
-import 'package:pocket_home/screens/registration_screen/src/profile_model.dart';
+import 'package:pocket_home/common/repository/models/news_model.dart';
+import 'package:pocket_home/common/repository/models/profile_model.dart';
 
 part 'news_event.dart';
 part 'news_state.dart';

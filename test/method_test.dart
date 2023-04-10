@@ -6,7 +6,7 @@ import 'package:mockito/mockito.dart';
 
 import 'package:pocket_home/common/utils/preferences_utils.dart';
 
-import 'package:pocket_home/screens/registration_screen/src/profile_model.dart';
+import 'package:pocket_home/common/repository/models/profile_model.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 

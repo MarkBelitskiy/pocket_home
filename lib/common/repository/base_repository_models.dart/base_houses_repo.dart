@@ -1,4 +1,4 @@
-import 'package:pocket_home/screens/my_home_screen/my_home_model.dart';
+import 'package:pocket_home/common/repository/models/my_home_model.dart';
 
 abstract class BaseHousesRepository {
   Future<List<HouseModel>> getHousesList();

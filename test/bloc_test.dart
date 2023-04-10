@@ -4,7 +4,7 @@ import 'package:pocket_home/common/repository/base_repository_models.dart/base_u
 import 'package:pocket_home/common/repository/repository.dart';
 
 import 'package:pocket_home/screens/login_screen/src/bloc/auth_bloc.dart';
-import 'package:pocket_home/screens/registration_screen/src/profile_model.dart';
+import 'package:pocket_home/common/repository/models/profile_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MockRepository extends Mock implements Repository {

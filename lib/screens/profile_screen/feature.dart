@@ -14,7 +14,7 @@ import 'package:pocket_home/common/widgets/lottie_animation_widget.dart';
 import 'package:pocket_home/common/widgets/main_body_widget.dart';
 import 'package:pocket_home/screens/login_screen/src/bloc/auth_bloc.dart';
 
-import 'package:pocket_home/screens/registration_screen/src/profile_model.dart';
+import 'package:pocket_home/common/repository/models/profile_model.dart';
 import 'package:provider/provider.dart';
 
 import 'src/bloc/profile_bloc.dart';

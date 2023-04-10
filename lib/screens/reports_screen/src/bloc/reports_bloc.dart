@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pocket_home/screens/my_home_screen/my_home_model.dart';
+import 'package:pocket_home/common/repository/models/my_home_model.dart';
 
 import 'package:pocket_home/screens/my_home_screen/src/bloc/my_houses_bloc.dart';
 import 'package:pocket_home/screens/pdf_view/pdf_generate.dart';
-import 'package:pocket_home/screens/pdf_view/pdf_reports_models.dart';
-import 'package:pocket_home/screens/services_screen/src/service_detailed_model.dart';
+import 'package:pocket_home/common/repository/models/pdf_reports_models.dart';
+import 'package:pocket_home/common/repository/models/service_detailed_model.dart';
 
 part 'reports_event.dart';
 part 'reports_state.dart';

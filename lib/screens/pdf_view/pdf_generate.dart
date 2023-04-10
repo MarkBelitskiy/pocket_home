@@ -3,7 +3,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'package:pocket_home/common/utils/formatter_utils.dart';
 import 'dart:io';
-import 'package:pocket_home/screens/pdf_view/pdf_reports_models.dart';
+import 'package:pocket_home/common/repository/models/pdf_reports_models.dart';
 
 Future<File?> monthBudgetPdfGenerate(BudgetOnMothReportModel model) async {
   final pdf = Document(
