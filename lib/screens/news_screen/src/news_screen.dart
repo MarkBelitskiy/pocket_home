@@ -9,7 +9,7 @@ class _NewsScreen extends StatelessWidget {
         buildWhen: (previous, current) => current is NewsLoadedState || current is NewsLoadingState,
         builder: (context, state) {
           if (state is NewsLoadedState) {
-            return Consumer<MainAppThemeViewModel>(
+            return Consumer<MainAppViewModel>(
               builder: (context, value, child) => Scaffold(
                 backgroundColor: getMainAppTheme(context).colors.bgColor,
                 floatingActionButton: MainAppFloatingButton(
@@ -25,7 +25,7 @@ class _NewsScreen extends StatelessWidget {
               ),
             );
           }
-          return Consumer<MainAppThemeViewModel>(
+          return Consumer<MainAppViewModel>(
             builder: (context, value, child) => Scaffold(
               backgroundColor: getMainAppTheme(context).colors.bgColor,
               body: const Center(child: CircularProgressIndicator()),

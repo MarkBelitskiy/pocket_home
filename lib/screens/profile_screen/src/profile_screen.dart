@@ -5,7 +5,7 @@ class _ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MainAppThemeViewModel>(
+    return Consumer<MainAppViewModel>(
       builder: (context, value, child) => Scaffold(
         backgroundColor: getMainAppTheme(context).colors.bgColor,
         body: _Body(),
@@ -29,7 +29,7 @@ class _Body extends StatelessWidget {
               ),
               MainAppButton(
                 onPressed: () {
-                  context.read<MainAppLocaleViewModel>().changeLocale(context);
+                  context.read<MainAppViewModel>().changeLocale(context);
                 },
                 title: 'localeLanguage',
                 assetIcon: getMainAppTheme(context).icons.earth,
@@ -39,7 +39,7 @@ class _Body extends StatelessWidget {
               ),
               MainAppButton(
                 onPressed: () async {
-                  context.read<MainAppThemeViewModel>().changeTheme();
+                  context.read<MainAppViewModel>().changeTheme();
                 },
                 title: 'changeAppTheme'.tr(),
                 assetIcon: getMainAppTheme(context).icons.settings,

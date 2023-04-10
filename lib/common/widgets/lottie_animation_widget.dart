@@ -15,7 +15,7 @@ class EmptyPlaceholderWithLottie extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MainAppThemeViewModel>(
+    return Consumer<MainAppViewModel>(
       builder: (context, value, child) => lottiePath.isNotEmpty
           ? Stack(
               alignment: Alignment.center,

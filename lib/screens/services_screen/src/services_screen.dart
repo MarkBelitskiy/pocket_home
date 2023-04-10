@@ -7,7 +7,7 @@ class _ServicesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
-      child: Consumer<MainAppThemeViewModel>(
+      child: Consumer<MainAppViewModel>(
         builder: (context, value, child) => Scaffold(
           extendBodyBehindAppBar: true,
           backgroundColor: getMainAppTheme(context).colors.bgColor,

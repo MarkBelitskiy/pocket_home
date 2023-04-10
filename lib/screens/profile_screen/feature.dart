@@ -7,7 +7,6 @@ import 'package:pocket_home/common/theme/theme_getter.dart';
 
 import 'package:flutter/material.dart';
 import 'package:pocket_home/common/utils/colors_palette.dart';
-import 'package:pocket_home/common/utils/locale_view_model.dart';
 import 'package:pocket_home/common/widgets/button_widget.dart';
 
 import 'package:pocket_home/common/widgets/file_picker_widget/feature.dart';

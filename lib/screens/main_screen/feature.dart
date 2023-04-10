@@ -2,11 +2,9 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pocket_home/common/theme/main_app_theme/main_app_theme_view_model.dart';
 
 import 'package:pocket_home/common/widgets/bottom_bar.dart';
 import 'package:pocket_home/common/theme/theme_getter.dart';
-import 'package:pocket_home/common/utils/locale_view_model.dart';
 import 'package:pocket_home/common/widgets/button_widget.dart';
 
 import 'package:pocket_home/screens/login_screen/feature.dart';

@@ -24,7 +24,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool leadingEnable;
   @override
   Widget build(BuildContext context) {
-    return Consumer<MainAppThemeViewModel>(
+    return Consumer<MainAppViewModel>(
       builder: (context, value, child) => AppBar(
         actions: actions,
         backgroundColor: getMainAppTheme(context).colors.navBarColor,

@@ -5,7 +5,7 @@ class _MyHousesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MainAppThemeViewModel>(
+    return Consumer<MainAppViewModel>(
       builder: (context, value, child) => Scaffold(
         floatingActionButton: MainAppFloatingButton(
             enumValue: MainFloatingActionButton.myHome,
@@ -94,7 +94,8 @@ class _MyHousesLoaded extends StatelessWidget {
         ).showOverlayAnimated(context);
       },
     );
-    return Consumer<MainAppThemeViewModel>(
+
+    return Consumer<MainAppViewModel>(
       builder: (context, value, child) => SingleChildScrollView(
         padding: const EdgeInsets.only(left: 12, right: 12, top: 16, bottom: 100),
         child: CompositedTransformTarget(
