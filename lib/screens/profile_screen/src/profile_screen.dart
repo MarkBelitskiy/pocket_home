@@ -5,13 +5,16 @@ class _ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: getMainAppTheme(context).colors.bgColor, body: const _Body());
+    return Consumer<MainAppThemeViewModel>(
+      builder: (context, value, child) => Scaffold(
+        backgroundColor: getMainAppTheme(context).colors.bgColor,
+        body: _Body(),
+      ),
+    );
   }
 }
 
 class _Body extends StatelessWidget {
-  const _Body({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileBloc, ProfileState>(
@@ -31,19 +34,16 @@ class _Body extends StatelessWidget {
                 title: 'localeLanguage',
                 assetIcon: getMainAppTheme(context).icons.earth,
               ),
-              // const SizedBox(
-              //   height: 16,
-              // ),
-              // MainAppButton(
-              //   onPressed: () async {
-              //     final file = await monthBudgetPdfGenerate();
-              //     if (file != null)
-              //       Navigator.of(context, rootNavigator: true)
-              //           .push(MaterialPageRoute(builder: (context) => PdfTitlesScreen(path: file.path)));
-              //   },
-              //   title: 'settings'.tr(),
-              //   assetIcon: getMainAppTheme(context).icons.settings,
-              // ),
+              const SizedBox(
+                height: 16,
+              ),
+              MainAppButton(
+                onPressed: () async {
+                  context.read<MainAppThemeViewModel>().changeTheme();
+                },
+                title: 'changeAppTheme'.tr(),
+                assetIcon: getMainAppTheme(context).icons.settings,
+              ),
               const SizedBox(
                 height: 32,
               ),
@@ -54,10 +54,7 @@ class _Body extends StatelessWidget {
                 child: Text(
                   'deleteAccount',
                   textAlign: TextAlign.center,
-                  style: getMainAppTheme(context)
-                      .textStyles
-                      .title
-                      .copyWith(color: getMainAppTheme(context).colors.errorTextColor),
+                  style: getMainAppTheme(context).textStyles.title.copyWith(color: ColorPalette.red500),
                 ).tr(),
               ),
               const SizedBox(
@@ -126,7 +123,7 @@ class _MainInfoWidget extends StatelessWidget {
           profile.name,
           textAlign: TextAlign.center,
           style:
-              getMainAppTheme(context).textStyles.title.copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+              getMainAppTheme(context).textStyles.title.copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
         ),
         const SizedBox(
           height: 8,
@@ -136,7 +133,7 @@ class _MainInfoWidget extends StatelessWidget {
           children: [
             SvgPicture.asset(
               getMainAppTheme(context).icons.phone,
-              color: getMainAppTheme(context).colors.mainTextColor,
+              color: getMainAppTheme(context).colors.textOnBgColor,
             ),
             const SizedBox(
               width: 12,
@@ -147,7 +144,7 @@ class _MainInfoWidget extends StatelessWidget {
               style: getMainAppTheme(context)
                   .textStyles
                   .title
-                  .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+                  .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
             ),
           ],
         ),

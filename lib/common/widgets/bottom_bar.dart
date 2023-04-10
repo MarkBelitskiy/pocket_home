@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/svg.dart';
+import 'package:pocket_home/common/theme/main_app_theme/main_app_theme_view_model.dart';
 import 'package:pocket_home/common/theme/theme_getter.dart';
 import 'package:pocket_home/common/utils/locale_view_model.dart';
 import 'package:pocket_home/screens/main_screen/feature.dart';
@@ -37,79 +38,80 @@ class CustomNavBarState extends State<CustomNavBar> with SingleTickerProviderSta
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MainAppLocaleViewModel>(builder: (context, value, child) {
-      return SizedBox(
-        height: 100,
-        child: Stack(
-          children: <Widget>[
-            Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: AnimatedBuilder(
-                  animation: _animationController,
-                  builder: (context, child) => CustomPaint(
-                    painter: _NavBarPainter(_animationController.value, _count,
-                        navBarColor: getMainAppTheme(context).colors.navBarColor,
-                        borderColor: getMainAppTheme(context).colors.bgColor),
-                    child: const SizedBox(
-                      height: 75.0,
+    return Consumer<MainAppThemeViewModel>(
+        builder: (context, value, child) => Consumer<MainAppLocaleViewModel>(builder: (context, value, child) {
+              return SizedBox(
+                height: 100,
+                child: Stack(
+                  children: <Widget>[
+                    Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        child: AnimatedBuilder(
+                          animation: _animationController,
+                          builder: (context, child) => CustomPaint(
+                            painter: _NavBarPainter(_animationController.value, _count,
+                                navBarColor: getMainAppTheme(context).colors.navBarColor,
+                                borderColor: getMainAppTheme(context).colors.bgColor),
+                            child: const SizedBox(
+                              height: 75.0,
+                            ),
+                          ),
+                        )),
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: Row(
+                        children: [
+                          _NavBarItem(
+                            icon: getMainAppTheme(context).icons.news,
+                            title: 'news',
+                            index: 0,
+                            callback: () {
+                              updatePosition(0);
+                            },
+                          ),
+                          _NavBarItem(
+                            icon: getMainAppTheme(context).icons.services,
+                            title: 'services',
+                            index: 1,
+                            callback: () {
+                              updatePosition(1);
+                            },
+                          ),
+                          _NavBarItem(
+                            icon: getMainAppTheme(context).icons.buildingIcon,
+                            title: 'myhouses',
+                            index: 2,
+                            callback: () {
+                              updatePosition(2);
+                            },
+                          ),
+                          _NavBarItem(
+                            icon: getMainAppTheme(context).icons.reports,
+                            title: 'reports',
+                            index: 3,
+                            callback: () {
+                              updatePosition(3);
+                            },
+                          ),
+                          _NavBarItem(
+                            icon: getMainAppTheme(context).icons.profile,
+                            title: 'profile',
+                            index: 4,
+                            callback: () {
+                              updatePosition(4);
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                )),
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: Row(
-                children: [
-                  _NavBarItem(
-                    icon: getMainAppTheme(context).icons.news,
-                    title: 'news',
-                    index: 0,
-                    callback: () {
-                      updatePosition(0);
-                    },
-                  ),
-                  _NavBarItem(
-                    icon: getMainAppTheme(context).icons.services,
-                    title: 'services',
-                    index: 1,
-                    callback: () {
-                      updatePosition(1);
-                    },
-                  ),
-                  _NavBarItem(
-                    icon: getMainAppTheme(context).icons.buildingIcon,
-                    title: 'myhouses',
-                    index: 2,
-                    callback: () {
-                      updatePosition(2);
-                    },
-                  ),
-                  _NavBarItem(
-                    icon: getMainAppTheme(context).icons.reports,
-                    title: 'reports',
-                    index: 3,
-                    callback: () {
-                      updatePosition(3);
-                    },
-                  ),
-                  _NavBarItem(
-                    icon: getMainAppTheme(context).icons.profile,
-                    title: 'profile',
-                    index: 4,
-                    callback: () {
-                      updatePosition(4);
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      );
-    });
+                  ],
+                ),
+              );
+            }));
   }
 
   void updatePosition(int index) {
@@ -209,7 +211,7 @@ class _NavBarItemState extends State<_NavBarItem> {
                 if (!isActive) const SizedBox(height: 8),
                 SvgPicture.asset(widget.icon,
                     color: isActive
-                        ? getMainAppTheme(context).colors.activeColor
+                        ? getMainAppTheme(context).colors.activeBottomBarIconColor
                         : getMainAppTheme(context).colors.inactiveColor),
                 if (!isActive) ...[
                   const SizedBox(height: 4),

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pocket_home/common/theme/theme_getter.dart';
-import 'package:pocket_home/common/utils/colors_palette.dart';
 import 'package:pocket_home/common/widgets/button_widget.dart';
 import 'package:pocket_home/common/widgets/error_snack.dart';
 import 'package:pocket_home/common/widgets/file_picker_widget/feature.dart';

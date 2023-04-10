@@ -9,7 +9,8 @@ class _NewsScreen extends StatelessWidget {
         buildWhen: (previous, current) => current is NewsLoadedState || current is NewsLoadingState,
         builder: (context, state) {
           if (state is NewsLoadedState) {
-            return Scaffold(
+            return Consumer<MainAppThemeViewModel>(
+              builder: (context, value, child) => Scaffold(
                 backgroundColor: getMainAppTheme(context).colors.bgColor,
                 floatingActionButton: MainAppFloatingButton(
                   enumValue: MainFloatingActionButton.news,
@@ -20,11 +21,16 @@ class _NewsScreen extends StatelessWidget {
                 ),
                 body: _Body(
                   state: state,
-                ));
+                ),
+              ),
+            );
           }
-          return Scaffold(
+          return Consumer<MainAppThemeViewModel>(
+            builder: (context, value, child) => Scaffold(
               backgroundColor: getMainAppTheme(context).colors.bgColor,
-              body: const Center(child: CircularProgressIndicator()));
+              body: const Center(child: CircularProgressIndicator()),
+            ),
+          );
         });
   }
 }
@@ -102,7 +108,7 @@ class _News extends StatelessWidget {
                 style: getMainAppTheme(context)
                     .textStyles
                     .body
-                    .copyWith(color: getMainAppTheme(context).colors.inactiveText),
+                    .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
               ).tr(),
             ),
             Expanded(
@@ -112,7 +118,7 @@ class _News extends StatelessWidget {
                 style: getMainAppTheme(context)
                     .textStyles
                     .body
-                    .copyWith(color: getMainAppTheme(context).colors.inactiveText),
+                    .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
               ),
             )
           ],
@@ -140,7 +146,7 @@ class _News extends StatelessWidget {
                 style: getMainAppTheme(context)
                     .textStyles
                     .body
-                    .copyWith(color: getMainAppTheme(context).colors.inactiveText),
+                    .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
               ),
               if (newsText.length == 30)
                 WidgetSpan(
@@ -198,7 +204,7 @@ class _Poll extends StatelessWidget {
                 style: getMainAppTheme(context)
                     .textStyles
                     .body
-                    .copyWith(color: getMainAppTheme(context).colors.inactiveText),
+                    .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
               ).tr(),
             ),
             Expanded(
@@ -208,7 +214,7 @@ class _Poll extends StatelessWidget {
                 style: getMainAppTheme(context)
                     .textStyles
                     .body
-                    .copyWith(color: getMainAppTheme(context).colors.inactiveText),
+                    .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
               ),
             )
           ],
@@ -299,7 +305,7 @@ class _PollAnswer extends StatelessWidget {
               style: getMainAppTheme(context)
                   .textStyles
                   .body
-                  .copyWith(color: getMainAppTheme(context).colors.inactiveText),
+                  .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
             )),
             if (isSavedAnswer != null && isSavedAnswer!) ...[
               Text(

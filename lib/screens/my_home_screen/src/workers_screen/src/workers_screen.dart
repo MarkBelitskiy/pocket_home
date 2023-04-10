@@ -56,7 +56,7 @@ class _WorkersScreen extends StatelessWidget {
                           style: getMainAppTheme(context)
                               .textStyles
                               .subBody
-                              .copyWith(color: getMainAppTheme(context).colors.inactiveColor),
+                              .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
                         )
                       ]),
                     ),
@@ -77,7 +77,7 @@ class _WorkersScreen extends StatelessWidget {
                           style: getMainAppTheme(context)
                               .textStyles
                               .subBody
-                              .copyWith(color: getMainAppTheme(context).colors.inactiveColor),
+                              .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
                         )
                       ]),
                     )

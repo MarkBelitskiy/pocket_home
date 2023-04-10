@@ -15,27 +15,27 @@ class MainAppThemeViewModel extends ChangeNotifier {
   void init(SharedPreferences preferences) {
     _preferences = preferences;
 
-    getSystemBrightness();
-
     final brightness = _preferences?.getString(PreferencesUtils.brightnessKey);
 
     if (brightness == null) {
+      getSystemBrightness();
     } else {
       if (brightness == Brightness.dark.toString()) {
         _themeBrightness = Brightness.dark;
       } else {
         _themeBrightness = Brightness.light;
       }
+      _theme = MainAppTheme(_themeBrightness == Brightness.dark);
     }
   }
 
-  void changeTheme(Brightness brightness) async {
-    if (_themeBrightness != brightness) {
-      _themeBrightness = brightness;
-      await _preferences?.setString(PreferencesUtils.brightnessKey, brightness.toString());
-      _theme = MainAppTheme(_themeBrightness == Brightness.dark);
-      notifyListeners();
-    }
+  void changeTheme() async {
+    final brightness = _themeBrightness == Brightness.light ? Brightness.dark : Brightness.light;
+
+    _themeBrightness = brightness;
+    await _preferences?.setString(PreferencesUtils.brightnessKey, brightness.toString());
+    _theme = MainAppTheme(_themeBrightness == Brightness.dark);
+    notifyListeners();
   }
 
   void getSystemBrightness() async {

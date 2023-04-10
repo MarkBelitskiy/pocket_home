@@ -5,70 +5,44 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pocket_home/common/theme/theme_getter.dart';
 
-class AnimatedOverlayWidget extends StatefulWidget {
-  const AnimatedOverlayWidget(
-      {super.key,
-      required this.childKeys,
-      required this.child,
-      required this.layerLink,
-      required this.activateAnimation});
-  final bool activateAnimation;
-  final Widget child;
+class AnimatedOverlayWidget {
+  OverlayEntry? _overlayEntry;
   final List<GlobalKey> childKeys;
   final LayerLink layerLink;
 
-  @override
-  State<AnimatedOverlayWidget> createState() => _AnimatedOverlayWidgetState();
-}
+  AnimatedOverlayWidget(this.childKeys, this.layerLink);
 
-class _AnimatedOverlayWidgetState extends State<AnimatedOverlayWidget> {
-  OverlayEntry? _overlayEntry;
-  @override
-  void dispose() {
-    _overlayEntry?.remove();
-    _overlayEntry?.dispose();
-    super.dispose();
+  void showOverlayAnimated(
+    BuildContext context,
+  ) {
+    _showOverlay(context, 0);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (widget.activateAnimation) {
-        showOverlay.call(
-          context,
-          0,
-        );
-      }
-    });
-
-    return widget.child;
-  }
-
-  void showOverlay(BuildContext context, int step) {
-    _overlayEntry = createOverlayEntry(step);
+  void _showOverlay(BuildContext context, int step) {
+    _overlayEntry = _createOverlayEntry(step);
 
     Overlay.of(context)?.insert(_overlayEntry!);
   }
 
-  void hideOverlay(BuildContext context) {
+  void _hideOverlay(BuildContext context) {
     _overlayEntry?.remove();
   }
 
-  Offset? getPosition(GlobalKey key) {
+  Offset? _getPosition(GlobalKey key) {
     RenderBox? box = key.currentContext?.findRenderObject() as RenderBox?;
     Offset? position = box?.localToGlobal(Offset.zero).translate(0, 60);
     return position;
   }
 
-  OverlayEntry createOverlayEntry(int step) => OverlayEntry(
+  OverlayEntry _createOverlayEntry(int step) => OverlayEntry(
         builder: (BuildContext context) => Stack(
           children: [
-            _AnimatedOverlay(childKey: widget.childKeys[step], layerLink: widget.layerLink),
+            _AnimatedOverlay(childKey: childKeys[step], layerLink: layerLink),
             Positioned.fill(
               child: UnconstrainedBox(
                 child: CompositedTransformFollower(
-                  offset: getPosition(widget.childKeys[step]) ?? const Offset(0, 0),
-                  link: widget.layerLink,
+                  offset: _getPosition(childKeys[step]) ?? const Offset(0, 0),
+                  link: layerLink,
                   child: Container(
                     constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 64),
                     decoration: BoxDecoration(
@@ -101,10 +75,10 @@ class _AnimatedOverlayWidgetState extends State<AnimatedOverlayWidget> {
                         GestureDetector(
                           onTap: () {
                             if (step == 0) {
-                              hideOverlay(context);
-                              showOverlay.call(context, 1);
+                              _hideOverlay(context);
+                              _showOverlay.call(context, 1);
                             } else {
-                              hideOverlay(context);
+                              _hideOverlay(context);
                             }
                           },
                           child: Row(

@@ -8,22 +8,24 @@ class _MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light.copyWith(statusBarColor: Colors.transparent),
-      child: Consumer<MainAppLocaleViewModel>(builder: (context, value, child) {
-        return BlocBuilder<AuthBloc, AuthState>(
-          buildWhen: (previous, current) => current is AuthorizedSuccessState || current is UserIsNotAuthorizedState,
-          builder: (context, state) {
-            if (state is AuthorizedSuccessState) {
-              return const Scaffold(body: _Body(), extendBody: true, bottomNavigationBar: CustomNavBar());
-            }
-            if (state is UserIsNotAuthorizedState) {
-              return const _UserNotLoadedScreen();
-            }
-            return const _SplashScreen();
-          },
-        );
-      }),
-    );
+        value: SystemUiOverlayStyle.light.copyWith(statusBarColor: Colors.transparent),
+        child: Consumer<MainAppThemeViewModel>(
+          builder: (context, value, child) => Consumer<MainAppLocaleViewModel>(builder: (context, value, child) {
+            return BlocBuilder<AuthBloc, AuthState>(
+              buildWhen: (previous, current) =>
+                  current is AuthorizedSuccessState || current is UserIsNotAuthorizedState,
+              builder: (context, state) {
+                if (state is AuthorizedSuccessState) {
+                  return const Scaffold(body: _Body(), extendBody: true, bottomNavigationBar: CustomNavBar());
+                }
+                if (state is UserIsNotAuthorizedState) {
+                  return const _UserNotLoadedScreen();
+                }
+                return const _SplashScreen();
+              },
+            );
+          }),
+        ));
   }
 }
 

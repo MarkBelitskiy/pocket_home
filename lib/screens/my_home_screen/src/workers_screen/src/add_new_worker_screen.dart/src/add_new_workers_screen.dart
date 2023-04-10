@@ -52,10 +52,7 @@ class _AddNewWorkersScreen extends StatelessWidget {
             },
             child: Text(
               'chooseFromContacts',
-              style: getMainAppTheme(context)
-                  .textStyles
-                  .body
-                  .copyWith(color: getMainAppTheme(context).colors.errorTextColor),
+              style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.red500),
             ).tr(),
           ),
           const SizedBox(

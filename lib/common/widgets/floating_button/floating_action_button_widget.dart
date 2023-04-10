@@ -36,8 +36,11 @@ class MainAppFloatingButton extends StatelessWidget {
                 backgroundColor: getMainAppTheme(context).colors.cardColor,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
-                    side: BorderSide(color: getMainAppTheme(context).colors.buttonsColor)),
-                child: SvgPicture.asset(getMainAppTheme(context).icons.add),
+                    side: BorderSide(color: getMainAppTheme(context).colors.borderColors)),
+                child: SvgPicture.asset(
+                  getMainAppTheme(context).icons.add,
+                  color: getMainAppTheme(context).colors.iconOnButtonColor,
+                ),
               ),
             );
           }

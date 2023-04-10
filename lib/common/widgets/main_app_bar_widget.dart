@@ -1,8 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pocket_home/common/theme/main_app_theme/main_app_theme_view_model.dart';
 import 'package:pocket_home/common/theme/theme_getter.dart';
-import 'package:pocket_home/common/utils/colors_palette.dart';
+import 'package:provider/provider.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   const MainAppBar(
@@ -23,59 +24,61 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool leadingEnable;
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      actions: actions,
-      backgroundColor: getMainAppTheme(context).colors.navBarColor,
-      elevation: 1,
-      shadowColor: getMainAppTheme(context).colors.shadowColor,
-      centerTitle: true,
-      title: Column(
-        children: [
-          if (title.isNotEmpty)
-            Text(
-              title,
-              style: getMainAppTheme(context)
-                  .textStyles
-                  .title
-                  .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
-            ).tr(),
-          if (subTitle != null) ...[
-            const SizedBox(
-              height: 4,
-            ),
-            Text(
-              subTitle!,
-              style: getMainAppTheme(context)
-                  .textStyles
-                  .subBody
-                  .copyWith(color: getMainAppTheme(context).colors.inactiveText),
-            ).tr(),
-          ]
-        ],
+    return Consumer<MainAppThemeViewModel>(
+      builder: (context, value, child) => AppBar(
+        actions: actions,
+        backgroundColor: getMainAppTheme(context).colors.navBarColor,
+        elevation: 1,
+        shadowColor: getMainAppTheme(context).colors.shadowColor,
+        centerTitle: true,
+        title: Column(
+          children: [
+            if (title.isNotEmpty)
+              Text(
+                title,
+                style: getMainAppTheme(context)
+                    .textStyles
+                    .title
+                    .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+              ).tr(),
+            if (subTitle != null) ...[
+              const SizedBox(
+                height: 4,
+              ),
+              Text(
+                subTitle!,
+                style: getMainAppTheme(context)
+                    .textStyles
+                    .subBody
+                    .copyWith(color: getMainAppTheme(context).colors.inactiveText),
+              ).tr(),
+            ]
+          ],
+        ),
+        leading: leadingEnable
+            ? IconButton(
+                onPressed: () {
+                  if (customOnTap != null) {
+                    customOnTap!.call();
+                  } else {
+                    Navigator.of(context, rootNavigator: isRoot).pop();
+                  }
+                },
+                icon: SvgPicture.asset(
+                  getMainAppTheme(context).icons.chevronLeft,
+                  color: getMainAppTheme(context).colors.mainTextColor,
+                ),
+              )
+            : null,
+        bottom: tabNames != null
+            ? PreferredSize(
+                preferredSize: const Size.fromHeight(1),
+                child: _BottomTabBar(
+                  tabNames: tabNames!,
+                ),
+              )
+            : null,
       ),
-      leading: leadingEnable
-          ? IconButton(
-              onPressed: () {
-                if (customOnTap != null) {
-                  customOnTap!.call();
-                } else {
-                  Navigator.of(context, rootNavigator: isRoot).pop();
-                }
-              },
-              icon: SvgPicture.asset(
-                getMainAppTheme(context).icons.chevronLeft,
-                color: getMainAppTheme(context).colors.mainTextColor,
-              ),
-            )
-          : null,
-      bottom: tabNames != null
-          ? PreferredSize(
-              preferredSize: const Size.fromHeight(1),
-              child: _BottomTabBar(
-                tabNames: tabNames!,
-              ),
-            )
-          : null,
     );
   }
 

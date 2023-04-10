@@ -14,7 +14,7 @@ void returnSnackBar(BuildContext context, String error) {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        backgroundColor: getMainAppTheme(context).colors.bgColor,
+        backgroundColor: getMainAppTheme(context).colors.textOnBgColor,
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         content: Row(children: [
           SvgPicture.asset(
