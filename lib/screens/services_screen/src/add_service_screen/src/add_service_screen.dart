@@ -99,7 +99,7 @@ class _ChooseProblemState extends State<_ChooseProblem> {
         Text(
           'serviceName',
           style:
-              getMainAppTheme(context).textStyles.title.copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+              getMainAppTheme(context).textStyles.title.copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
         ).tr(),
         const SizedBox(
           height: 4,
@@ -133,7 +133,7 @@ class _ChooseProblemState extends State<_ChooseProblem> {
                   style: getMainAppTheme(context)
                       .textStyles
                       .subBody
-                      .copyWith(color: getMainAppTheme(context).colors.inactiveText),
+                      .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
                 ).tr()),
                 SvgPicture.asset(
                   getMainAppTheme(context).icons.chevronDown,
@@ -165,7 +165,7 @@ class _ContactPersonState extends State<_ContactPerson> {
         Text(
           'contactData',
           style:
-              getMainAppTheme(context).textStyles.title.copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+              getMainAppTheme(context).textStyles.title.copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
         ).tr(),
         const SizedBox(
           height: 4,
@@ -186,7 +186,7 @@ class _ContactPersonState extends State<_ContactPerson> {
                     style: getMainAppTheme(context)
                         .textStyles
                         .subBody
-                        .copyWith(color: getMainAppTheme(context).colors.inactiveText),
+                        .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
                   ).tr()),
                   Expanded(
                       child: Text(
@@ -195,7 +195,7 @@ class _ContactPersonState extends State<_ContactPerson> {
                     style: getMainAppTheme(context)
                         .textStyles
                         .subBody
-                        .copyWith(color: getMainAppTheme(context).colors.inactiveText),
+                        .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
                   )),
                 ],
               ),
@@ -210,7 +210,7 @@ class _ContactPersonState extends State<_ContactPerson> {
                     style: getMainAppTheme(context)
                         .textStyles
                         .subBody
-                        .copyWith(color: getMainAppTheme(context).colors.inactiveText),
+                        .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
                   ).tr()),
                   Expanded(
                       child: Text(
@@ -219,7 +219,7 @@ class _ContactPersonState extends State<_ContactPerson> {
                     style: getMainAppTheme(context)
                         .textStyles
                         .subBody
-                        .copyWith(color: getMainAppTheme(context).colors.inactiveText),
+                        .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
                   )),
                 ],
               ),
@@ -267,7 +267,7 @@ class _Files extends StatelessWidget {
         Text(
           'files',
           style:
-              getMainAppTheme(context).textStyles.title.copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+              getMainAppTheme(context).textStyles.title.copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
         ).tr(),
         const SizedBox(
           height: 4,
@@ -296,7 +296,7 @@ class _Commentary extends StatelessWidget {
         Text(
           'comment',
           style:
-              getMainAppTheme(context).textStyles.title.copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+              getMainAppTheme(context).textStyles.title.copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
         ).tr(),
         const SizedBox(
           height: 4,

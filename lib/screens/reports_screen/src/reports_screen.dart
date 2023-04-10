@@ -5,7 +5,8 @@ class _ReportsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Consumer<MainAppViewModel>(
+      builder: (context, value, child) => Scaffold(
         backgroundColor: getMainAppTheme(context).colors.bgColor,
         body: BlocConsumer<ReportsBloc, ReportsState>(
           buildWhen: (previous, current) => current is OnInitReportsState,
@@ -20,17 +21,17 @@ class _ReportsScreen extends StatelessWidget {
           },
           builder: (context, state) {
             if (state is OnInitReportsState) {
-              return const _Reports();
+              return _Reports();
             }
-            return const _EmptyBody();
+            return _EmptyBody();
           },
-        ));
+        ),
+      ),
+    );
   }
 }
 
 class _EmptyBody extends StatelessWidget {
-  const _EmptyBody({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -53,8 +54,6 @@ class _EmptyBody extends StatelessWidget {
 }
 
 class _Reports extends StatelessWidget {
-  const _Reports();
-
   @override
   Widget build(BuildContext context) {
     List<String> items = [
@@ -62,7 +61,7 @@ class _Reports extends StatelessWidget {
       "budgetReport",
       "budgetIncomeReport",
     ];
-    return Consumer<MainAppLocaleViewModel>(builder: (context, value, child) {
+    return Consumer<MainAppViewModel>(builder: (context, value, child) {
       return ListView.separated(
           separatorBuilder: (context, index) => const SizedBox(
                 height: 8,
@@ -84,7 +83,7 @@ class _Reports extends StatelessWidget {
                         style: getMainAppTheme(context)
                             .textStyles
                             .body
-                            .copyWith(color: getMainAppTheme(context).colors.inactiveText),
+                            .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
                       ).tr(),
                     ),
                     Expanded(
@@ -94,7 +93,7 @@ class _Reports extends StatelessWidget {
                         style: getMainAppTheme(context)
                             .textStyles
                             .body
-                            .copyWith(color: getMainAppTheme(context).colors.inactiveText),
+                            .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
                       ).tr(),
                     )
                   ],

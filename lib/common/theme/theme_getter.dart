@@ -5,5 +5,5 @@ import 'package:provider/provider.dart';
 import 'main_app_theme/main_app_theme_view_model.dart';
 
 MainAppTheme getMainAppTheme(BuildContext context) {
-  return context.read<MainAppThemeViewModel>().theme;
+  return context.read<MainAppViewModel>().theme;
 }

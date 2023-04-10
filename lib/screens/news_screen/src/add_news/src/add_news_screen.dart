@@ -103,7 +103,7 @@ class _PickTypeWidgetState extends State<_PickTypeWidget> {
               style: getMainAppTheme(context)
                   .textStyles
                   .body
-                  .copyWith(color: getMainAppTheme(context).colors.inactiveText),
+                  .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
             ).tr(),
           ),
           const SizedBox(

@@ -7,50 +7,52 @@ class _ServicesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
-      child: Scaffold(
-        extendBodyBehindAppBar: true,
-        backgroundColor: getMainAppTheme(context).colors.bgColor,
-        floatingActionButton: MainAppFloatingButton(
-          enumValue: MainFloatingActionButton.services,
-          onTap: (currentHouse) {
-            Navigator.of(context, rootNavigator: true)
-                .push(addServicesScreenFeature(context.read<ServicesBloc>(), currentHouse!));
-          },
-        ),
-        appBar: const MainAppBar(
-          leadingEnable: false,
-          tabNames: ['active', 'history'],
-        ),
-        body: BlocBuilder<ServicesBloc, ServicesState>(
-          buildWhen: (previous, current) => current is ServicesLoaded,
-          builder: (context, state) {
-            if (state is ServicesLoaded) {
-              if (state.activeModels.isEmpty && state.historyModels.isEmpty) {
-                return const _EpmtyBody(
-                  title: 'haveNotServicesRequests',
+      child: Consumer<MainAppViewModel>(
+        builder: (context, value, child) => Scaffold(
+          extendBodyBehindAppBar: true,
+          backgroundColor: getMainAppTheme(context).colors.bgColor,
+          floatingActionButton: MainAppFloatingButton(
+            enumValue: MainFloatingActionButton.services,
+            onTap: (currentHouse) {
+              Navigator.of(context, rootNavigator: true)
+                  .push(addServicesScreenFeature(context.read<ServicesBloc>(), currentHouse!));
+            },
+          ),
+          appBar: const MainAppBar(
+            leadingEnable: false,
+            tabNames: ['active', 'history'],
+          ),
+          body: BlocBuilder<ServicesBloc, ServicesState>(
+            buildWhen: (previous, current) => current is ServicesLoaded,
+            builder: (context, state) {
+              if (state is ServicesLoaded) {
+                if (state.activeModels.isEmpty && state.historyModels.isEmpty) {
+                  return const _EpmtyBody(
+                    title: 'haveNotServicesRequests',
+                  );
+                }
+                return TabBarView(
+                  children: [
+                    _TabBody(
+                      models: state.activeModels,
+                      title: "haveNotActiveServices",
+                      currentHouse: state.currentHouse,
+                      user: state.user,
+                    ),
+                    _TabBody(
+                      models: state.historyModels,
+                      title: 'uHaveNotHistoryOfServicesRequests',
+                      currentHouse: state.currentHouse,
+                      user: state.user,
+                    ),
+                  ],
                 );
               }
-              return TabBarView(
-                children: [
-                  _TabBody(
-                    models: state.activeModels,
-                    title: "haveNotActiveServices",
-                    currentHouse: state.currentHouse,
-                    user: state.user,
-                  ),
-                  _TabBody(
-                    models: state.historyModels,
-                    title: 'uHaveNotHistoryOfServicesRequests',
-                    currentHouse: state.currentHouse,
-                    user: state.user,
-                  ),
-                ],
+              return const _EpmtyBody(
+                title: 'haveNotServicesRequests',
               );
-            }
-            return const _EpmtyBody(
-              title: 'haveNotServicesRequests',
-            );
-          },
+            },
+          ),
         ),
       ),
     );
@@ -164,13 +166,19 @@ class _CardItem extends StatelessWidget {
               Text(
                 'serviceNumber',
                 textAlign: TextAlign.left,
-                style: getMainAppTheme(context).textStyles.body.copyWith(color: getItemColor(0)),
+                style: getMainAppTheme(context)
+                    .textStyles
+                    .body
+                    .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
               ).tr(args: [(index + 1).toString()]),
               Expanded(
                 child: Text(
                   FormatterUtils.formattedDate(item.publishDate, context.locale.languageCode),
                   textAlign: TextAlign.right,
-                  style: getMainAppTheme(context).textStyles.body.copyWith(color: getItemColor(0)),
+                  style: getMainAppTheme(context)
+                      .textStyles
+                      .body
+                      .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
                 ),
               ),
             ],
@@ -183,13 +191,19 @@ class _CardItem extends StatelessWidget {
               Text(
                 'serviceName',
                 textAlign: TextAlign.left,
-                style: getMainAppTheme(context).textStyles.body.copyWith(color: getItemColor(0)),
+                style: getMainAppTheme(context)
+                    .textStyles
+                    .body
+                    .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
               ).tr(),
               Expanded(
                 child: Text(
                   item.name,
                   textAlign: TextAlign.right,
-                  style: getMainAppTheme(context).textStyles.body.copyWith(color: getItemColor(0)),
+                  style: getMainAppTheme(context)
+                      .textStyles
+                      .body
+                      .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
                 ),
               ),
             ],
@@ -202,13 +216,16 @@ class _CardItem extends StatelessWidget {
               Text(
                 'status',
                 textAlign: TextAlign.left,
-                style: getMainAppTheme(context).textStyles.body.copyWith(color: getItemColor(0)),
+                style: getMainAppTheme(context)
+                    .textStyles
+                    .body
+                    .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
               ).tr(),
               Expanded(
                 child: Text(
                   getStatusText(item.status),
                   textAlign: TextAlign.right,
-                  style: getMainAppTheme(context).textStyles.body.copyWith(color: getItemColor(item.status)),
+                  style: getMainAppTheme(context).textStyles.body.copyWith(color: getItemColor(item.status, context)),
                 ).tr(),
               ),
             ],
@@ -225,13 +242,16 @@ class _CardItem extends StatelessWidget {
                 Text(
                   'comment',
                   textAlign: TextAlign.left,
-                  style: getMainAppTheme(context).textStyles.body.copyWith(color: getItemColor(0)),
+                  style: getMainAppTheme(context)
+                      .textStyles
+                      .body
+                      .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
                 ).tr(),
                 Expanded(
                   child: Text(
                     item.workerCommentary!,
                     textAlign: TextAlign.right,
-                    style: getMainAppTheme(context).textStyles.body.copyWith(color: getItemColor(item.status)),
+                    style: getMainAppTheme(context).textStyles.body.copyWith(color: getItemColor(item.status, context)),
                   ),
                 ),
               ],
@@ -242,8 +262,8 @@ class _CardItem extends StatelessWidget {
     );
   }
 
-  Color getItemColor(int status) {
-    Color returned = ColorPalette.grey300;
+  Color getItemColor(int status, BuildContext context) {
+    Color returned = getMainAppTheme(context).colors.textOnBgColor;
     switch (status) {
       case 1:
         returned = ColorPalette.yellow500;
@@ -252,11 +272,11 @@ class _CardItem extends StatelessWidget {
         returned = ColorPalette.red500;
         break;
       case 3:
-        returned = ColorPalette.green500;
+        returned = getMainAppTheme(context).colors.successColor;
         break;
 
       default:
-        returned = ColorPalette.grey300;
+        returned = getMainAppTheme(context).colors.textOnBgColor;
     }
     return returned;
   }

@@ -79,7 +79,7 @@ class _MainTextFieldState extends State<MainTextField> {
           Text(
             widget.title!,
             style:
-                getMainAppTheme(context).textStyles.body.copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+                getMainAppTheme(context).textStyles.body.copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
           ).tr(),
         const SizedBox(
           height: 4,

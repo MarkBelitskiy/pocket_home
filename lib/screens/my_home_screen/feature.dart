@@ -1,10 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pocket_home/common/theme/main_app_theme/main_app_theme_view_model.dart';
 import 'package:pocket_home/common/theme/theme_getter.dart';
 import 'package:flutter/material.dart';
-import 'package:pocket_home/common/utils/colors_palette.dart';
-import 'package:pocket_home/common/utils/locale_view_model.dart';
 import 'package:pocket_home/common/widgets/floating_button/floating_action_button_widget.dart';
 import 'package:pocket_home/common/widgets/floating_button/floating_button_access_enums.dart';
 import 'package:pocket_home/common/widgets/lottie_animation_widget.dart';

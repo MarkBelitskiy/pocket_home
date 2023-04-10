@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pocket_home/common/repository/repository.dart';
+import 'package:pocket_home/common/theme/main_app_theme/main_app_theme_view_model.dart';
 
 import 'package:pocket_home/common/theme/theme_getter.dart';
 import 'package:pocket_home/common/utils/colors_palette.dart';
@@ -18,6 +19,7 @@ import 'package:pocket_home/screens/my_home_screen/my_home_model.dart';
 import 'package:pocket_home/screens/my_home_screen/src/bloc/my_houses_bloc.dart';
 import 'package:pocket_home/screens/registration_screen/src/profile_model.dart';
 import 'package:pocket_home/screens/services_screen/src/bloc/services_bloc.dart';
+import 'package:provider/provider.dart';
 
 import 'src/add_service_screen/feature.dart';
 import 'src/service_detailed_model.dart';

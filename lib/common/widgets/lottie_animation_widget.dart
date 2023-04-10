@@ -2,8 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:lottie/lottie.dart';
+import 'package:pocket_home/common/theme/main_app_theme/main_app_theme_view_model.dart';
 import 'package:pocket_home/common/theme/theme_getter.dart';
-import 'package:pocket_home/common/utils/locale_view_model.dart';
 import 'package:provider/provider.dart';
 
 class EmptyPlaceholderWithLottie extends StatelessWidget {
@@ -15,8 +15,8 @@ class EmptyPlaceholderWithLottie extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MainAppLocaleViewModel>(builder: (context, value, child) {
-      return lottiePath.isNotEmpty
+    return Consumer<MainAppViewModel>(
+      builder: (context, value, child) => lottiePath.isNotEmpty
           ? Stack(
               alignment: Alignment.center,
               children: <Widget>[
@@ -60,7 +60,7 @@ class EmptyPlaceholderWithLottie extends StatelessWidget {
                 ),
               ],
             )
-          : const SizedBox.shrink();
-    });
+          : const SizedBox.shrink(),
+    );
   }
 }

@@ -1,8 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pocket_home/common/theme/main_app_theme/main_app_theme_view_model.dart';
 import 'package:pocket_home/common/theme/theme_getter.dart';
-import 'package:pocket_home/common/utils/locale_view_model.dart';
 import 'package:provider/provider.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -24,8 +24,8 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool leadingEnable;
   @override
   Widget build(BuildContext context) {
-    return Consumer<MainAppLocaleViewModel>(builder: (context, value, child) {
-      return AppBar(
+    return Consumer<MainAppViewModel>(
+      builder: (context, value, child) => AppBar(
         actions: actions,
         backgroundColor: getMainAppTheme(context).colors.navBarColor,
         elevation: 1,
@@ -78,8 +78,8 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               )
             : null,
-      );
-    });
+      ),
+    );
   }
 
   @override

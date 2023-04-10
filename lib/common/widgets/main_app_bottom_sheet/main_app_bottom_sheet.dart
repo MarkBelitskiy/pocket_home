@@ -59,7 +59,7 @@ class _ModalBody extends StatelessWidget {
                       style: getMainAppTheme(context)
                           .textStyles
                           .body
-                          .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+                          .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
                     ).tr(),
                   ),
                   IconButton(
@@ -68,7 +68,7 @@ class _ModalBody extends StatelessWidget {
                       },
                       icon: SvgPicture.asset(
                         getMainAppTheme(context).icons.close,
-                        color: getMainAppTheme(context).colors.mainTextColor,
+                        color: getMainAppTheme(context).colors.textOnBgColor,
                       ))
                 ],
               ),
@@ -121,7 +121,7 @@ class _ModalBody extends StatelessWidget {
                                                 style: getMainAppTheme(context)
                                                     .textStyles
                                                     .body
-                                                    .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+                                                    .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
                                               ).tr(),
                                             ),
                                             Row(

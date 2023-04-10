@@ -24,8 +24,8 @@ void main() {
     testWidgets('text input can be validated', (tester) async {
       const errorMessage = 'This is an error';
 
-      await tester.pumpWidget(ChangeNotifierProvider<MainAppThemeViewModel>(
-        create: (context) => MainAppThemeViewModel()..init(preferences),
+      await tester.pumpWidget(ChangeNotifierProvider<MainAppViewModel>(
+        create: (context) => MainAppViewModel()..init(preferences),
         child: MaterialApp(
           home: Scaffold(
             body: MainTextField(
@@ -54,8 +54,8 @@ void main() {
       const phoneNumber = '1234567890';
 
       await tester.pumpWidget(
-        ChangeNotifierProvider<MainAppThemeViewModel>(
-            create: (context) => MainAppThemeViewModel()..init(preferences),
+        ChangeNotifierProvider<MainAppViewModel>(
+            create: (context) => MainAppViewModel()..init(preferences),
             child: MaterialApp(
               home: Scaffold(
                 body: MainTextField(

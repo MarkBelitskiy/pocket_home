@@ -5,7 +5,8 @@ class _MyHousesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Consumer<MainAppViewModel>(
+      builder: (context, value, child) => Scaffold(
         floatingActionButton: MainAppFloatingButton(
             enumValue: MainFloatingActionButton.myHome,
             onTap: (currentHouse) {
@@ -20,7 +21,9 @@ class _MyHousesScreen extends StatelessWidget {
                       ));
             }),
         backgroundColor: getMainAppTheme(context).colors.bgColor,
-        body: const _Body());
+        body: const _Body(),
+      ),
+    );
   }
 }
 
@@ -83,53 +86,58 @@ class _MyHousesLoaded extends StatelessWidget {
   Widget build(BuildContext context) {
     final globalKeys = [GlobalKey(), GlobalKey()];
     final LayerLink layerLink = LayerLink();
-    return Consumer<MainAppLocaleViewModel>(builder: (context, value, child) {
-      return SingleChildScrollView(
-          padding: const EdgeInsets.only(left: 12, right: 12, top: 16, bottom: 100),
-          child: AnimatedOverlayWidget(
-            activateAnimation: activateAnimation,
-            childKeys: globalKeys,
-            layerLink: layerLink,
-            child: CompositedTransformTarget(
-              link: layerLink,
-              child: Column(children: [
-                const SizedBox(
-                  height: 64,
-                ),
-                _ChooseHomeWidget(
-                  key: globalKeys[0],
-                  housesModel: houses,
-                  currentHouse: currentHouse,
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                _ManagerWidget(
-                  key: globalKeys[1],
-                  manager: currentHouse.manager,
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                _WorkersWidget(currentHouse: currentHouse),
-                const SizedBox(
-                  height: 16,
-                ),
-                _BudgetWidget(
-                  budget: currentHouse.budget.budgetTotalSum,
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                _TelegramWidget(),
-                const SizedBox(
-                  height: 16,
-                ),
-                _PartnersGrid()
-              ]),
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) {
+        AnimatedOverlayWidget(
+          globalKeys,
+          layerLink,
+        ).showOverlayAnimated(context);
+      },
+    );
+
+    return Consumer<MainAppViewModel>(
+      builder: (context, value, child) => SingleChildScrollView(
+        padding: const EdgeInsets.only(left: 12, right: 12, top: 16, bottom: 100),
+        child: CompositedTransformTarget(
+          link: layerLink,
+          child: Column(children: [
+            const SizedBox(
+              height: 64,
             ),
-          ));
-    });
+            _ChooseHomeWidget(
+              key: globalKeys[0],
+              housesModel: houses,
+              currentHouse: currentHouse,
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            _ManagerWidget(
+              key: globalKeys[1],
+              manager: currentHouse.manager,
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            _WorkersWidget(currentHouse: currentHouse),
+            const SizedBox(
+              height: 16,
+            ),
+            _BudgetWidget(
+              budget: currentHouse.budget.budgetTotalSum,
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            _TelegramWidget(),
+            const SizedBox(
+              height: 16,
+            ),
+            _PartnersGrid()
+          ]),
+        ),
+      ),
+    );
   }
 }
 
@@ -172,7 +180,7 @@ class _ChooseHomeWidget extends StatelessWidget {
                   style: getMainAppTheme(context)
                       .textStyles
                       .subBody
-                      .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+                      .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
                 ),
               )
             ],
@@ -197,7 +205,7 @@ class _ChooseHomeWidget extends StatelessWidget {
                 style: getMainAppTheme(context)
                     .textStyles
                     .subBody
-                    .copyWith(color: getMainAppTheme(context).colors.inactiveText),
+                    .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
               ).plural(120),
             ]),
           ),
@@ -323,7 +331,7 @@ class _ManagerWidget extends StatelessWidget {
                     style: getMainAppTheme(context)
                         .textStyles
                         .subBody
-                        .copyWith(color: getMainAppTheme(context).colors.inactiveText),
+                        .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
                   ).tr(),
                 ],
               ),
@@ -509,7 +517,7 @@ class _AddHousesModalBody extends StatelessWidget {
                     style: getMainAppTheme(context)
                         .textStyles
                         .body
-                        .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+                        .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
                   ).tr(),
                 ),
                 IconButton(
@@ -518,7 +526,7 @@ class _AddHousesModalBody extends StatelessWidget {
                     },
                     icon: SvgPicture.asset(
                       getMainAppTheme(context).icons.close,
-                      color: getMainAppTheme(context).colors.mainTextColor,
+                      color: getMainAppTheme(context).colors.textOnBgColor,
                     ))
               ],
             ),
@@ -610,7 +618,7 @@ class _HouseWidget extends StatelessWidget {
                 style: getMainAppTheme(context)
                     .textStyles
                     .subBody
-                    .copyWith(color: getMainAppTheme(context).colors.mainTextColor),
+                    .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
               ),
             )
           ],
@@ -780,7 +788,7 @@ class _BudgetWidget extends StatelessWidget {
               getMainAppTheme(context).icons.money,
               width: 32,
               height: 32,
-              color: ColorPalette.green500,
+              color: getMainAppTheme(context).colors.successColor,
             ),
             const SizedBox(
               width: 8,
@@ -791,14 +799,17 @@ class _BudgetWidget extends StatelessWidget {
                 children: [
                   Text(
                     '$budget ₸',
-                    style: getMainAppTheme(context).textStyles.body.copyWith(color: ColorPalette.green500),
+                    style: getMainAppTheme(context)
+                        .textStyles
+                        .body
+                        .copyWith(color: getMainAppTheme(context).colors.successColor),
                   ),
                   Text(
                     'houseBudget',
                     style: getMainAppTheme(context)
                         .textStyles
                         .subBody
-                        .copyWith(color: getMainAppTheme(context).colors.inactiveText),
+                        .copyWith(color: getMainAppTheme(context).colors.textOnBgColor),
                   ).tr(),
                 ],
               ),
