@@ -7,9 +7,9 @@ import 'package:pocket_home/common/widgets/floating_button/floating_action_butto
 import 'package:pocket_home/common/widgets/floating_button/floating_button_access_enums.dart';
 import 'package:pocket_home/common/widgets/lottie_animation_widget.dart';
 import 'package:pocket_home/common/widgets/main_app_bar_widget.dart';
-import 'package:pocket_home/screens/my_home_screen/my_home_model.dart';
+import 'package:pocket_home/common/repository/models/my_home_model.dart';
 import 'package:pocket_home/screens/my_home_screen/src/bloc/my_houses_bloc.dart';
-import 'package:pocket_home/screens/my_home_screen/src/workers_screen/src/add_new_worker_screen.dart/src/worker_model.dart';
+import 'package:pocket_home/common/repository/models/worker_model.dart';
 import 'bloc/workers_bloc.dart';
 import 'src/add_new_worker_screen.dart/feature.dart';
 

@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:pocket_home/common/widgets/main_app_bottom_sheet/search_item.dart';
-import 'package:pocket_home/screens/news_screen/src/news_model.dart';
-import 'package:pocket_home/screens/services_screen/src/service_detailed_model.dart';
+import 'package:pocket_home/common/repository/models/news_model.dart';
+import 'package:pocket_home/common/repository/models/service_detailed_model.dart';
 
-import 'src/workers_screen/src/add_new_worker_screen.dart/src/worker_model.dart';
+import 'worker_model.dart';
 
 List<HouseModel> houseModelFromJson(String str) =>
     List<HouseModel>.from(json.decode(str).map((x) => HouseModel.fromJson(x)));

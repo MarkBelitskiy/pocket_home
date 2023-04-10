@@ -13,11 +13,11 @@ import 'package:pocket_home/common/widgets/main_app_bar_widget.dart';
 import 'package:pocket_home/common/widgets/main_app_bottom_sheet/main_app_bottom_sheet.dart';
 import 'package:pocket_home/common/widgets/main_body_widget.dart';
 import 'package:pocket_home/common/widgets/main_text_field/main_text_field_widget.dart';
-import 'package:pocket_home/screens/my_home_screen/my_home_model.dart';
+import 'package:pocket_home/common/repository/models/my_home_model.dart';
 import 'package:pocket_home/screens/news_screen/src/add_news/src/bloc/add_news_bloc.dart';
 import 'package:pocket_home/screens/news_screen/src/bloc/news_bloc.dart';
 
-import 'package:pocket_home/screens/news_screen/src/news_model.dart';
+import 'package:pocket_home/common/repository/models/news_model.dart';
 
 part 'src/add_news_screen.dart';
 

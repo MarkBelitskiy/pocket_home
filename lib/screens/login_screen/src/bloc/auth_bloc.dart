@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pocket_home/common/repository/repository.dart';
-import 'package:pocket_home/screens/registration_screen/src/profile_model.dart';
+import 'package:pocket_home/common/repository/models/profile_model.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';

@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pocket_home/screens/my_home_screen/my_home_model.dart';
+import 'package:pocket_home/common/repository/models/my_home_model.dart';
 import 'package:pocket_home/screens/my_home_screen/src/bloc/my_houses_bloc.dart';
 
-import 'package:pocket_home/screens/my_home_screen/src/workers_screen/src/add_new_worker_screen.dart/src/worker_model.dart';
+import 'package:pocket_home/common/repository/models/worker_model.dart';
 
 part 'workers_event.dart';
 part 'workers_state.dart';

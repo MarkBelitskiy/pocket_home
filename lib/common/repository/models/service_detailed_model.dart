@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:pocket_home/screens/my_home_screen/src/workers_screen/src/add_new_worker_screen.dart/src/worker_model.dart';
+import 'package:pocket_home/common/repository/models/worker_model.dart';
 
 List<ServiceDetailedModel> addServiceModelFromJson(String str) =>
     List<ServiceDetailedModel>.from(json.decode(str).map((x) => ServiceDetailedModel.fromJson(x)));

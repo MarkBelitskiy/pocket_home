@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:pocket_home/screens/my_home_screen/my_home_model.dart';
+import 'package:pocket_home/common/repository/models/my_home_model.dart';
 
 List<UserModel> usersModelFromJson(String str) =>
     List<UserModel>.from(json.decode(str).map((x) => UserModel.fromJson(x)));

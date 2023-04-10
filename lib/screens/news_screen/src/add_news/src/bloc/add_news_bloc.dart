@@ -2,10 +2,10 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pocket_home/common/repository/repository.dart';
-import 'package:pocket_home/screens/my_home_screen/my_home_model.dart';
+import 'package:pocket_home/common/repository/models/my_home_model.dart';
 import 'package:pocket_home/screens/news_screen/src/bloc/news_bloc.dart';
 
-import 'package:pocket_home/screens/news_screen/src/news_model.dart';
+import 'package:pocket_home/common/repository/models/news_model.dart';
 
 part 'add_news_event.dart';
 part 'add_news_state.dart';

@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 
 import 'src/add_news/feature.dart';
 import 'src/bloc/news_bloc.dart';
-import 'src/news_model.dart';
+import '../../common/repository/models/news_model.dart';
 import 'src/view_news/feature.dart';
 
 part 'src/news_screen.dart';

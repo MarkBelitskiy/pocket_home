@@ -1,6 +1,6 @@
 import 'package:pocket_home/common/repository/base_repository_models.dart/base_houses_repo.dart';
 import 'package:pocket_home/common/utils/preferences_utils.dart';
-import 'package:pocket_home/screens/my_home_screen/my_home_model.dart';
+import 'package:pocket_home/common/repository/models/my_home_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MainHousesRepository implements BaseHousesRepository {

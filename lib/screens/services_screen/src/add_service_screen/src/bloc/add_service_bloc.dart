@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pocket_home/screens/my_home_screen/my_home_model.dart';
+import 'package:pocket_home/common/repository/models/my_home_model.dart';
 import 'package:pocket_home/screens/services_screen/src/bloc/services_bloc.dart';
-import 'package:pocket_home/screens/services_screen/src/service_detailed_model.dart';
+import 'package:pocket_home/common/repository/models/service_detailed_model.dart';
 
 part 'add_service_event.dart';
 part 'add_service_state.dart';
