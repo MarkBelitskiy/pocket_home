@@ -9,7 +9,12 @@ class _MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light.copyWith(statusBarColor: Colors.transparent),
-        child: BlocBuilder<AuthBloc, AuthState>(
+        child: BlocConsumer<AuthBloc, AuthState>(
+          listener: (context, state) {
+            if (state is UserIsNotAuthorizedState) {
+              context.read<MainScreenViewModel>().changeScreen(0);
+            }
+          },
           buildWhen: (previous, current) => current is AuthorizedSuccessState || current is UserIsNotAuthorizedState,
           builder: (context, state) {
             if (state is AuthorizedSuccessState) {
@@ -24,16 +29,11 @@ class _MainScreen extends StatelessWidget {
   }
 }
 
-class _Body extends StatefulWidget {
+class _Body extends StatelessWidget {
   const _Body({
     Key? key,
   }) : super(key: key);
 
-  @override
-  State<_Body> createState() => _BodyState();
-}
-
-class _BodyState extends State<_Body> {
   @override
   Widget build(BuildContext context) {
     return Consumer<MainScreenViewModel>(

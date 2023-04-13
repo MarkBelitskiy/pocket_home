@@ -30,7 +30,7 @@ class NewsScreenFeature extends StatelessWidget {
       create: (context) => NewsBloc(
         repository: context.read<Repository>(),
         myHousesBloc: context.read<MyHousesBloc>(),
-      ),
+      )..add(OnNewsTabInit(true)),
       child: const _NewsScreen(),
     );
   }
