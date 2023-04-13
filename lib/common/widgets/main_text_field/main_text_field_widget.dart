@@ -122,6 +122,7 @@ class _MainTextFieldState extends State<MainTextField> {
           cursorColor: getMainAppTheme(context).colors.mainTextColor,
           decoration: InputDecoration(
             filled: true,
+            errorMaxLines: 3,
             fillColor: getMainAppTheme(context).colors.cardColor,
             prefixIcon: widget.prefixIcon != null
                 ? Padding(padding: const EdgeInsets.only(left: 8), child: SvgPicture.asset(widget.prefixIcon!))
