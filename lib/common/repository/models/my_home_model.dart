@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:pocket_home/common/widgets/main_app_bottom_sheet/search_item.dart';
 import 'package:pocket_home/common/repository/models/news_model.dart';
 import 'package:pocket_home/common/repository/models/service_detailed_model.dart';
 
@@ -11,7 +10,7 @@ List<HouseModel> houseModelFromJson(String str) =>
 
 String houseModelToJson(List<HouseModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class HouseModel extends SearchItem {
+class HouseModel {
   HouseModel(
       {required this.houseNumber,
       required this.houseAddress,
@@ -19,8 +18,7 @@ class HouseModel extends SearchItem {
       this.workers,
       this.news,
       required this.budget,
-      this.services})
-      : super(name: '', address: houseAddress, phone: '', homeNumber: houseNumber, jobTitle: '');
+      this.services});
 
   String houseNumber;
   String houseAddress;
